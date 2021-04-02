@@ -21,7 +21,7 @@ ROBOTSTXT_OBEY = True
 
 
 # Mongo Database Settings//:27017 ///test?retryWrites=true&w=majority
-MONGODB_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0-shard-00-02.tadma.mongodb.net/test?retryWrites=true&w=majority"
+MONGODB_URI = "Work in progress"
 MONGODB_DB = "SuperScrapper"
 MONGODB_COLLECTIONS = ["SuperScrapper.funds","SuperScrapper.offerings"]
 
