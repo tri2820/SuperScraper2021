@@ -11,3 +11,77 @@ from itemadapter import ItemAdapter
 class ScraperPipeline:
     def process_item(self, item, spider):
         return item
+
+
+# TODO: Partition database for names, id, ect .. |\ then format data
+
+class SuperDataArange:
+
+    def process_item(self, item, spider):
+        return item
+# --
+
+# TODO: Clean data
+
+class SuperDataClean:
+
+    def process_item(self, item, spider):
+        return item
+# --
+
+# TODO: Enter into database
+
+class SuperDataToMongodb:
+
+    def process_item(self, item, spider):
+        return item
+# --
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# --
