@@ -8,6 +8,16 @@ MONGODB_DB = "SuperScrapper"
 MONGODB_COLLECTIONS = ["funds","offerings"]
 
 '''
+
+Before using this scipt:
+    - You will need to have pymongo installed
+    - You will need to have dnspython installed
+    
+    To install these use:
+        conda install pymongo
+        conda install dnspython
+
+
 In order to use this setup you must make sure that you have the following setup on the atlas database:
     - An account - You can use the test account I have setup already 'bot-test-user'
     - The account password - This is given when an account is created, in this case you can use the one for the test bot already here 'bot-test-password'
