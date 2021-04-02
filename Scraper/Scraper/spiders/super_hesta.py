@@ -87,11 +87,11 @@ class HestaSpider(scrapy.Spider):
 
     def parse(self, response):
 
-        '''
-        # Testing code -- Creates a csv with data
-
         year_value = response.url.split("year=")[1]
         year_value = year_value.split("-")[1]
+        
+        '''
+        # Testing code -- Creates a csv with data
 
         with open('hesta-thing.csv', mode='a') as csv_file:
             csv_writer = csv.writer(csv_file, delimiter=',')
