@@ -13,16 +13,16 @@ This goes doubly so if if you want to do stuff with the crawler and the libaries
 Additionally if you are using any of the python stuff here, it is using anaconda. Use anaconda.
 
 Creating an environment is simple.
-	* Open your anaconda prompt console.
-	* Enter: conda create --name YOUR_ENVIRONMENT_NAME_HERE
+- Open your anaconda prompt console.
+- Enter: conda create --name YOUR_ENVIRONMENT_NAME_HERE
 
 Using an environment.
-	* Exit current environment: conda deactivate
-	* Enter different environment: conda activate YOUR_ENVIRONMENT_NAME_HERE
-	* See all current environments: conda env list
-	* To install a python libary in an environment:
-		* Make sure you are in the environment you want to be in.
-		* Enter: conda install 'THE_NAME_OF_THE_PYTHON_LIBARY'
+- Exit current environment: conda deactivate
+- Enter different environment: conda activate YOUR_ENVIRONMENT_NAME_HERE
+- See all current environments: conda env list
+- To install a python libary in an environment:
+  - Make sure you are in the environment you want to be in.
+  - Enter: conda install 'THE_NAME_OF_THE_PYTHON_LIBARY'
 
 Even if you dont use or want to do stuff with the spider or python connection with the datbase directly
 you still may need to run this stuff later down the track. It may be helpful to set this up, I seriously promise its simple (90% of the time).
