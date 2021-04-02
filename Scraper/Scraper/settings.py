@@ -19,6 +19,19 @@ NEWSPIDER_MODULE = 'Scraper.spiders'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
+
+# Mongo Database Settings//:27017 ///test?retryWrites=true&w=majority
+MONGODB_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0-shard-00-02.tadma.mongodb.net/test?retryWrites=true&w=majority"
+MONGODB_DB = "SuperScrapper"
+MONGODB_COLLECTIONS = ["SuperScrapper.funds","SuperScrapper.offerings"]
+
+
+# Configure item pipelines
+# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+ITEM_PIPELINES = {
+    #'Scraper.pipelines.SuperDataMongodb': 300,
+}
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 
@@ -58,12 +71,6 @@ ROBOTSTXT_OBEY = True
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 #EXTENSIONS = {
 #    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
-
-# Configure item pipelines
-# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'Scraper.pipelines.ScraperPipeline': 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
