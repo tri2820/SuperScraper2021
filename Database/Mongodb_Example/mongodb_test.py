@@ -12,7 +12,7 @@ MONGODB_COLLECTIONS = ["funds","offerings"]
 Before using this scipt:
     - You will need to have pymongo installed
     - You will need to have dnspython installed
-    
+
     To install these use:
         conda install pymongo
         conda install dnspython

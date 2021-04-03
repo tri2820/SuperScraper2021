@@ -1,6 +1,6 @@
 import scrapy
 import csv
-#import logging
+import logging
 
 from Scraper.items import SuperFundData, SpecificOffering
 import pandas as pd
@@ -12,60 +12,54 @@ from Scraper import spiderdatautils
 
 class HestaSpider(scrapy.Spider):
     name = "Hesta"
-    #'''
 
-    '''
-    custom_settings = {
-        '_id': 'some value',
-    }
-    '''
-
-    # TODO: Make it so that this has settings/attributes which are specified when running this spider, these include _id, name, ect ..
 
     start_urls = []
 
-    hesta_url_string = "https://www.hesta.com.au/content/hesta/members/investments/super-performance/jcr:content/par/investmentperformanc.monthly.html?year="
+    data_url = ""
 
+
+    '''
     # --- TEMPORARY ---
 
-    url_append_strings = ['2016-2017','2017-2018','2018-2019','2019-2020','2020-2021']
+    data_url = "https://www.hesta.com.au/content/hesta/members/investments/super-performance/jcr:content/par/investmentperformanc.monthly.html?year="
+
+    url_append_strings = ['2016-2017']#,'2017-2018','2018-2019','2019-2020','2020-2021'
 
     for append_string in url_append_strings:
         add_string = ""
         add_string = hesta_url_string + append_string
         start_urls.append(add_string)
         print(add_string)
-    #'''
-
     '''
-    # Example Data
 
-    SuperFundAttributes = {
-        '_id' = None,
-        'name' = None,
-        'type' = None,
-        'website' = None,
-        'crawl_order' = {
-            'dates' = ['2016-2017','2017-2018','2018-2019','2019-2020','2020-2021']
-        }
-    }
-    '''
-    #_super_fund = SuperFund()
+    fund_data = None
 
-    super_id = 0
-
-    #def __init__(self, superFundAttributes=None, *args, **kwargs):
-    #def __init__(self, _id=None, name=None, type=None, website_url=None, *args, **kwargs):#, super_performance=None
-    def __init__(self, super_id = None, *args, **kwargs):
+    # TODO: Make this apply for all spiders somehow
+    def __init__(self, fund_data = None, *args, **kwargs):
         super(HestaSpider, self).__init__(*args, **kwargs)
-        self.super_id = super_id
-        #self._super_fund.super_atts = superFundAttributes
-        #self._super_fund._id = _id
-        #self._super_fund.name = name
-        #self._super_fund.type = type
-        #self._super_fund.website_url = website_url
-        #self._super_fund.super_offerings = {}
-        #self.start_urls = [f'http://www.example.com/categories/{category}']
+        self.fund_data = fund_data
+        logging.debug(self.fund_data)
+        if self.fund_data != None:
+            self.init_crawler_urls()
+
+    # TODO: Make this apply for all spiders somehow
+    def init_crawler_urls(self):
+        self.data_url = self.fund_data['metadata']['get_data_url']
+
+        # If there are variables to collect from create a url for each value
+        url_variables = self.fund_data['metadata']['url_variables']
+        for variable in url_variables:
+            append_string = ""
+            input_string = variable['input']
+            variable_values = variable['values']
+            for value in variable_values:
+                if value['use']:
+                    append_string = self.data_url
+                    append_string += input_string + value['url_string']
+                    self.start_urls.append(append_string)
+
+
 
 
     def start_requests(self):
@@ -89,7 +83,7 @@ class HestaSpider(scrapy.Spider):
 
         year_value = response.url.split("year=")[1]
         year_value = year_value.split("-")[1]
-        
+
         '''
         # Testing code -- Creates a csv with data
 
@@ -117,7 +111,7 @@ class HestaSpider(scrapy.Spider):
         '''
 
         super_fund = SuperFundData()
-        super_fund['_id'] = self.super_id
+        super_fund['_id'] = self.fund_data['_id']
 
         table_bodies = response.css("tbody")
         for table_body in table_bodies:

@@ -17,19 +17,19 @@ NEWSPIDER_MODULE = 'Scraper.spiders'
 #USER_AGENT = 'Scraper (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False#True
 
 
 # Mongo Database Settings//:27017 ///test?retryWrites=true&w=majority
-MONGODB_URI = "Work in progress"
-MONGODB_DB = "SuperScrapper"
-MONGODB_COLLECTIONS = ["SuperScrapper.funds","SuperScrapper.offerings"]
+MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
+MONGO_DB = "SuperScrapper"
+MONGO_COLLECTIONS = ["funds","offerings"]
 
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    #'Scraper.pipelines.SuperDataMongodb': 300,
+    'Scraper.pipelines.SuperDataMongodb': 300,
 }
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)

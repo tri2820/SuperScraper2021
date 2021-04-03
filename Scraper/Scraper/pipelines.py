@@ -7,6 +7,12 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 import pymongo
+import logging
+import pandas as pd
+
+import numpy as np
+
+from collections import defaultdict
 
 
 class ScraperPipeline:
@@ -34,10 +40,10 @@ class SuperDataClean:
 
 # NOTE: To alow running of this pipline uncomment it in settings
 
-class SuperDataMongodb:
+class SuperDataMongodb:#object
 
-    # NOTE: THIS DOES NOT CURRENT WORK, JUST PROOF
-    collection_name = 'funds'
+    collection_name = 'offerings'
+    #monthly_performances
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
@@ -46,18 +52,32 @@ class SuperDataMongodb:
     def from_crawler(cls, crawler):
         return cls(
             mongo_uri = crawler.settings.get('MONGO_URI'),
-            mongo_db = crawler.settings.get('MONGO_DATABASE', 'items')
+            mongo_db = crawler.settings.get('MONGO_DB')
         )
 
     def open_spider(self, spider):
-        self.client = pymongo.MongoClient(self.mongo_uri, ssl = True)
+        self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
 
     def close_spider(self, spider):
         self.client.close()
 
     def process_item(self, item, spider):
-        self.db[self.collection_name].insert_one(ItemAdapter(item).asdict())
+        #self.db[self.collection_name].insert_one({'hmmmm':123})
+        #self.db[self.collection_name].insert_one(ItemAdapter(item).asdict())
+        super_fund = ItemAdapter(item)
+
+        query = {'_id' : 'hesta_cons'}
+
+        if super_fund['super_offerings'].to_dict()['Conservative Pool ']:
+            cons_list = []
+            cons_dict = super_fund['super_offerings']['Conservative Pool '].to_dict()
+            for key in cons_dict:
+                value_object = {key : cons_dict[key]}
+                cons_list.append(value_object)
+            values = {'$addToSet': {'monthly_performances' : {'$each': cons_list}}}
+            self.db[self.collection_name].update_many(query, values)
+
         return item
 # --
 
