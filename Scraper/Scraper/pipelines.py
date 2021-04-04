@@ -65,18 +65,50 @@ class SuperDataMongodb:#object
     def process_item(self, item, spider):
         #self.db[self.collection_name].insert_one({'hmmmm':123})
         #self.db[self.collection_name].insert_one(ItemAdapter(item).asdict())
+
+        #logging.debug('--------------------------||-------------------------------')
+
         super_fund = ItemAdapter(item)
 
+        table_string_values = list(super_fund['super_offerings'].columns)
+
+        for table_string_value in table_string_values:
+
+            offering_query = {'metadata.table_string' : table_string_value}
+
+            offering = self.db[self.collection_name].find_one(offering_query)
+
+            #logging.debug('---------------------------------------------------------')
+            #logging.debug(table_string_value)
+            if offering == None:
+                continue
+            #logging.debug(offering)
+            #logging.debug(type(offering))
+
+            query = {'_id' : offering['_id']}
+
+            cons_list = []
+            cons_dict = super_fund['super_offerings'][table_string_value].to_dict()
+            for key in cons_dict:
+                value_object = {'Date' : key, 'Value' : cons_dict[key]}
+                cons_list.append(value_object)
+            values = {'$addToSet': {'monthly_performances' : {'$each': cons_list}}}
+            self.db[self.collection_name].update_many(query, values)
+
+        # ---
+
+        '''
         query = {'_id' : 'hesta_cons'}
 
         if super_fund['super_offerings'].to_dict()['Conservative Pool ']:
             cons_list = []
             cons_dict = super_fund['super_offerings']['Conservative Pool '].to_dict()
             for key in cons_dict:
-                value_object = {key : cons_dict[key]}
+                value_object = {'Date' : key, 'Value' : cons_dict[key]}
                 cons_list.append(value_object)
             values = {'$addToSet': {'monthly_performances' : {'$each': cons_list}}}
             self.db[self.collection_name].update_many(query, values)
+        '''
 
         return item
 # --
