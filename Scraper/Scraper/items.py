@@ -14,13 +14,9 @@ class ScraperItem(scrapy.Item):
 
 
 class SuperFundData(scrapy.Item):
-    #super_atts = scrapy.Field()
     _id = scrapy.Field()
-    #name = scrapy.Field()
-    #type = scrapy.Field()
-    #website_url = scrapy.Field() # Main url
-    super_offerings = scrapy.Field()# pandas dataframe
-    #super_performance_url = scrapy.Field() # url to performance data
+    super_offerings = scrapy.Field()
+    insert_cat = scrapy.Field()
 
 
 

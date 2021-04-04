@@ -44,19 +44,7 @@ class DatabaseHandler:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#'''
 process = CrawlerProcess(get_project_settings())
 
 db_connection = DatabaseHandler(MONGO_URI, MONGO_DB)
@@ -68,6 +56,7 @@ db_connection.close_connection()
 #process.crawl('Aware')
 process.crawl('Hesta', fund_data = fund_data)
 process.start()
+#'''
 
 print("Crawl Completed")
 

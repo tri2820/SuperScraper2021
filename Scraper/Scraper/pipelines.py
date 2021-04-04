@@ -36,9 +36,8 @@ class SuperDataClean:
         return item
 # --
 
-# TODO: Enter into database
 
-# NOTE: To alow running of this pipline uncomment it in settings
+
 
 class SuperDataMongodb:#object
 
@@ -73,8 +72,8 @@ class SuperDataMongodb:#object
         table_string_values = list(super_fund['super_offerings'].columns)
 
         for table_string_value in table_string_values:
-
-            offering_query = {'metadata.table_string' : table_string_value}
+            #metadata.table_string
+            offering_query = {'metadata.table_strings' : table_string_value}
 
             offering = self.db[self.collection_name].find_one(offering_query)
 
@@ -92,23 +91,10 @@ class SuperDataMongodb:#object
             for key in cons_dict:
                 value_object = {'Date' : key, 'Value' : cons_dict[key]}
                 cons_list.append(value_object)
-            values = {'$addToSet': {'monthly_performances' : {'$each': cons_list}}}
+            values = {'$addToSet': {super_fund['insert_cat'] : {'$each': cons_list}}}
             self.db[self.collection_name].update_many(query, values)
 
         # ---
-
-        '''
-        query = {'_id' : 'hesta_cons'}
-
-        if super_fund['super_offerings'].to_dict()['Conservative Pool ']:
-            cons_list = []
-            cons_dict = super_fund['super_offerings']['Conservative Pool '].to_dict()
-            for key in cons_dict:
-                value_object = {'Date' : key, 'Value' : cons_dict[key]}
-                cons_list.append(value_object)
-            values = {'$addToSet': {'monthly_performances' : {'$each': cons_list}}}
-            self.db[self.collection_name].update_many(query, values)
-        '''
 
         return item
 # --
