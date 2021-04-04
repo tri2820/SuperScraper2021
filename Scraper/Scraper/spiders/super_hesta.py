@@ -132,6 +132,7 @@ class HestaSpider(scrapy.Spider):
             table_months = table_body.css("th::text").getall()
             table_months = table_months[1:]
             if len(table_months) > 0:
+                # TODO: Move this logic to datacleaning pipeline
                 table_months = spiderdatautils.month_format(table_months, year_value)
 
             # Handle table rows - values
