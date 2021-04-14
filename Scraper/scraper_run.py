@@ -57,7 +57,7 @@ process.crawl('Aware', fund_data = aware_fund_data)
 
 #process.crawl('Telstra')
 
-#process.crawl('Hesta', fund_data = hesta_fund_data)
+process.crawl('Hesta', fund_data = hesta_fund_data)
 
 process.start()
 #'''

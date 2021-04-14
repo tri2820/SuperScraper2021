@@ -36,8 +36,6 @@ class AwareSpider(scrapy.Spider):
 
     # TODO: Make this apply for all spiders somehow
     def init_crawler_urls(self):
-        #self.data_url = self.fund_data['metadata']['get_data_url']
-        #data_url = self.fund_data['metadata']['get_data_url']
 
         crawl_objects = self.fund_data['metadata']['crawl_objects']
 
@@ -69,30 +67,8 @@ class AwareSpider(scrapy.Spider):
                 yield scrapy.Request(url=url, callback=getattr(self,parse_select))
 
 
-    '''
-    def __init__(self, super_id = None, *args, **kwargs):
-        super(AwareSpider, self).__init__(*args, **kwargs)
-        self.super_id = super_id
-
-    def start_requests(self):
-        for url in self.start_urls:
-            yield scrapy.Request(url=url, callback=self.parse)
-    '''
-
     #def parse(self, response):
     def parse_monthly(self, response):
-
-        # Testing code -- Creates a csv with data
-
-        '''
-        filename = 'Aware.csv'
-        with open(filename, mode='a') as csv_file:
-            csv_writer = csv.writer(csv_file, delimiter=',')
-            csv_writer.writerow([response.url])
-            #csv_writer.writerows(response.text)
-            csv_file.write(response.text)
-        '''
-        # --
 
         super_fund = SuperFundData()
         super_fund['_id'] = self.fund_data['_id']
@@ -101,6 +77,8 @@ class AwareSpider(scrapy.Spider):
         super_fund['super_offerings'] = df
 
         super_fund['insert_cat'] = 'monthly_performances'
+
+        super_fund['format_time'] = True
 
         yield super_fund
 

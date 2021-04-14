@@ -17,6 +17,8 @@ class SuperFundData(scrapy.Item):
     _id = scrapy.Field()
     super_offerings = scrapy.Field()
     insert_cat = scrapy.Field()
+    year_value = scrapy.Field()
+    format_time = scrapy.Field()
 
 
 
