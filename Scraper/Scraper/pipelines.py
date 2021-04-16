@@ -94,12 +94,13 @@ class SuperDataMongodb:#object
 
             offering = self.db[self.collection_name].find_one(offering_query)
 
-            #logging.debug('---------------------------------------------------------')
-            #logging.debug(table_string_value)
             if offering == None:
                 continue
-            #logging.debug(offering)
-            #logging.debug(type(offering))
+
+            # Ensure that this offering data is of the correct super fund
+            if super_fund['_id'] != offering['fund_id']:
+                print("--------",spider.name,"--------",table_string_value,"---------")
+                continue
 
             query = {'_id' : offering['_id']}
 
