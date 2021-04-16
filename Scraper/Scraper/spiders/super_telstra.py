@@ -9,6 +9,9 @@ from Scraper import spiderdatautils
 
 from io import StringIO
 
+
+#jabgibaegibigbego
+
 #https://www.telstrasuper.com.au/api/Investment/DownloadMonthlyInvestmentPerformance?SelectedOptions=GROW%2CBAL%2CDEFG%2CCONS%2CINTL%2CAUST%2CPROP%2CFINT%2CCASH%2CINC&Category=AC&DataType=performancepercentage&DateRange=12m&ShowAll=1
 
 
