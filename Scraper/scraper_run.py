@@ -51,13 +51,14 @@ db_connection = DatabaseHandler(MONGO_URI, MONGO_DB)
 db_connection.open_connection()
 hesta_fund_data = db_connection.retrieve_fund_data("hesta")
 aware_fund_data = db_connection.retrieve_fund_data("aware")
+telstra_fund_data = db_connection.retrieve_fund_data("telstra")
 db_connection.close_connection()
 
-process.crawl('Aware', fund_data = aware_fund_data)
+#process.crawl('Aware', fund_data = aware_fund_data)
 
-#process.crawl('Telstra')
+process.crawl('Telstra', fund_data = telstra_fund_data)
 
-process.crawl('Hesta', fund_data = hesta_fund_data)
+#process.crawl('Hesta', fund_data = hesta_fund_data)
 
 process.start()
 #'''
