@@ -100,28 +100,6 @@ class SuperDataMongodb:#object
                 # --
             # --
 
-            '''
-
-            offering_query = {'metadata.table_strings' : table_column_value}
-
-            offering = self.db[self.collection_name].find_one(offering_query)
-
-            if offering == None:
-                # TODO: Have a function to add this offering if it doesent exist and we want it to
-                existing_offering = self.check_for_offering_exist(super_fund, table_column_value, True)
-                # IF offer does not exist
-                if existing_offering == None:
-                    continue
-                else:
-                    offering = existing_offering
-            # --
-
-            # Ensure that this offering data is of the correct super fund
-            if super_fund['_id'] != offering['fund_id']:
-                print("--------",spider.name,"--------",table_column_value,"---------")
-                continue
-            '''
-
             query = {'_id' : offering['_id']}
 
             value_obj_list = []
