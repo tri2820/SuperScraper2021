@@ -90,17 +90,37 @@ class SuperDataMongodb:#object
         table_column_values = list(super_fund['super_offerings'].columns)
 
         for table_column_value in table_column_values:
+
+            offering = self.check_for_offering_exist(super_fund, table_column_value, True)
+
+            if offering == None:
+                offering = self.create_new_offering(super_fund, table_column_value)
+                if offering == None:
+                    continue
+                # --
+            # --
+
+            '''
+
             offering_query = {'metadata.table_strings' : table_column_value}
 
             offering = self.db[self.collection_name].find_one(offering_query)
 
             if offering == None:
-                continue
+                # TODO: Have a function to add this offering if it doesent exist and we want it to
+                existing_offering = self.check_for_offering_exist(super_fund, table_column_value, True)
+                # IF offer does not exist
+                if existing_offering == None:
+                    continue
+                else:
+                    offering = existing_offering
+            # --
 
             # Ensure that this offering data is of the correct super fund
             if super_fund['_id'] != offering['fund_id']:
                 print("--------",spider.name,"--------",table_column_value,"---------")
                 continue
+            '''
 
             query = {'_id' : offering['_id']}
 
@@ -121,6 +141,72 @@ class SuperDataMongodb:#object
         # ---
 
         return item
+    # --
+
+    def check_offering(self, super_fund, table_column_value, offering_query):
+        #offering_query = {'metadata.table_strings' : table_column_value}
+        offering = self.db[self.collection_name].find_one(offering_query)
+        # Ensure that this offering data is of the correct super fund
+        if offering == None:
+            return None
+        if super_fund['_id'] != offering['fund_id']:
+            return None
+        return offering
+
+
+    def check_for_offering_exist(self, super_fund, table_column_value, add_to_table = False):
+
+        # Check if offering already exists using metadata table string
+        offering_query = {'metadata.table_strings' : table_column_value}
+        offering = self.check_offering(super_fund, table_column_value, offering_query)
+
+        # Return offering if exists
+        if offering != None:
+            return offering
+
+        # Check if offering of same id type already exists
+        offering_id = super_fund['_id'] + '_' + table_column_value
+        offering_id = spiderdatautils.lower_underscore(offering_id)
+
+        offering_query = {'_id' : offering_id}
+        offering = self.check_offering(super_fund, table_column_value, offering_query)
+        #offering = self.db[self.collection_name].find_one(offering_query)
+
+        if offering == None:
+            return None
+        else:
+            # Ensure that this offering data is of the correct super fund
+            #if super_fund['_id'] != offering['fund_id']:
+            #    return None
+            # If add_to_table, add string if offer exists
+            if add_to_table:
+                query = {'_id' : offering['_id']}
+                values = {'$addToSet': {'metadata.table_strings' : {'$each': [offering_id]}}}
+                self.db[self.collection_name].update_many(query, values)
+            return offering
+    # --
+
+
+    def create_new_offering(self, super_fund, table_column_value):
+        offering_id = super_fund['_id'] + '_' + table_column_value
+        offering_id = spiderdatautils.lower_underscore(offering_id)
+        new_offering = {
+            '_id': offering_id,
+            'fund_id': super_fund['_id'],
+            'name': table_column_value,
+            'monthly_performances': [],
+            'historial_performances': [],
+            'inception': 'N/A',
+            'metadata': {'table_strings': [table_column_value]}
+            }
+        self.db[self.collection_name].insert_one(new_offering)
+        offering_query = {'_id' : new_offering['_id']}
+        queried_offering = self.check_offering(super_fund, table_column_value, offering_query)
+        return queried_offering
+    # --
+
+
+
 # --
 
 

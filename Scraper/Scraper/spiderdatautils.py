@@ -56,7 +56,7 @@ def month_format(date_strings, year_value = None, date_format = None, parse_orde
 
 def digit_value_format(data_value):
     data_value_ = re.sub('[^-\d.]+','',str(data_value))
-    data_value_ = float(data_value_)
+    #data_value_ = float(data_value_)
     # --
     return data_value_
 # --
@@ -73,6 +73,12 @@ def digit_list_value_format(data_values):
 # --
 
 
+def lower_underscore(start_string):
+    underscores = re.sub('[ ]+','_',str(start_string))
+    lowercase = underscores.lower()
+    end_string = lowercase
+    return end_string
+# --
 
 
 
