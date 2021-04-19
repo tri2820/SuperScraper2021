@@ -87,10 +87,10 @@ class SuperDataMongodb:#object
 
         print(super_fund['super_offerings'])
 
-        table_string_values = list(super_fund['super_offerings'].columns)
+        table_column_values = list(super_fund['super_offerings'].columns)
 
-        for table_string_value in table_string_values:
-            offering_query = {'metadata.table_strings' : table_string_value}
+        for table_column_value in table_column_values:
+            offering_query = {'metadata.table_strings' : table_column_value}
 
             offering = self.db[self.collection_name].find_one(offering_query)
 
@@ -99,17 +99,23 @@ class SuperDataMongodb:#object
 
             # Ensure that this offering data is of the correct super fund
             if super_fund['_id'] != offering['fund_id']:
-                print("--------",spider.name,"--------",table_string_value,"---------")
+                print("--------",spider.name,"--------",table_column_value,"---------")
                 continue
 
             query = {'_id' : offering['_id']}
 
-            cons_list = []
-            cons_dict = super_fund['super_offerings'][table_string_value].to_dict()
-            for key in cons_dict:
-                value_object = {'Date' : key, 'Value' : cons_dict[key]}
-                cons_list.append(value_object)
-            values = {'$addToSet': {super_fund['insert_cat'] : {'$each': cons_list}}}
+            value_obj_list = []
+            value_obj_dict = super_fund['super_offerings'][table_column_value].to_dict()
+
+            # TODO: Mabye use zip, but this is fine for now
+            for key in value_obj_dict:
+                data_value = spiderdatautils.digit_value_format(value_obj_dict[key])
+                #print(data_value)
+                value_object = {'Date' : key, 'Value' : data_value}
+                value_obj_list.append(value_object)
+            # --
+
+            values = {'$addToSet': {super_fund['insert_cat'] : {'$each': value_obj_list}}}
             self.db[self.collection_name].update_many(query, values)
 
         # ---

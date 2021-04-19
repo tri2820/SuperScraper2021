@@ -74,7 +74,29 @@ class TelstraSpider(scrapy.Spider):
             #yield scrapy.Request(url=url, callback=self.parse)
 
     def parse_monthly(self, response):
-        print("hello")
+        super_fund = SuperFundData()
+        super_fund['_id'] = self.fund_data['_id']
+
+        '''
+        filename = 'Telstra.csv'
+        with open(filename, mode='a') as csv_file:
+            csv_writer = csv.writer(csv_file, delimiter=',')
+            csv_writer.writerow([response.url])
+            #csv_writer.writerows(response.text)
+            csv_file.write(response.text)
+
+        # --
+        '''
+
+        df = pd.read_csv(StringIO(response.text), sep=",", index_col= 'Date')
+
+        super_fund['super_offerings'] = df
+
+        super_fund['insert_cat'] = 'monthly_performances'
+
+        super_fund['format_time'] = True
+
+        yield super_fund
 
 
 

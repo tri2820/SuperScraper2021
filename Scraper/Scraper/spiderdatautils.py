@@ -2,6 +2,8 @@
 import dateparser
 import datetime
 
+import re
+
 
 
 
@@ -10,19 +12,7 @@ import datetime
 
 # TODO: Make year value a settings option thingy so that this can handle different stuff
 
-'''
-def month_format(month_strs, year_value):
 
-    # Formating reference: https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior
-    date_format = '%Y-%m'
-    month_dates = []
-    for month_str in month_strs:
-        combined_string = year_value + month_str
-        parsed_value = dateparser.parse(combined_string,settings={'DATE_ORDER': 'YMD'})
-        # Using output python base datetime -> convert into string THEN append
-        month_dates.append(parsed_value.strftime(date_format))
-    return month_dates
-'''
 
 
 '''
@@ -59,21 +49,30 @@ def month_format(date_strings, year_value = None, date_format = None, parse_orde
         #print(parsed_value.strftime(date_format))
         month_dates.append(parsed_value.strftime(date_format_))
     return month_dates
+# --
 
 
 
 
+def digit_value_format(data_value):
+    data_value_ = re.sub('[^-\d.]+','',str(data_value))
+    data_value_ = float(data_value_)
+    # --
+    return data_value_
+# --
 
-'''
-#,settings={'DATE_ORDER': 'YMD'} , date_formats = ['%y','%m']
-#month_dates.append(str(parsed_value.year) + "-" + str(parsed_value.month))
-#print(type(parsed_value))
-#print(parsed_value)
-#print(parsed_value.strftime('%Y-%m'))
 
-print('wOOOOOOOOOOOOOOOOOOOOOAHAYFWBGYwf -------------')
-print(dateparser.parse('1/02/2021',settings={'DATE_ORDER': 'DMY'}).strftime('%Y-%m'))
-'''
+
+def digit_list_value_format(data_values):
+    data_values_ = []
+    for data_value in data_values:
+        new_data_value = digit_value_format(data_value)
+        data_values_.append(new_data_value)
+    # --
+    return data_values_
+# --
+
+
 
 
 
