@@ -115,6 +115,8 @@ class HestaSpider(scrapy.Spider):
 
             super_fund['insert_cat'] = 'historial_performances'
 
+            super_fund['format_time'] = False
+
             yield super_fund
 
     #def parse(self, response):
@@ -131,8 +133,12 @@ class HestaSpider(scrapy.Spider):
             table_months = []
             table_months = table_body.css("th::text").getall()
             table_months = table_months[1:]
-            if len(table_months) > 0:
-                table_months = spiderdatautils.month_format(table_months, year_value)
+            '''
+            # TODO: Move this logic to datacleaning pipeline
+            COMPLETE - Go to pipeline for implementation
+            '''
+            #if len(table_months) > 0:
+            #    table_months = spiderdatautils.month_format(table_months, year_value = year_value)
 
             # Handle table rows - values
             table_rows = table_body.css("tr")
@@ -152,6 +158,10 @@ class HestaSpider(scrapy.Spider):
             super_fund['super_offerings'] = df
 
             super_fund['insert_cat'] = 'monthly_performances'
+
+            super_fund['year_value'] = year_value
+
+            super_fund['format_time'] = True
 
             yield super_fund
         # --

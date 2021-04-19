@@ -2,42 +2,75 @@
 import dateparser
 import datetime
 
+import re
+
+
+
+
+# TODO: Make date format with zero at front '07-2017' instead of '7-2017'
+# TODO: Make year first then month
+
+# TODO: Make year value a settings option thingy so that this can handle different stuff
+
+
+
+
 '''
-date_string = 'Feb-2017'
+-- Settings --
 
-parsed_value = dateparser.parse(date_string)
+date_strings([string]): strings of dates
 
-print(parsed_value.year,parsed_value.month)
+optionals:
+ - year_value(Integer value): if only the month is given in date_strings then year_value can be added if difined
+
 '''
+#, date_order = None
 
+def month_format(date_strings, year_value = None, date_format = None, parse_order = None):
 
+    # Formating reference: https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior
+    date_format_ = '%Y-%m'
+    if date_format:
+        date_format_ = date_format
 
-
-
-
-def month_format(month_strs, year_value):
     month_dates = []
-    for month_str in month_strs:
-        combined_string = month_str + year_value
-        parsed_value = dateparser.parse(combined_string)
-        month_dates.append(str(parsed_value.month) + "-" + str(parsed_value.year))
+
+    parse_order_ = 'YMD'
+    if parse_order:
+        parse_order_ = parse_order
+
+    for month_str in date_strings:
+        combined_string = month_str
+        # If year value
+        if year_value:
+            combined_string = year_value + combined_string
+        parsed_value = dateparser.parse(combined_string,settings={'DATE_ORDER': parse_order_})
+        # Using output python base datetime -> convert into string THEN append
+        #print(parsed_value.strftime(date_format))
+        month_dates.append(parsed_value.strftime(date_format_))
     return month_dates
+# --
 
 
 
 
-
-'''
-def month_format(month_strs, year_value):
-    date_convertions = {'Jan':"01",'Feb':"02",'Mar':"03",'Apr':"04",'May':"05",'Jun':"06",'Jul':"07",'Aug':"08",'Sep':"09",'Oct':"10",'Nov':"11",'Dec':"12"}
-    month_ints = []
-    for month_str in month_strs:
-        if month_str in date_convertions:
-            month_ints.append(date_convertions[month_str] + "-" + year_value)
-    return month_ints
-'''
+def digit_value_format(data_value):
+    data_value_ = re.sub('[^-\d.]+','',str(data_value))
+    data_value_ = float(data_value_)
+    # --
+    return data_value_
+# --
 
 
+
+def digit_list_value_format(data_values):
+    data_values_ = []
+    for data_value in data_values:
+        new_data_value = digit_value_format(data_value)
+        data_values_.append(new_data_value)
+    # --
+    return data_values_
+# --
 
 
 

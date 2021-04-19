@@ -4,6 +4,12 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
 
+'''
+# Refactor the pipline
+
+'''
+
+
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 import pymongo
@@ -13,6 +19,8 @@ import pandas as pd
 import numpy as np
 
 from collections import defaultdict
+
+from Scraper import spiderdatautils
 
 
 class ScraperPipeline:
@@ -62,36 +70,52 @@ class SuperDataMongodb:#object
         self.client.close()
 
     def process_item(self, item, spider):
-        #self.db[self.collection_name].insert_one({'hmmmm':123})
-        #self.db[self.collection_name].insert_one(ItemAdapter(item).asdict())
-
-        #logging.debug('--------------------------||-------------------------------')
 
         super_fund = ItemAdapter(item)
 
-        table_string_values = list(super_fund['super_offerings'].columns)
+        # NOTE: There is probably a better way to do this, however that is something that can be done in a future refactor
 
-        for table_string_value in table_string_values:
-            #metadata.table_string
-            offering_query = {'metadata.table_strings' : table_string_value}
+        # TODO: (Maybe) Loop through all fields in superfund item and if they are not there set them to None
+
+        # Handles changing indecies
+        if super_fund['format_time']:
+            if 'year_value' in super_fund:
+                super_fund['super_offerings'].set_index(pd.Index(spiderdatautils.month_format(list(super_fund['super_offerings'].index), year_value = super_fund['year_value'])),inplace=True)
+            else:
+                super_fund['super_offerings'].set_index(pd.Index(spiderdatautils.month_format(list(super_fund['super_offerings'].index), parse_order = 'DMY')),inplace=True)
+        # --
+
+        print(super_fund['super_offerings'])
+
+        table_column_values = list(super_fund['super_offerings'].columns)
+
+        for table_column_value in table_column_values:
+            offering_query = {'metadata.table_strings' : table_column_value}
 
             offering = self.db[self.collection_name].find_one(offering_query)
 
-            #logging.debug('---------------------------------------------------------')
-            #logging.debug(table_string_value)
             if offering == None:
                 continue
-            #logging.debug(offering)
-            #logging.debug(type(offering))
+
+            # Ensure that this offering data is of the correct super fund
+            if super_fund['_id'] != offering['fund_id']:
+                print("--------",spider.name,"--------",table_column_value,"---------")
+                continue
 
             query = {'_id' : offering['_id']}
 
-            cons_list = []
-            cons_dict = super_fund['super_offerings'][table_string_value].to_dict()
-            for key in cons_dict:
-                value_object = {'Date' : key, 'Value' : cons_dict[key]}
-                cons_list.append(value_object)
-            values = {'$addToSet': {super_fund['insert_cat'] : {'$each': cons_list}}}
+            value_obj_list = []
+            value_obj_dict = super_fund['super_offerings'][table_column_value].to_dict()
+
+            # TODO: Mabye use zip, but this is fine for now
+            for key in value_obj_dict:
+                data_value = spiderdatautils.digit_value_format(value_obj_dict[key])
+                #print(data_value)
+                value_object = {'Date' : key, 'Value' : data_value}
+                value_obj_list.append(value_object)
+            # --
+
+            values = {'$addToSet': {super_fund['insert_cat'] : {'$each': value_obj_list}}}
             self.db[self.collection_name].update_many(query, values)
 
         # ---
@@ -103,6 +127,23 @@ class SuperDataMongodb:#object
 
 
 
+
+
+
+
+
+'''
+# NOTE: I WILL CLEAN THIS UP LATER - I promise
+#super_fund['super_offerings'].reindex(spiderdatautils.month_format(list(super_fund['super_offerings'].index)))
+#super_fund['super_offerings'].index._data = spiderdatautils.month_format(list(super_fund['super_offerings'].tolist()))
+#print(super_fund['super_offerings'])
+
+#print(spiderdatautils.month_format(super_fund['super_offerings'].index, year_value = super_fund['year_value']))
+#super_fund['super_offerings'].reindex(spiderdatautils.month_format(list(super_fund['super_offerings'].index), year_value = super_fund['year_value']))
+#super_fund['super_offerings'].index._data = spiderdatautils.month_format(list(super_fund['super_offerings'].tolist()), year_value = super_fund['year_value'])
+#print(super_fund['super_offerings'].reindex(spiderdatautils.month_format(list(super_fund['super_offerings'].index), year_value = super_fund['year_value'])))
+
+'''
 
 
 
