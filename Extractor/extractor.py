@@ -91,5 +91,3 @@ def extract():
         perf_pivot_writer = csv.writer(perf_pivot)
         for row in newPerf:
             perf_pivot_writer.writerow(row)
-    
-extract()
