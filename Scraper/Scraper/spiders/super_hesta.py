@@ -4,6 +4,7 @@ import logging
 
 from Scraper.items import SuperFundData, SpecificOffering
 import pandas as pd
+import numpy as np
 
 from Scraper import spiderdatautils
 
@@ -78,6 +79,8 @@ class HestaSpider(scrapy.Spider):
         for selection in self.crawl_selections:
             parse_select, url = selection
             if hasattr(self, parse_select):
+                # TODO: Create a really nice metadata thing for this callback yield
+                # (there is already a meta value in this scrapy object that can be used)
                 yield scrapy.Request(url=url, callback=getattr(self,parse_select))
             #yield scrapy.Request(url=url, callback=self.parse)
 
@@ -121,8 +124,11 @@ class HestaSpider(scrapy.Spider):
 
     #def parse(self, response):
     def parse_monthly(self, response):
+        # TODO: Use meta data instead (do this when metadata setup is used)
         year_value = response.url.split("year=")[1]
-        year_value = year_value.split("-")[1]
+        year_values = year_value.split("-")
+        year_value_first = year_values[0]
+        year_value_second = year_values[1]
 
         super_fund = SuperFundData()
         super_fund['_id'] = self.fund_data['_id']
@@ -133,13 +139,6 @@ class HestaSpider(scrapy.Spider):
             table_months = []
             table_months = table_body.css("th::text").getall()
             table_months = table_months[1:]
-            '''
-            # TODO: Move this logic to datacleaning pipeline
-            COMPLETE - Go to pipeline for implementation
-            '''
-            #if len(table_months) > 0:
-            #    table_months = spiderdatautils.month_format(table_months, year_value = year_value)
-
             # Handle table rows - values
             table_rows = table_body.css("tr")
 
@@ -155,13 +154,25 @@ class HestaSpider(scrapy.Spider):
 
             df = pd.DataFrame(data = offer_types, index = table_months)
 
-            super_fund['super_offerings'] = df
+            #super_fund['super_offerings'] = df
 
             super_fund['insert_cat'] = 'monthly_performances'
 
-            super_fund['year_value'] = year_value
-
             super_fund['format_time'] = True
+
+            # Split dataframe in two and give, first year, then second
+
+            dfs = np.split(df, [6], axis=0)
+
+            super_fund['year_value'] = year_value_first
+
+            super_fund['super_offerings'] = dfs[0]
+
+            yield super_fund
+
+            super_fund['year_value'] = year_value_second
+
+            super_fund['super_offerings'] = dfs[1]
 
             yield super_fund
         # --

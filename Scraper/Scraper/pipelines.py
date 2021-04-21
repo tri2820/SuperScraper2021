@@ -107,8 +107,13 @@ class SuperDataMongodb:#object
 
             # TODO: Mabye use zip, but this is fine for now
             for key in value_obj_dict:
+                #print(key, value_obj_dict[key])
+                # Handle value conversions and format changes
                 data_value = spiderdatautils.digit_value_format(value_obj_dict[key])
-                #print(data_value)
+                # Apply lamda if needed
+                if 'value_mutator' in super_fund:
+                    data_value = super_fund['value_mutator'](data_value)
+                # --
                 value_object = {'Date' : key, 'Value' : data_value}
                 value_obj_list.append(value_object)
             # --

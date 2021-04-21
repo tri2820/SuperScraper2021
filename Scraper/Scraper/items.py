@@ -17,8 +17,11 @@ class SuperFundData(scrapy.Item):
     _id = scrapy.Field()
     super_offerings = scrapy.Field()
     insert_cat = scrapy.Field()
+    # NOTE: I changed this for extra functionality (now object). May allow different assignments in future
     year_value = scrapy.Field()
     format_time = scrapy.Field()
+    # This field is intended to be set as a lambda for any extra convertion things
+    value_mutator = scrapy.Field()
 
 
 

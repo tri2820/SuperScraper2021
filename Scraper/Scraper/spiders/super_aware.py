@@ -76,6 +76,8 @@ class AwareSpider(scrapy.Spider):
 
         super_fund['super_offerings'] = df
 
+        super_fund['value_mutator'] = lambda a: a * 100
+
         super_fund['insert_cat'] = 'monthly_performances'
 
         super_fund['format_time'] = True
