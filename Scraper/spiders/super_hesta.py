@@ -57,6 +57,8 @@ class HestaSpider(BaseSpider):
     #def parse(self, response):
     def parse_monthly(self, response):
         # TODO: Use meta data instead (do this when metadata setup is used)
+        print('000ew0ijg09 g20g148u t8 85389 h2593 9053gh2 5 HESTAHETA')
+        print(response.url.split("year="))
         year_value = response.url.split("year=")[1]
         year_values = year_value.split("-")
         year_value_first = year_values[0]

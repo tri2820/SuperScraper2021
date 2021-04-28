@@ -35,21 +35,37 @@ class DatabaseMaintenanceHandler:
             # If the field exists
             query = {field_value: {'$exists': True} }
             update = {'$set': {field_value : []} }
+            self.db[collection_name].update_many(query,update)
+    # --
+
+    def delete_collection_documents(self,fields_list, collection_name):
+
+        for field_value in fields_list:
+            # If the field exists
+            query = {field_value: {'$exists': True} }
+            update = {'$set': {field_value : []} }
             self.db[collection_name].remove(query)
-            #self.db[collection_name].update_many(query,update)
 # --
 
 
 
-db_connection = DatabaseMaintenanceHandler(MONGO_URI, MONGO_DB)
-db_connection.open_connection()
+def clear_docs():
+    db_connection = DatabaseMaintenanceHandler(MONGO_URI, MONGO_DB)
+    db_connection.open_connection()
 
-db_connection.clear_collection(fields_to_empty, collection_name)
+    db_connection.clear_collection(fields_to_empty, collection_name)
 
-db_connection.close_connection()
+    db_connection.close_connection()
+# --
 
+def delete_docs():
+    db_connection = DatabaseMaintenanceHandler(MONGO_URI, MONGO_DB)
+    db_connection.open_connection()
 
+    db_connection.delete_collection_documents(fields_to_empty, collection_name)
 
+    db_connection.close_connection()
+# --
 
 
 

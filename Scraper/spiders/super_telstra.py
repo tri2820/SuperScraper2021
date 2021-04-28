@@ -9,9 +9,9 @@ from Scraper import spiderdatautils
 
 from io import StringIO
 
-<<<<<<< HEAD
+
 from Scraper.spiders.super_base import BaseSpider
-=======
+
 #https://www.telstrasuper.com.au/api/Investment/DownloadMonthlyInvestmentPerformance?SelectedOptions=GROW%2CBAL%2CDEFG%2CCONS%2CINTL%2CAUST%2CPROP%2CFINT%2CCASH%2CINC&Category=AC&DataType=performancepercentage&DateRange=12m&ShowAll=1
 
 class TelstraSpider(scrapy.Spider):
@@ -77,7 +77,7 @@ class TelstraSpider(scrapy.Spider):
     def parse_monthly(self, response):
         super_fund = SuperFundData()
         super_fund['_id'] = self.fund_data['_id']
-        
+
         df = pd.read_csv(StringIO(response.text), sep=",", index_col= 'Date')
 
         super_fund['super_offerings'] = df
@@ -111,8 +111,8 @@ class TelstraSpider(BaseSpider):
 
 <<<<<<< HEAD
 =======
-        
-      
+
+
         # --
 >>>>>>> VAISHALI-Thing
 
