@@ -1,12 +1,14 @@
-from scrapy.crawler import CrawlerProcess
+#from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
-import pymongo
-import logging
-import pandas as pd
 
 from twisted.internet import reactor, defer
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.log import configure_logging
+
+
+import pymongo
+import logging
+import pandas as pd
 
 
 
@@ -80,12 +82,13 @@ def run_scraper():
     crawl()
 
     reactor.run()
+
     #'''
 
     print("Crawl Completed")
 # --
 
-#run_scraper()
+run_scraper()
 
 
 

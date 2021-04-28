@@ -19,13 +19,7 @@ class TelstraSpider(scrapy.Spider):
 
 
     start_urls = []
-
     crawl_selections = []
-
-    #data_url = ""
-
-
-
     fund_data = None
 
     # TODO: Make this apply for all spiders somehow

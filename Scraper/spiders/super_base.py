@@ -55,6 +55,7 @@ class BaseSpider(scrapy.Spider):
             parse_select, url = selection
             if hasattr(self, parse_select):
                 yield scrapy.Request(url=url, callback=getattr(self,parse_select))
+        # --
 
 
 # --

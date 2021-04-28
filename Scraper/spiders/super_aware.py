@@ -17,6 +17,10 @@ from Scraper.spiders.super_base import BaseSpider
 class AwareSpider(BaseSpider):
     name = "Aware"
 
+    start_urls = []
+    crawl_selections = []
+    fund_data = None
+
     #def parse(self, response):
     def parse_monthly(self, response):
 

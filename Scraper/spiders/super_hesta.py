@@ -16,6 +16,10 @@ from Scraper.spiders.super_base import BaseSpider
 class HestaSpider(BaseSpider):
     name = "Hesta"
 
+    start_urls = []
+    crawl_selections = []
+    fund_data = None
+
     # --
 
     def parse_hist(self, response):
