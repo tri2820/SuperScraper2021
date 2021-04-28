@@ -118,7 +118,7 @@ class HestaSpider(scrapy.Spider):
 
             super_fund['insert_cat'] = 'historial_performances'
 
-            super_fund['format_time'] = False
+            #super_fund['format_time'] = False
 
             yield super_fund
 

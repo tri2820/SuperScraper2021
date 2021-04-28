@@ -103,7 +103,14 @@ class AwareSpider(scrapy.Spider):
             offer_types = {}
             for table_row in table_rows:
                 row_values = []
-                row_values = table_row.css("td::text").getall()
+                row_values_ = table_row.css("td")
+                for value_ in row_values_:
+                    temp = value_.css("::text").get()
+                    if temp != None:
+                        row_values.append(temp)
+                # --
+
+
                 if len(row_values) > 0:
                     offer_type = row_values[0]
                     row_values = row_values[1:]
@@ -116,13 +123,33 @@ class AwareSpider(scrapy.Spider):
 
             super_fund['insert_cat'] = 'costs_fees'
 
-            super_fund['format_time'] = False
+            #super_fund['format_time'] = False
+
+            super_fund['value_object_keys'] = ['Cost_Type', 'Value']
 
             super_fund['add_new'] = True
 
             yield super_fund
 
             break # Break because we only want the first one
+
+
+    def parse_allocation(self, response):
+        #https://aware.com.au/content/dam/ftc/assetallocations/super-tris-actual-asset-allocation-2021-03.csv
+        super_fund = SuperFundData()
+        super_fund['_id'] = self.fund_data['_id']
+        df = pd.read_csv(StringIO(response.text), sep=",", index_col= 'Asset Class')
+        #df = df.transpose()
+
+        super_fund['super_offerings'] = df
+
+        #super_fund['value_mutator'] = lambda a: a * 100
+
+        super_fund['insert_cat'] = 'allocations'
+
+        #super_fund['format_time'] = False
+
+        yield super_fund
 
 
 

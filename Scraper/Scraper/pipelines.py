@@ -73,30 +73,28 @@ class SuperDataMongodb:#object
 
         super_fund = ItemAdapter(item)
 
-        # NOTE: There is probably a better way to do this, however that is something that can be done in a future refactor
+        value_object_keys = ['Date','Value']
+        if 'value_object_keys' in super_fund:
+            value_object_keys = super_fund['value_object_keys']
 
         # TODO: (Maybe) Loop through all fields in superfund item and if they are not there set them to None
 
         # Handles changing indecies
-        if super_fund['format_time']:
-            if 'year_value' in super_fund:
-                super_fund['super_offerings'].set_index(pd.Index(spiderdatautils.month_format(list(super_fund['super_offerings'].index), year_value = super_fund['year_value'])),inplace=True)
-            else:
-                super_fund['super_offerings'].set_index(pd.Index(spiderdatautils.month_format(list(super_fund['super_offerings'].index), parse_order = 'DMY')),inplace=True)
+        if 'format_time' in super_fund:
+            if super_fund['format_time']:
+                if 'year_value' in super_fund:
+                    super_fund['super_offerings'].set_index(pd.Index(spiderdatautils.month_format(list(super_fund['super_offerings'].index), year_value = super_fund['year_value'])),inplace=True)
+                else:
+                    super_fund['super_offerings'].set_index(pd.Index(spiderdatautils.month_format(list(super_fund['super_offerings'].index), parse_order = 'DMY')),inplace=True)
         # --
-
-        print(super_fund['super_offerings'])
-
+        #print(super_fund['super_offerings'])
         table_column_values = list(super_fund['super_offerings'].columns)
-
         for table_column_value in table_column_values:
-
             add_new = False
             if 'add_new' in super_fund:
                 add_new = True
-
+            # --
             offering = self.check_for_offering_exist(super_fund, table_column_value, add_new)
-
             if offering == None:
                 offering = self.create_new_offering(super_fund, table_column_value)
                 if offering == None:
@@ -111,17 +109,16 @@ class SuperDataMongodb:#object
 
             # TODO: Mabye use zip, but this is fine for now
             for key in value_obj_dict:
-                #print(key, value_obj_dict[key])
                 # Handle value conversions and format changes
                 data_value = spiderdatautils.digit_value_format(value_obj_dict[key])
                 # Apply lamda if needed
                 if 'value_mutator' in super_fund:
                     data_value = super_fund['value_mutator'](data_value)
                 # --
-                value_object = {'Date' : key, 'Value' : data_value}
+                #value_object = {'Date' : key, 'Value' : data_value}
+                value_object = {value_object_keys[0] : key, value_object_keys[1] : data_value}
                 value_obj_list.append(value_object)
             # --
-
             values = {'$addToSet': {super_fund['insert_cat'] : {'$each': value_obj_list}}}
             self.db[self.collection_name].update_many(query, values)
 
@@ -184,6 +181,7 @@ class SuperDataMongodb:#object
             'monthly_performances': [],
             'historial_performances': [],
             'costs_fees': [],
+            'allocations': [],
             'inception': 'N/A',
             'metadata': {'table_strings': [table_column_value]}
             }

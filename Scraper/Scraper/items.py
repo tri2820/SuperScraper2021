@@ -24,7 +24,9 @@ class SuperFundData(scrapy.Item):
     value_mutator = scrapy.Field()
     # Add as new table if not found
     add_new = scrapy.Field()
-    
+    # Indicates the keys for this collection
+    value_object_keys = scrapy.Field()
+
 
 
 
