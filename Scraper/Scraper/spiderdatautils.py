@@ -86,7 +86,8 @@ def digit_list_value_format(data_values):
 def lower_underscore(start_string):
     underscores = re.sub('[ ]+','_',str(start_string))
     lowercase = underscores.lower()
-    end_string = lowercase
+    remove_symbols = re.sub('[^\w_]+|[0-9]+','',lowercase)
+    end_string = remove_symbols
     return end_string
 # --
 

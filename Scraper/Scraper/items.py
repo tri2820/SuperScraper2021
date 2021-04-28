@@ -22,6 +22,11 @@ class SuperFundData(scrapy.Item):
     format_time = scrapy.Field()
     # This field is intended to be set as a lambda for any extra convertion things
     value_mutator = scrapy.Field()
+    # Add as new table if not found
+    add_new = scrapy.Field()
+    # Indicates the keys for this collection
+    value_object_keys = scrapy.Field()
+
 
 
 
