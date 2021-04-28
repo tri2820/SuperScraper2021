@@ -26,8 +26,16 @@ class SuperFundData(scrapy.Item):
     add_new = scrapy.Field()
     # Indicates the keys for this collection
     value_object_keys = scrapy.Field()
+# --
 
 
+
+
+
+class SuperTraversalData(scrapy.Item):
+    _id = scrapy.Field()
+    page_urls = scrapy.Field()
+# --
 
 
 class SpecificOffering(scrapy.Item):

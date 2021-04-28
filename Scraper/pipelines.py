@@ -45,6 +45,15 @@ class SuperDataClean:
 # --
 
 
+class SuperTestTraversal:
+
+    def process_item(self, item, spider):
+        traverse_item = ItemAdapter(item)
+        print(traverse_item)
+
+        return item
+    # --
+
 
 
 class SuperDataMongodb:#object

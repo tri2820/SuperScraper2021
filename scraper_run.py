@@ -88,7 +88,29 @@ def run_scraper():
     print("Crawl Completed")
 # --
 
-run_scraper()
+
+def run_scraper_traversal():
+    runner = CrawlerRunner(get_project_settings())
+
+    traverse_data_ = {'_id': 'trav'}
+
+    @defer.inlineCallbacks
+    def crawl():
+
+        yield runner.crawl('Traversal', traverse_data = traverse_data_)
+
+        reactor.stop()
+
+    crawl()
+
+    reactor.run()
+
+    print("Crawl Completed")
+# --
+
+run_scraper_traversal()
+
+#run_scraper()
 
 
 
