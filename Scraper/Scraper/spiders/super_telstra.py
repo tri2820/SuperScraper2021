@@ -9,6 +9,8 @@ from Scraper import spiderdatautils
 
 from io import StringIO
 
+from Scraper.spiders.super_base import BaseSpider
+
 
 #jabgibaegibigbego
 
@@ -17,7 +19,7 @@ from io import StringIO
 #https://www.telstrasuper.com.au/api/Investment/DownloadMonthlyInvestmentPerformance?SelectedOptions=GROW%2CBAL%2CDEFG%2CCONS%2CINTL%2CAUST%2CPROP%2CFINT%2CCASH%2CINC&Category=AC&DataType=performancepercentage&DateRange=12m&ShowAll=1
 
 
-class TelstraSpider(scrapy.Spider):
+class TelstraSpider(BaseSpider):
     name = "Telstra"
 
     def parse_monthly(self, response):
