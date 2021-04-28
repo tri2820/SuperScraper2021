@@ -23,6 +23,10 @@ from collections import defaultdict
 from Scraper import spiderdatautils
 
 
+import json
+import csv
+
+
 class ScraperPipeline:
     def process_item(self, item, spider):
         return item
@@ -49,11 +53,15 @@ class SuperTestTraversal:
 
     def process_item(self, item, spider):
         traverse_item = ItemAdapter(item)
-        print(traverse_item)
-
         return item
     # --
 
+    def close_spider(self, spider):
+        with open('data_stuff.csv', 'w') as fp:
+            data_writer = csv.writer(fp)
+            for link in spider.traversed_urls:
+                data_writer.writerow([link])
+    # --
 
 
 class SuperDataMongodb:#object

@@ -98,8 +98,6 @@ class QuotesTraversal(scrapy.Spider):
             # --
         # --
 
-        traverse_item['page_urls'] = urls_
-
         if depth < 5:
             print(depth)
             for link in urls_:
@@ -108,7 +106,6 @@ class QuotesTraversal(scrapy.Spider):
                 yield request
             # --
         # --
-
         yield traverse_item
     # --
 
