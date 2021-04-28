@@ -85,6 +85,46 @@ class AwareSpider(scrapy.Spider):
         yield super_fund
 
 
+    #def parse(self, response):
+    def parse_fee(self, response):
+
+        super_fund = SuperFundData()
+        super_fund['_id'] = self.fund_data['_id']
+
+        table_bodies = response.css("tbody")
+        for table_body in table_bodies:
+            # Get headings of this table (Hesta - Months)
+            table_titles = []
+            table_titles = table_body.css("th::text").getall()
+            table_titles = table_titles[1:]
+            # Handle table rows - values
+            table_rows = table_body.css("tr")
+
+            offer_types = {}
+            for table_row in table_rows:
+                row_values = []
+                row_values = table_row.css("td::text").getall()
+                if len(row_values) > 0:
+                    offer_type = row_values[0]
+                    row_values = row_values[1:]
+                    offer_types[offer_type] = row_values
+            # --
+
+            df = pd.DataFrame(data = offer_types, index = table_titles)
+
+            super_fund['super_offerings'] = df
+
+            super_fund['insert_cat'] = 'costs_fees'
+
+            super_fund['format_time'] = False
+
+            super_fund['add_new'] = True
+
+            yield super_fund
+
+            break # Break because we only want the first one
+
+
 
 
 

@@ -93,11 +93,11 @@ class HestaSpider(scrapy.Spider):
         table_bodies = response.css("tbody")
         for table_body in table_bodies:
             # Get headings of this table (Hesta - Months)
-            table_months = []
-            table_months = table_body.css("th::text").getall()
-            table_months = table_months[1:]
-            #if len(table_months) > 0:
-                #table_months = spiderdatautils.month_format(table_months, year_value)
+            table_titles = []
+            table_titles = table_body.css("th::text").getall()
+            table_titles = table_titles[1:]
+            #if len(table_titles) > 0:
+                #table_titles = spiderdatautils.month_format(table_titles, year_value)
 
             # Handle table rows - values
             table_rows = table_body.css("tr")
@@ -112,7 +112,7 @@ class HestaSpider(scrapy.Spider):
                     offer_types[offer_type] = row_values
             # --
 
-            df = pd.DataFrame(data = offer_types, index = table_months)
+            df = pd.DataFrame(data = offer_types, index = table_titles)
 
             super_fund['super_offerings'] = df
 
@@ -136,9 +136,9 @@ class HestaSpider(scrapy.Spider):
         table_bodies = response.css("tbody")
         for table_body in table_bodies:
             # Get headings of this table (Hesta - Months)
-            table_months = []
-            table_months = table_body.css("th::text").getall()
-            table_months = table_months[1:]
+            table_titles = []
+            table_titles = table_body.css("th::text").getall()
+            table_titles = table_titles[1:]
             # Handle table rows - values
             table_rows = table_body.css("tr")
 
@@ -152,7 +152,7 @@ class HestaSpider(scrapy.Spider):
                     offer_types[offer_type] = row_values
             # --
 
-            df = pd.DataFrame(data = offer_types, index = table_months)
+            df = pd.DataFrame(data = offer_types, index = table_titles)
 
             #super_fund['super_offerings'] = df
 

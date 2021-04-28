@@ -91,7 +91,11 @@ class SuperDataMongodb:#object
 
         for table_column_value in table_column_values:
 
-            offering = self.check_for_offering_exist(super_fund, table_column_value, True)
+            add_new = False
+            if 'add_new' in super_fund:
+                add_new = True
+
+            offering = self.check_for_offering_exist(super_fund, table_column_value, add_new)
 
             if offering == None:
                 offering = self.create_new_offering(super_fund, table_column_value)
@@ -179,6 +183,7 @@ class SuperDataMongodb:#object
             'name': table_column_value,
             'monthly_performances': [],
             'historial_performances': [],
+            'costs_fees': [],
             'inception': 'N/A',
             'metadata': {'table_strings': [table_column_value]}
             }
@@ -197,22 +202,6 @@ class SuperDataMongodb:#object
 
 
 
-
-
-
-
-'''
-# NOTE: I WILL CLEAN THIS UP LATER - I promise
-#super_fund['super_offerings'].reindex(spiderdatautils.month_format(list(super_fund['super_offerings'].index)))
-#super_fund['super_offerings'].index._data = spiderdatautils.month_format(list(super_fund['super_offerings'].tolist()))
-#print(super_fund['super_offerings'])
-
-#print(spiderdatautils.month_format(super_fund['super_offerings'].index, year_value = super_fund['year_value']))
-#super_fund['super_offerings'].reindex(spiderdatautils.month_format(list(super_fund['super_offerings'].index), year_value = super_fund['year_value']))
-#super_fund['super_offerings'].index._data = spiderdatautils.month_format(list(super_fund['super_offerings'].tolist()), year_value = super_fund['year_value'])
-#print(super_fund['super_offerings'].reindex(spiderdatautils.month_format(list(super_fund['super_offerings'].index), year_value = super_fund['year_value'])))
-
-'''
 
 
 

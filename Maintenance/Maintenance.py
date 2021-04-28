@@ -35,7 +35,8 @@ class DatabaseMaintenanceHandler:
             # If the field exists
             query = {field_value: {'$exists': True} }
             update = {'$set': {field_value : []} }
-            self.db[collection_name].update_many(query,update)
+            self.db[collection_name].remove(query)
+            #self.db[collection_name].update_many(query,update)
 # --
 
 
