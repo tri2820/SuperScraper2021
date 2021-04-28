@@ -1,36 +1,29 @@
 import scrapy
 import csv
-#import logging
+import logging
 
 from Scraper.items import SuperFundData, SpecificOffering
 import pandas as pd
 
 from Scraper import spiderdatautils
 
-from io import StringIO
 
-<<<<<<< HEAD
-from Scraper.spiders.super_base import BaseSpider
-=======
-#https://www.telstrasuper.com.au/api/Investment/DownloadMonthlyInvestmentPerformance?SelectedOptions=GROW%2CBAL%2CDEFG%2CCONS%2CINTL%2CAUST%2CPROP%2CFINT%2CCASH%2CINC&Category=AC&DataType=performancepercentage&DateRange=12m&ShowAll=1
 
-class TelstraSpider(scrapy.Spider):
-    name = "Telstra"
+
+class FutureSpider(scrapy.Spider):
+    name = "Future"
 
 
     start_urls = []
 
     crawl_selections = []
 
-    #data_url = ""
-
-
 
     fund_data = None
 
     # TODO: Make this apply for all spiders somehow
     def __init__(self, fund_data = None, *args, **kwargs):
-        super(TelstraSpider, self).__init__(*args, **kwargs)
+        super(FutureSpider, self).__init__(*args, **kwargs)
         self.fund_data = fund_data
         #logging.debug(self.fund_data)
         if self.fund_data != None:
@@ -74,117 +67,38 @@ class TelstraSpider(scrapy.Spider):
 
     # --
 
-    def parse_monthly(self, response):
-        super_fund = SuperFundData()
-        super_fund['_id'] = self.fund_data['_id']
-        
-        df = pd.read_csv(StringIO(response.text), sep=",", index_col= 'Date')
-
-        super_fund['super_offerings'] = df
-
-        super_fund['insert_cat'] = 'monthly_performances'
-
-        super_fund['format_time'] = True
-
-        yield super_fund
-
-
-'''
-class TelstraSpider(scrapy.Spider):
-    name = "Telstra"
->>>>>>> VAISHALI-Thing
-
-
-#jabgibaegibigbego
-
-#https://www.telstrasuper.com.au/api/Investment/DownloadMonthlyInvestmentPerformance?SelectedOptions=GROW%2CBAL%2CDEFG%2CCONS%2CINTL%2CAUST%2CPROP%2CFINT%2CCASH%2CINC&Category=AC&DataType=performancepercentage&DateRange=12m&ShowAll=1
-
-#https://www.telstrasuper.com.au/api/Investment/DownloadMonthlyInvestmentPerformance?SelectedOptions=GROW%2CBAL%2CDEFG%2CCONS%2CINTL%2CAUST%2CPROP%2CFINT%2CCASH%2CINC&Category=AC&DataType=performancepercentage&DateRange=12m&ShowAll=1
-
-
-class TelstraSpider(BaseSpider):
-    name = "Telstra"
-
-    def parse_monthly(self, response):
+    def parse_hist(self, response):
         super_fund = SuperFundData()
         super_fund['_id'] = self.fund_data['_id']
 
-<<<<<<< HEAD
-=======
-        
-      
-        # --
->>>>>>> VAISHALI-Thing
-
-        df = pd.read_csv(StringIO(response.text), sep=",", index_col= 'Date')
-
-        super_fund['super_offerings'] = df
-
-        super_fund['insert_cat'] = 'monthly_performances'
-
-        super_fund['format_time'] = True
-
-        yield super_fund
-'''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# --
+        table_bodies = response.css("table-container four-up")
+        for table_body in table_bodies:
+            # Get headings of this table (Future - Months)
+            table_months = []
+            table_months = table_body.css("h5::text").getall()
+            table_months = table_months[1:]
+
+            table_rows = table_body.css("h4::text").getall()
+            #using this variable to get offer type
+            x = 0
+
+            offer_types = {}
+            for table_row in table_rows:
+                row_values = []
+                row_values = table_row.css("p::text").getall()
+                if len(row_values) > 0:
+                    offer_type = table_row[x]
+                    row_values = row_values[1:]
+                    offer_types[offer_type] = row_values
+                    x = x+1
+            # --
+
+            df = pd.DataFrame(data = offer_types, index = table_months)
+
+            super_fund['super_offerings'] = df
+
+            super_fund['insert_cat'] = 'historial_performances'
+
+            super_fund['format_time'] = False
+
+            yield super_fund

@@ -52,13 +52,19 @@ db_connection.open_connection()
 hesta_fund_data = db_connection.retrieve_fund_data("hesta")
 aware_fund_data = db_connection.retrieve_fund_data("aware")
 telstra_fund_data = db_connection.retrieve_fund_data("telstra")
+<<<<<<< HEAD
+=======
+future_fund_data = db_connection.retrieve_fund_data("future")
+>>>>>>> VAISHALI-Thing
 db_connection.close_connection()
 
 #process.crawl('Aware', fund_data = aware_fund_data)
 
 #process.crawl('Telstra', fund_data = telstra_fund_data)
 
-process.crawl('Hesta', fund_data = hesta_fund_data)
+process.crawl('Future', fund_data = future_fund_data)
+
+#process.crawl('Hesta', fund_data = hesta_fund_data)
 
 process.start()
 #'''
