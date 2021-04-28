@@ -88,7 +88,7 @@ def run_scraper():
     print("Crawl Completed")
 # --
 
-run_scraper()
+#run_scraper()
 
 
 
