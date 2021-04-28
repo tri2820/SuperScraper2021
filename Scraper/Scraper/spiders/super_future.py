@@ -23,7 +23,7 @@ class FutureSpider(scrapy.Spider):
 
     # TODO: Make this apply for all spiders somehow
     def __init__(self, fund_data = None, *args, **kwargs):
-        super(HestaSpider, self).__init__(*args, **kwargs)
+        super(FutureSpider, self).__init__(*args, **kwargs)
         self.fund_data = fund_data
         #logging.debug(self.fund_data)
         if self.fund_data != None:
@@ -78,9 +78,9 @@ class FutureSpider(scrapy.Spider):
             table_months = table_body.css("h5::text").getall()
             table_months = table_months[1:]
 
-            table_rows = table_body.css("h4::text")getall()
+            table_rows = table_body.css("h4::text").getall()
             #using this variable to get offer type
-    	    x= 0
+            x = 0
 
             offer_types = {}
             for table_row in table_rows:
@@ -102,5 +102,3 @@ class FutureSpider(scrapy.Spider):
             super_fund['format_time'] = False
 
             yield super_fund
-
-   
