@@ -97,8 +97,6 @@ class AwareSpider(BaseSpider):
 
         super_fund['insert_cat'] = 'allocations'
 
-        #super_fund['format_time'] = False
-
         yield super_fund
 
 
