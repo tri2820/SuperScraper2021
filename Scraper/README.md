@@ -33,7 +33,7 @@ More general and hopefully dynamic scraping coming in future, however there will
 
 ### Things to do
 
-##### Documentation
+##### Documentation [PRIO: High]
 
 Update documentation for all readme.md files. This includes 2 scraper files, 1 database one.
 
