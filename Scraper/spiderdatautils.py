@@ -27,8 +27,6 @@ optionals:
 
 '''
 
-#- year_value(Integer value): if only the month is given in date_strings then year_value can be added if difined
-
 
 
 def month_format(date_strings, year_value = None, date_format = None, parse_order = None):
@@ -93,45 +91,6 @@ def lower_underscore(start_string):
 
 
 
-
-
-'''
-
-# - year_values(list(strings)): index-esque list with years to for each value
-
-# - year_values(dict-object): {'2019': [], '2020': []}
-
-def month_format(date_strings, year_values = None, date_format = None, parse_order = None):
-
-    # Formating reference: https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior
-    date_format_ = '%Y-%m'
-    if date_format:
-        date_format_ = date_format
-
-    month_dates = []
-
-    parse_order_ = 'YMD'
-    if parse_order:
-        parse_order_ = parse_order
-    # --
-
-    month_count = 0
-
-    for month_str in date_strings:
-        combined_string = month_str
-        # If year values
-        if year_values:
-            # If a value exists for this part
-            if year_values[month_count]:
-                combined_string = year_values[month_count] + combined_string
-        parsed_value = dateparser.parse(combined_string,settings={'DATE_ORDER': parse_order_})
-        # Using output python base datetime -> convert into string THEN append
-        #print(parsed_value.strftime(date_format))
-        month_dates.append(parsed_value.strftime(date_format_))
-        month_count += 1
-    return month_dates
-# --
-'''
 
 
 
