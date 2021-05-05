@@ -49,6 +49,11 @@ class DatabaseHandler:
 # data-csv-url
 
 
+# spider handler class
+
+# spider run list['hesta', 'aware']
+
+
 def run_scraper():
     #'''
 
@@ -89,9 +94,6 @@ def run_scraper():
 # --
 
 #run_scraper()
-
-
-
 
 
 

@@ -29,7 +29,8 @@ MONGO_COLLECTIONS = ["funds","offerings"]
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'Scraper.pipelines.SuperDataMongodb': 300,
+    'Scraper.pipelines.SuperDataClean': 1,
+    'Scraper.pipelines.SuperDataMongodb': 2,
 }
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
