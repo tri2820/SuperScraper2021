@@ -50,7 +50,7 @@ class HestaSpider(BaseSpider):
 
             df = pd.DataFrame(data = offer_types, index = table_titles)
 
-            super_fund['super_offerings'] = df
+            super_fund['scraped_data'] = df
 
             super_fund['insert_cat'] = 'historial_performances'
 
@@ -92,7 +92,7 @@ class HestaSpider(BaseSpider):
 
             df = pd.DataFrame(data = offer_types, index = table_titles)
 
-            #super_fund['super_offerings'] = df
+            #super_fund['scraped_data'] = df
 
             super_fund['insert_cat'] = 'monthly_performances'
 
@@ -104,13 +104,13 @@ class HestaSpider(BaseSpider):
 
             super_fund['year_value'] = year_value_first
 
-            super_fund['super_offerings'] = dfs[0]
+            super_fund['scraped_data'] = dfs[0]
 
             yield super_fund
 
             super_fund['year_value'] = year_value_second
 
-            super_fund['super_offerings'] = dfs[1]
+            super_fund['scraped_data'] = dfs[1]
 
             yield super_fund
         # --

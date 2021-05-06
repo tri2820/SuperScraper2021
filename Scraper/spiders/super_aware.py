@@ -28,7 +28,7 @@ class AwareSpider(BaseSpider):
         super_fund['_id'] = self.fund_data['_id']
         df = pd.read_csv(StringIO(response.text), sep=",", index_col= 'Date')
 
-        super_fund['super_offerings'] = df
+        super_fund['scraped_data'] = df
 
         super_fund['value_mutator'] = lambda a: a * 100
 
@@ -73,7 +73,7 @@ class AwareSpider(BaseSpider):
 
             df = pd.DataFrame(data = offer_types, index = table_titles)
 
-            super_fund['super_offerings'] = df
+            super_fund['scraped_data'] = df
 
             super_fund['insert_cat'] = 'costs_fees'
 
@@ -95,7 +95,7 @@ class AwareSpider(BaseSpider):
         df = pd.read_csv(StringIO(response.text), sep=",", index_col= 'Asset Class')
         #df = df.transpose()
 
-        super_fund['super_offerings'] = df
+        super_fund['scraped_data'] = df
 
         #super_fund['value_mutator'] = lambda a: a * 100
 

@@ -47,7 +47,7 @@ class FutureSpider(BaseSpider):
 
             df = pd.DataFrame(data = offer_types, index = table_months)
 
-            super_fund['super_offerings'] = df
+            super_fund['scraped_data'] = df
 
             super_fund['insert_cat'] = 'historial_performances'
 

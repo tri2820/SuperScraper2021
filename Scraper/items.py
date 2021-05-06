@@ -15,7 +15,7 @@ class ScraperItem(scrapy.Item):
 
 class SuperFundData(scrapy.Item):
     _id = scrapy.Field()
-    super_offerings = scrapy.Field()
+    scraped_data = scrapy.Field()
     insert_cat = scrapy.Field()
     # NOTE: I changed this for extra functionality (now object). May allow different assignments in future
     year_value = scrapy.Field()
@@ -26,6 +26,8 @@ class SuperFundData(scrapy.Item):
     add_new = scrapy.Field()
     # Indicates the keys for this collection
     value_object_keys = scrapy.Field()
+    # values formated for database insertion (This stuff might be put into a seperate item class or something later)
+    value_objects = scrapy.Field()
 
 
 
