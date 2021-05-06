@@ -15,6 +15,11 @@ from scrapy.linkextractors import LinkExtractor
 
 from scrapy.http import Request
 
+from difflib import SequenceMatcher
+
+
+
+#https://www.hyperion.com.au/wp-content/uploads/prices-page/GGCFB.csv
 
 #Traversal
 
@@ -32,6 +37,16 @@ from scrapy.http import Request
 
 #div.download_wrapper
 
+#https://www.hyperion.com.au/prices-performance/
+
+#https://www.hyperion.com.au
+
+#https://www.sitemaps.org/protocol.html
+
+#https://www.pendalgroup.com/sitemap_index.xml
+
+#APIR
+
 #print(response.css("a[href]").getall())
 
 #for href in response.css('div#all_results h3 a::attr(href)').extract():
@@ -42,6 +57,14 @@ class QuotesTraversal(scrapy.Spider):
     start_urls = []
     crawl_selections = []
     traverse_data = None
+
+    APIR_urls = {}
+    pdf_urls = {}
+
+    APIR_code = 'BNT0003AU'#'RFA0059AU'#'RFA0818AU'
+    #BNT0003AU
+
+    file_name = 'hyperion'
 
     traversed_urls = {}
 
@@ -56,7 +79,8 @@ class QuotesTraversal(scrapy.Spider):
     pdf_extractor = LinkExtractor(allow = rules['allow'], deny_extensions = [])
 
 
-    link_extractor = LinkExtractor(allow_domains = ['www.hesta.com.au'])
+    # www.hesta.com.au, www.pendalgroup.com, www.hyperion.com.au
+    link_extractor = LinkExtractor(allow_domains = ['www.hyperion.com.au'])
 
     def __init__(self, traverse_data = None, *args, **kwargs):
         super(QuotesTraversal, self).__init__(*args, **kwargs)
@@ -68,7 +92,7 @@ class QuotesTraversal(scrapy.Spider):
 
         #url_string = 'https://www.hesta.com.au/content/hesta/members/your-superannuation/fees-and-costs.html'
         #parse_object = ('extract_files', url_string)
-        url_string = 'https://www.hesta.com.au/'
+        url_string = 'https://www.hyperion.com.au'#https://www.pendalgroup.com/ #https://www.pendalgroup.com/products/pendal-australian-equity-fund/
         parse_object = ('traverse', url_string)
         self.crawl_selections.append(parse_object)
         self.start_urls.append(url_string)
@@ -85,20 +109,58 @@ class QuotesTraversal(scrapy.Spider):
 
 
     def traverse(self, response, depth = 0):
+
+        # Do not re-traverse already traversed urls
+        if response.url in self.traversed_urls:
+            return
+        else:
+            self.traversed_urls[response.url] = response.url
+        # --
+
         traverse_item = SuperTraversalData()
         traverse_item['_id'] = self.traverse_data['_id']
+
+        texts = response.css("::text").getall()
+        #print(texts,'\n\n\n  ---')
+        yes_ = False
+        APIR_, APIR_CODE_ = -1, -1
+
+        for text in texts:
+            APIR_ = text.find('APIR')
+            if APIR_ != -1:
+                break
+        # --
+
+        for text in texts:
+            APIR_CODE_ = text.find(self.APIR_code)
+            if APIR_CODE_ != -1:
+                break
+        # --
+
+        if APIR_ != -1 and APIR_CODE_ != -1:
+            print("Url: ", response.url, 'APIR: ', self.APIR_code)
+            self.APIR_urls[response.url] = {'URL': response.url, 'APIR': self.APIR_code}
+            print(self.APIR_urls)
+            yes_ = True
+        # --
 
         urls_ = []
 
         for link in self.link_extractor.extract_links(response):
             if not link.url in self.traversed_urls:
                 urls_.append(link)
-                self.traversed_urls[link.url] = link
-                print("Url: ", link.url)
+                #self.traversed_urls[link.url] = link
+                #if yes_ == True:
+                    #self.APIR_urls[link.url] = (link, )
+                #print("Url: ", link.url)
             # --
         # --
 
-        if depth < 5:
+        for link in self.pdf_extractor.extract_links(response):
+            if not link.url in self.pdf_urls:
+                self.pdf_urls[link.url] = link
+
+        if depth < 2:
             print(depth)
             for link in urls_:
                 request = Request(link.url, callback=self.traverse)

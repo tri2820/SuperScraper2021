@@ -35,6 +35,7 @@ class SuperFundData(scrapy.Item):
 class SuperTraversalData(scrapy.Item):
     _id = scrapy.Field()
     page_urls = scrapy.Field()
+    text_thing = scrapy.Field()
 # --
 
 

@@ -90,6 +90,9 @@ def run_scraper():
 
 
 def run_scraper_traversal():
+
+    #configure_logging()
+
     runner = CrawlerRunner(get_project_settings())
 
     traverse_data_ = {'_id': 'trav'}
