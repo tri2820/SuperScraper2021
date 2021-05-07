@@ -18,6 +18,8 @@ MONGO_COLLECTIONS = ["funds","offerings"]
 
 
 
+
+
 class DatabaseHandler:
 
     collection_name = 'funds'
@@ -44,56 +46,78 @@ class DatabaseHandler:
         return fund_data
 
 
-
-
 # data-csv-url
 
-
 # spider handler class
+class SpiderHandler:
+    fund_data_list = ["hesta", "telstra","future", "aware"]
+    spider_crawl_list= ['Hesta','Telstra', 'Future', 'Aware']
 
-# spider run list['hesta', 'aware']
-
-
-def run_scraper():
+    def run_scraper():
     #'''
+        db_connection = DatabaseHandler(MONGO_URI, MONGO_DB)
+        db_connection.open_connection()
+        for i in range(len(fund_data_list)):
+            fund_data = db_connection.retrieve_fund_data(fund_data_list[i])
+        db_connection.close_connection()
 
-    db_connection = DatabaseHandler(MONGO_URI, MONGO_DB)
-    db_connection.open_connection()
-    hesta_fund_data = db_connection.retrieve_fund_data("hesta")
-    telstra_fund_data = db_connection.retrieve_fund_data("telstra")
-    future_fund_data = db_connection.retrieve_fund_data("future")
-    aware_fund_data = db_connection.retrieve_fund_data("aware")
-    db_connection.close_connection()
+        configure_logging()
 
+        #process = CrawlerProcess(get_project_settings())#get_project_settings()#{'SPIDER_MODULES': 'Scraper.Scraper.spiders'}
+        runner = CrawlerRunner(get_project_settings())
 
-    configure_logging()
+        @defer.inlineCallbacks
+        def crawl():
+            for i in range(len(spider_crawl_list)):
+                yield runner.crawl(spider_crawl_list[i], fund_data = aware_fund_data)
+                reactor.stop()
 
-    #process = CrawlerProcess(get_project_settings())#get_project_settings()#{'SPIDER_MODULES': 'Scraper.Scraper.spiders'}
-    runner = CrawlerRunner(get_project_settings())
+        crawl()
 
-    @defer.inlineCallbacks
-    def crawl():
+        reactor.run()
 
-        yield runner.crawl('Aware', fund_data = aware_fund_data)
-
-        yield runner.crawl('Hesta', fund_data = hesta_fund_data)
-
-        yield runner.crawl('Telstra', fund_data = telstra_fund_data)
-
-        yield runner.crawl('Future', fund_data = future_fund_data)
-
-        reactor.stop()
-
-    crawl()
-
-    reactor.run()
-
-    #'''
-
-    print("Crawl Completed")
+        print("Crawl Completed")
 # --
 
-#run_scraper()
+
+# #run_scraper()
+# #def run_scraper():
+#     #'''
+
+#     db_connection = DatabaseHandler(MONGO_URI, MONGO_DB)
+#     db_connection.open_connection()
+#     hesta_fund_data = db_connection.retrieve_fund_data("hesta")
+#     telstra_fund_data = db_connection.retrieve_fund_data("telstra")
+#     future_fund_data = db_connection.retrieve_fund_data("future")
+#     aware_fund_data = db_connection.retrieve_fund_data("aware")
+#     db_connection.close_connection()
+
+
+#     configure_logging()
+
+#     #process = CrawlerProcess(get_project_settings())#get_project_settings()#{'SPIDER_MODULES': 'Scraper.Scraper.spiders'}
+#     runner = CrawlerRunner(get_project_settings())
+
+#     @defer.inlineCallbacks
+#     def crawl():
+
+#         yield runner.crawl('Aware', fund_data = aware_fund_data)
+
+#         yield runner.crawl('Hesta', fund_data = hesta_fund_data)
+
+#         yield runner.crawl('Telstra', fund_data = telstra_fund_data)
+
+#         yield runner.crawl('Future', fund_data = future_fund_data)
+
+#         reactor.stop()
+
+#     crawl()
+
+#     reactor.run()
+
+#     #'''
+
+#     print("Crawl Completed")
 
 
 
