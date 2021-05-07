@@ -10,7 +10,34 @@ from Scraper import spiderdatautils
 
 from Scraper.spiders.super_base import BaseSpider
 
+'''
+HESTASPIDER
 
+Class Variables:
+- start_urls[list]: a list of urls that the spider will begin to crawl from when no particular URLs are specified
+
+- name: a string which defines the name for the current spider
+
+ - crawl_selections[list][tuples]: (parse_select, url)
+    - url[string]: url parsed to scrapy spider, url to goto and scrap.
+    - parse_select[string]: a string variable that matches the name of the function to be run (eg: 'parse_monthly', 'parse_hist')
+
+- fund_data[object(dict-like)]: metadata given for spider to run (typically pulled from the mongodb database).
+
+ --- parse_monthly ---
+The parse method is responsible for processing the response and returning the scraped data and/or more URLs to follow.
+Returns an iterable of requests or items[object](dict-like)].
+
+--- parse_hist ---
+The parse method is responsible for processing the response and returning the scraped data and/or more URLs to follow.
+Returns an iterable of requests or items[object](dict-like)].
+
+
+Parameters:
+ - response: It is an object in the form of an HTTP response that is fed to the spider for processing
+
+
+'''
 
 #class HestaSpider(scrapy.Spider):
 class HestaSpider(BaseSpider):
