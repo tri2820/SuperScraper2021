@@ -48,17 +48,18 @@ class DatabaseHandler:
 
 # data-csv-url
 
+
 # spider handler class
 class SpiderHandler:
     fund_data_list = ["hesta", "telstra","future", "aware"]
     spider_crawl_list= ['Hesta','Telstra', 'Future', 'Aware']
 
-    def run_scraper():
-    #'''
+    def run_scraper(self):
         db_connection = DatabaseHandler(MONGO_URI, MONGO_DB)
         db_connection.open_connection()
-        for i in range(len(fund_data_list)):
-            fund_data = db_connection.retrieve_fund_data(fund_data_list[i])
+        fund_datas = []
+        for i in range(len(self.fund_data_list)):
+            fund_datas.append(db_connection.retrieve_fund_data(self.fund_data_list[i]))
         db_connection.close_connection()
 
         configure_logging()
@@ -68,9 +69,9 @@ class SpiderHandler:
 
         @defer.inlineCallbacks
         def crawl():
-            for i in range(len(spider_crawl_list)):
-                yield runner.crawl(spider_crawl_list[i], fund_data = aware_fund_data)
-                reactor.stop()
+            for i in range(len(fund_datas)):
+                yield runner.crawl(self.spider_crawl_list[i], fund_data = fund_datas[i])
+            reactor.stop()
 
         crawl()
 
@@ -78,6 +79,9 @@ class SpiderHandler:
 
         print("Crawl Completed")
 # --
+
+spider = SpiderHandler()
+spider.run_scraper()
 
 
 # #run_scraper()
