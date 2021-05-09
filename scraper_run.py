@@ -52,7 +52,7 @@ class DatabaseHandler:
 # spider handler class
 class SpiderHandler:
     fund_data_list = ["hesta", "telstra","future", "aware"]
-    spider_crawl_list= ['Hesta','Telstra', 'Future', 'Aware']
+    spider_crawl_list = ['Hesta','Telstra', 'Future', 'Aware']
 
     def run_scraper(self):
         db_connection = DatabaseHandler(MONGO_URI, MONGO_DB)
@@ -81,6 +81,7 @@ class SpiderHandler:
 # --
 
 #spider = SpiderHandler()
+#print(spider.fund_data_list)
 #spider.run_scraper()
 
 

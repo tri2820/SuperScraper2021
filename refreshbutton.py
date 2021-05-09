@@ -9,9 +9,11 @@ import tkinter as tk
 import os
 from Extractor.extractor import extract
 
-from scraper_run import run_scraper
+from scraper_run import SpiderHandler
 
 from Maintenance.Maintenance import clear_docs, delete_docs
+
+spider_handler = SpiderHandler()
 
 
 r = tk.Tk()
@@ -33,7 +35,7 @@ button_2.pack()
 button_3 = tk.Button(r, text = "Extract", command = extract)
 button_3.pack()
 
-button_4 = tk.Button(r, text = "Scrap", command = run_scraper)
+button_4 = tk.Button(r, text = "Scrap", command = spider_handler.run_scraper)
 button_4.pack()
 
 button_5 = tk.Button(r, text = "Clear Database Docs", command = clear_docs)
