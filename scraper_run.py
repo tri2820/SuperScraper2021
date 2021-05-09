@@ -80,8 +80,8 @@ class SpiderHandler:
         print("Crawl Completed")
 # --
 
-spider = SpiderHandler()
-spider.run_scraper()
+#spider = SpiderHandler()
+#spider.run_scraper()
 
 
 # #run_scraper()
