@@ -40,6 +40,7 @@ class SiteTraversal(scrapy.Spider):
     def __init__(self, traverse_data = None, *args, **kwargs):
         super(SiteTraversal, self).__init__(*args, **kwargs)
         self.traverse_data = traverse_data
+        print('__init__ START ---- !*$(*!#%*&)')
         if self.traverse_data != None:
             self.init_crawler_urls()
         # --
@@ -59,6 +60,7 @@ class SiteTraversal(scrapy.Spider):
 
 
     def start_requests(self):
+        print('dom',self.domain)
         for selection in self.crawl_selections:
             parse_select, url = selection
             if hasattr(self, parse_select):
@@ -75,6 +77,8 @@ class SiteTraversal(scrapy.Spider):
         else:
             self.traversed_urls[response.url] = response.url
         # --
+        print('dom',self.domain,'9(#*$(*#$))',response.url)
+        return
 
         traverse_item = SuperTraversalData()
         traverse_item['_id'] = self.traverse_data['_id']

@@ -38,7 +38,7 @@ class ScraperPipeline:
 
 class SiteTraversal:
 
-    file_name = 'pendal'
+    #file_name = 'pendal'
 
     def process_item(self, item, spider):
         traverse_item = ItemAdapter(item)
@@ -46,6 +46,7 @@ class SiteTraversal:
     # --
 
     def close_spider(self, spider):
+        print('*!)$&*#&$)&* CLOSE SPIDER!')
         with open(spider.domain['domain_file'] + '_traversed_urls.csv', 'w') as fp:
             data_writer = csv.writer(fp)
             for link in spider.traversed_urls:
