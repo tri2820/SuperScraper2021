@@ -62,27 +62,13 @@ from difflib import SequenceMatcher
 #parse_object = ('extract_files', url_string)
 #https://www.pendalgroup.com/ #https://www.pendalgroup.com/products/pendal-australian-equity-fund/
 
-class SiteTraversal(scrapy.Spider):
-    name = "Traversal"
+class QuotesTraversal(scrapy.Spider):
+    name = "TraversalGuy"
 
-
+    start_urls = []
     crawl_selections = []
-
     traverse_data = None
 
-    domain = None
-    file_extraction = None
-
-    traversed_urls = {}
-    file_urls = {}
-    filtered_pages = []
-
-
-    file_extractor = None
-    link_extractor = None
-
-
-    '''
     APIR_urls = {}
     pdf_urls = {}
 
@@ -96,39 +82,34 @@ class SiteTraversal(scrapy.Spider):
     file_extraction_rules = {
         'allow': [
             '.+\.pdf.+',#.+\.pdf
-        ],
-        'filters': [
+        ]
+    }
+
+    file_extraction_filtering = {
+        'allow': [
             f'.+product%disclosure%statement.+',
             '.+pds.+',
             '.+PDS.+',
         ]
     }
-    '''
 
-    #pdf_extractor = LinkExtractor(allow = file_extraction_rules['allow'], deny_extensions = [])
+    pdf_extractor = LinkExtractor(allow = file_extraction_rules['allow'], deny_extensions = [])
 
 
     # www.hesta.com.au, www.pendalgroup.com, www.hyperion.com.au
-    #link_extractor = LinkExtractor(allow_domains = allow_domains)
+    link_extractor = LinkExtractor(allow_domains = allow_domains)
 
     def __init__(self, traverse_data = None, *args, **kwargs):
-        super(SiteTraversal, self).__init__(*args, **kwargs)
+        super(QuotesTraversal, self).__init__(*args, **kwargs)
         self.traverse_data = traverse_data
         if self.traverse_data != None:
             self.init_crawler_urls()
-        # --
-    # --
 
     def init_crawler_urls(self):
-        self.domain = self.traverse_data['domain']
-        self.file_extraction = self.traverse_data['file_extraction_rules']
-
-        self.link_extractor = LinkExtractor(allow_domains = [self.domain['domain_name']])
-        self.file_extractor = LinkExtractor(allow = self.file_extraction['allow'], deny_extensions = [])
-
-        parse_object = (self.domain['parse_select'], self.domain['start_url'])
+        url_string = 'https://www.pendalgroup.com/'
+        parse_object = ('traverse', url_string)
         self.crawl_selections.append(parse_object)
-    # --
+        self.start_urls.append(url_string)
 
 
 
@@ -153,23 +134,6 @@ class SiteTraversal(scrapy.Spider):
         traverse_item = SuperTraversalData()
         traverse_item['_id'] = self.traverse_data['_id']
 
-        page_urls_ = []
-        file_urls_ = []
-
-        # Extract connected urls links
-        for link in self.link_extractor.extract_links(response):
-            if not link.url in self.traversed_urls:
-                page_urls_.append(link)
-        # --
-        # Extract connected file links
-        file_extractions = self.file_extractor.extract_links(response)
-        for link in file_extractions:
-            if not link.url in self.file_urls:
-                self.file_urls[link.url] = link
-                file_urls_.append(link)
-        # --
-
-        '''
         # Extract connected urls links
         urls_ = []
         for link in self.link_extractor.extract_links(response):
@@ -184,33 +148,9 @@ class SiteTraversal(scrapy.Spider):
                 self.pdf_urls[link.url] = link
                 pdf_urls_.append(link)
         # --
-        '''
 
         # Test for stings and codes requered to identify certain pages
         texts = response.css("::text").getall()
-
-        for filter_name in self.domain['page_filters']:
-            page_filter = self.domain['page_filters'][filter_name]
-            successes = {}
-            for text in texts:
-                for find_string in page_filter:
-                    if not find_string in successes:
-                        success = text.find(find_string)
-                        if success != -1:
-                            successes[find_string] = True
-            # --
-            if len(successes) == len(page_filter):
-                filtered_page = {
-                    'name': filter_name,
-                    'url': response.url,
-                    'page_filter': page_filter,
-                    'file_urls': file_extractions,
-                }
-                self.filtered_pages[filter_name] = filtered_page
-            # --
-        # --
-
-        '''
         APIR_, APIR_CODE_ = -1, -1
 
         for text in texts:
@@ -229,12 +169,11 @@ class SiteTraversal(scrapy.Spider):
             self.APIR_urls[response.url] = {'URL': response.url, 'APIR': self.APIR_code}#, 'PDFs': pdf_urls_
             print(self.APIR_urls)
         # --
-        '''
 
         # Run iterative traversal operations
         if depth < 2:
             print(depth)
-            for link in page_urls_:
+            for link in urls_:
                 request = Request(link.url, callback=self.traverse)
                 request.cb_kwargs['depth'] = depth + 1
                 yield request
@@ -272,17 +211,6 @@ class SiteTraversal(scrapy.Spider):
     # --
 
 
-
-
-'''
-def init_crawler_urls(self):
-    #url_string = 'https://www.pendalgroup.com/'
-    for domain_name in self.traverse_data['domains']:
-        domain = self.traverse_data['domains'][domain_name]
-        parse_object = (domain['parse_select'], domain['start_url'])
-        self.crawl_selections.append(parse_object)
-    #self.start_urls.append(url_string)
-'''
 
 
 
