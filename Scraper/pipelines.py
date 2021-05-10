@@ -27,15 +27,16 @@ import json
 import csv
 
 
+import re
+
+
 class ScraperPipeline:
     def process_item(self, item, spider):
         return item
 
 
-# TODO: Partition database for names, id, ect .. |\ then format data
 
-
-class SuperTestTraversal:
+class SiteTraversal:
 
     file_name = 'pendal'
 
@@ -45,78 +46,39 @@ class SuperTestTraversal:
     # --
 
     def close_spider(self, spider):
-
-        with open(self.file_name + '_traversal_urls.csv', 'w') as fp:
+        with open(spider.domain['domain_file'] + '_traversed_urls.csv', 'w') as fp:
             data_writer = csv.writer(fp)
-            for link in spider.traversed_urls:#traversed_urls:
+            for link in spider.traversed_urls:
                 data_writer.writerow([link])
 
-        with open(self.file_name + '_pdf_urls.csv', 'w') as fp:
+        with open(spider.domain['domain_file'] + '_file_urls.csv', 'w') as fp:
             data_writer = csv.writer(fp)
-            for link in spider.pdf_urls:#traversed_urls:
+            for link in spider.file_urls:
                 data_writer.writerow([link])
 
-        with open(self.file_name + '_APIR_urls.csv', 'w') as fp:
-            #data_writer = csv.DictWriter(fp, ['URL', 'APIR'])
-            data_writer = csv.writer(fp)#, delimiter=', '
-            for obj in spider.APIR_urls:#traversed_urls:
-                print(spider.APIR_urls[obj].values())
-                data_writer.writerow(spider.APIR_urls[obj].values())
-    # --
-
-    def find_pds_pdfs():
-        for obj in spider.APIR_urls:
-            break
+        with open(spider.domain['domain_file'] + '_filtered_pages.csv', 'w') as fp:
+            data_writer = csv.writer(fp)
+            for obj in spider.filtered_pages:
+                print(spider.filtered_pages[obj].values())
+                data_writer.writerow(spider.filtered_pages[obj].values())
         # --
-        return
-    # --
 
-    def download_pdf():
-        return
-    # --
-
-
-'''
-class SuperTestTraversal:
-
-    file_name = 'pendal'
-
-    def process_item(self, item, spider):
-        traverse_item = ItemAdapter(item)
-        return item
-    # --
-
-    def close_spider(self, spider):
-
-        with open(self.file_name + '_traversal_urls.csv', 'w') as fp:
-            data_writer = csv.writer(fp)
-            for link in spider.traversed_urls:#traversed_urls:
-                data_writer.writerow([link])
-
-        with open(self.file_name + '_pdf_urls.csv', 'w') as fp:
-            data_writer = csv.writer(fp)
-            for link in spider.pdf_urls:#traversed_urls:
-                data_writer.writerow([link])
-
-        with open(self.file_name + '_APIR_urls.csv', 'w') as fp:
-            #data_writer = csv.DictWriter(fp, ['URL', 'APIR'])
-            data_writer = csv.writer(fp)#, delimiter=', '
-            for obj in spider.APIR_urls:#traversed_urls:
-                print(spider.APIR_urls[obj].values())
-                data_writer.writerow(spider.APIR_urls[obj].values())
-    # --
-
-    def find_pds_pdfs():
-        for obj in spider.APIR_urls:
-            break
+        filtered_file_urls = {}
+        for obj in spider.file_urls:
+            for filter in spider.file_extraction['filters']:
+                print(filter, spider.file_urls[obj])
+                match = re.match(filter, obj)
+                if match != None:
+                    filtered_file_urls[obj] = obj
+                    break
         # --
-        return
-    # --
 
-    def download_pdf():
-        return
+        with open(spider.domain['domain_file'] + '_filtered_file_urls.csv', 'w') as fp:
+            data_writer = csv.writer(fp)
+            for obj in filtered_file_urls:
+                data_writer.writerow([filtered_file_urls[obj]])
     # --
-'''
+# --
 
 
 class SuperDataMongodb:#object

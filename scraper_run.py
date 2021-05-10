@@ -103,18 +103,19 @@ def run_scraper_traversal():
                 '.+\.pdf.+',#.+\.pdf
             ],
             'filters': [
-                f'.+product%disclosure%statement.+',
+                '.+product.disclosure.statement.+',#%
                 '.+pds.+',
                 '.+PDS.+',
             ]
         },
         'domain': {
+            'domain_file': 'pendal',
             'domain_name': 'www.pendalgroup.com',
             'start_url': 'https://www.pendalgroup.com/',
             'parse_select':'traverse',
             'page_filters': {
-                'RFA0059AU': ['RFA0059AU'],
-                'BTA0061AU': ['APIR','BTA0061AU'],
+                'RFA0059AU': ['RFA0059AU'],#RFA0059AU
+                'BTA0061AU': ['BTA0061AU'],#'APIR',
                 'WFS0377AU': ['WFS0377AU'],
             },
         },
@@ -126,7 +127,7 @@ def run_scraper_traversal():
 
         yield runner.crawl('Traversal', traverse_data = traverse_data_)
 
-        yield runner.crawl('Traversal', traverse_data = traverse_data_)
+        #yield runner.crawl('Traversal', traverse_data = traverse_data_)
 
         reactor.stop()
 
