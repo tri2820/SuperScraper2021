@@ -61,10 +61,10 @@ class QuotesTraversal(scrapy.Spider):
     APIR_urls = {}
     pdf_urls = {}
 
-    APIR_code = 'BNT0003AU'#'RFA0059AU'#'RFA0818AU'
+    APIR_code = 'RFA0818AU'#'RFA0059AU'#'RFA0818AU'
     #BNT0003AU
 
-    file_name = 'hyperion'
+    file_name = 'pendal'
 
     traversed_urls = {}
 
@@ -80,7 +80,7 @@ class QuotesTraversal(scrapy.Spider):
 
 
     # www.hesta.com.au, www.pendalgroup.com, www.hyperion.com.au
-    link_extractor = LinkExtractor(allow_domains = ['www.hyperion.com.au'])
+    link_extractor = LinkExtractor(allow_domains = ['www.pendalgroup.com'])
 
     def __init__(self, traverse_data = None, *args, **kwargs):
         super(QuotesTraversal, self).__init__(*args, **kwargs)
@@ -92,7 +92,7 @@ class QuotesTraversal(scrapy.Spider):
 
         #url_string = 'https://www.hesta.com.au/content/hesta/members/your-superannuation/fees-and-costs.html'
         #parse_object = ('extract_files', url_string)
-        url_string = 'https://www.hyperion.com.au'#https://www.pendalgroup.com/ #https://www.pendalgroup.com/products/pendal-australian-equity-fund/
+        url_string = 'https://www.pendalgroup.com/'#https://www.pendalgroup.com/ #https://www.pendalgroup.com/products/pendal-australian-equity-fund/
         parse_object = ('traverse', url_string)
         self.crawl_selections.append(parse_object)
         self.start_urls.append(url_string)
