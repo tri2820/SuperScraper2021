@@ -54,6 +54,27 @@ Can be done with this command: conda install -c conda-forge camelot-py
 Initially hardcoding for testing is good.
 Later on try to use as little hardcoding as possible, try to make things have options so they are dynamic.
 '''
+#testing for hyperian
+tables = camelot.read_pdf("https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund-PDS-Additional-Information.pdf",pages = 'all', flavor = 'stream',flag_size=True)
+
+#viewing all tables
+#for table in tables
+#       print(table.df)
+
+##extracting first table
+temp_df = table[0].df 
+temp_df.rename(columns=temp_df.iloc[0]).drop(temp_df.index[0])
+
+#exporting to csv for trial
+temp_df.to_csv('hyperian.csv')
+
+
+#checks for management fee in the table
+#outputs a dataframe of false and true values
+found = temp_df.apply(lambda row: row.astype(str).str.contains('Management fee').any(), axis=1)
+
+
+
 
 
 
