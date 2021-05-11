@@ -1,8 +1,11 @@
+#Import pymongo for mongoDB integration, csv for file creation
 import pymongo
 import csv
-import math
 
 def extract():
+    '''Function to extract data from the database
+    Outputs two .csv files, with the data transposed
+    '''
     #Connect with the export user
     client = pymongo.MongoClient("mongodb+srv://extractor:I62EK5HE5yBL59Yz@cluster0.tadma.mongodb.net/SuperScrapper?retryWrites=true&w=majority")
     #Database and collection information
