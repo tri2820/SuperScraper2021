@@ -147,6 +147,41 @@
           border: 1px solid #ccc;  
         }
       }
+        
+      .dropbtn {
+        background-color: #b58bc2;
+        color: white;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+      }
+
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+      }
+
+      .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+      }
+
+      .dropdown-content a:hover {background-color: #ddd;}
+
+      .dropdown:hover .dropdown-content {display: block;}
+
+      .dropdown:hover .dropbtn {background-color: #b58bc2;}
     </style>
 </head>
 <body style="background: white;">
@@ -167,65 +202,39 @@
 
     <p> </p>
     <div class="dropdown">
-        <button onclick="myFunction()" class="dropbtn">Hesta Super</button>
-        <div id="myDropdown" class="dropdown-content">
-          <a href="#home">Balanced Growth</a>
-          <a href="#about">High Growth</a>
-          <a href="#contact">Conservative Growth</a>
-        </div>
-    </div>
-    <div class="dropdown">
-        <button onclick="myFunction()" class="dropbtn">Aware Super</button>
-        <div id="myDropdown" class="dropdown-content">
-          <a href="#home">Balanced Growth</a>
-          <a href="#about">High Growth</a>
-          <a href="#contact">Conservative Growth</a>
-        </div>
-    </div>
-      
-    <div class="dropdown">
-        <button onclick="myFunction()" class="dropbtn">Telstra Super</button>
-        <div id="myDropdown" class="dropdown-content">
-          <a href="#home">Balanced Growth</a>
-          <a href="#about">High Growth</a>
-          <a href="#contact">Conservative Growth</a>
-        </div>
+      <button class="dropbtn">Hesta Super</button>
+      <div class="dropdown-content">
+        <a href="#">Balance Growth</a>
+        <a href="#">Conservative Growth</a>
+        <a href="#">High Growth</a>
+      </div>
     </div>
 
     <div class="dropdown">
-        <button onclick="myFunction()" class="dropbtn">Uni Super</button>
-        <div id="myDropdown" class="dropdown-content">
-          <a href="#home">Balanced Growth</a>
-          <a href="#about">High Growth</a>
-          <a href="#contact">Conservative Growth</a>
-        </div>
+      <button class="dropbtn">Aware Super</button>
+      <div class="dropdown-content">
+        <a href="#">Balance Growth</a>
+        <a href="#">Conservative Growth</a>
+        <a href="#">High Growth</a>
+      </div>
     </div>
 
     <div class="dropdown">
-        <button onclick="myFunction()" class="dropbtn">Sun Super</button>
-        <div id="myDropdown" class="dropdown-content">
-          <a href="#home">Balanced Growth</a>
-          <a href="#about">High Growth</a>
-          <a href="#contact">Conservative Growth</a>
-        </div>
+      <button class="dropbtn">Telstra Super</button>
+      <div class="dropdown-content">
+        <a href="#">Balance Growth</a>
+        <a href="#">Conservative Growth</a>
+        <a href="#">High Growth</a>
+      </div>
     </div>
 
-      <script>
-      function myFunction() {
-        document.getElementById("myDropdown").classList.toggle("show");
-      }
-      window.onclick = function(event) {
-        if (!event.target.matches('.dropbtn')) {
-          var dropdowns = document.getElementsByClassName("dropdown-content");
-          var i;
-          for (i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('show')) {
-              openDropdown.classList.remove('show');
-            }
-          }
-        }
-      }
+    <div class="dropdown">
+      <button class="dropbtn">Future Super</button>
+      <div class="dropdown-content">
+        <a href="#">Historical Data</a>
+      </div>
+    </div>
+
       </script> 
       <p></p>
       
