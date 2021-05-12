@@ -159,60 +159,81 @@ Returns:
 
 
 tables = camelot.read_pdf("https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund-PDS-Additional-Information.pdf",pages = 'all', flavor = 'stream',flag_size=True)
-df_list = []
-for table in tables:
-    # Turn into dataframe
-    table_df = table.df
-    table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
-    # Add to df_list
-    df_list.append(table_df)
-# --
 
-# Now we can combine all of them into a new dataframe
-all_df = pd.concat(df_list)
+#import re
+#found = []
+#found_investment = []
 
-found = []
-found_investment = []
+#this extracts the apir code
 for table in tables:
     table_df = table.df
     table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
     df_list = table_df.values.tolist()
-    
+    #print(df_list)
     for i in range(len(df_list)):
         for j in df_list[i]:
-            similarity_ = SequenceMatcher(None,'Fees and expenses',j).ratio()
-            similarity_2 = SequenceMatcher(None,'initial investment',j).ratio()
-            if (similarity_ > 0.65):
-                found = df_list[i]
-            if (similarity_2 > 0.65):
-                found_investment = df_list[i]
+            x = j.find("APIR")
+            if x != -1:
+                end = j.find("AU")
+                APIR_code = j[x:(end+2)]
+            
+
+print(APIR_code)
+
+#function to get highest similarity ratio based on defined strings
+def similarity_thing(string_):
+    found = False
+    highest = 0
+    similarity_list = []
+    similarity_list.append(SequenceMatcher(None,'management fee',string_).ratio())
+    similarity_list.append(SequenceMatcher(None,'fees and expenses',string_).ratio())
+    similarity_list.append(SequenceMatcher(None,'estimated total management costs',string_).ratio())
+    for i in similarity_list:
+        if i > highest:
+            highest = i
+    return highest
 
 
+
+#gets the specific tables(tables matching with type of fee or costs) and concatenates them in a dataframe
+df_new_list =[]
+for table in tables:
+    table_df = table.df
+    table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+    df_list = table_df.values.tolist()
+    for i in range(len(df_list)):
+        for j in df_list[i]:
+            x = SequenceMatcher(None,'type of fee or costs',j).ratio()
+            if x > 0.6:
+                df_new_list.append(table_df)
+                all_df = pd.concat(df_new_list)
+                
+print(all_df)
+
+
+#finds and extracts the most relatable list to get the management fee
+new_df_list = all_df.values.tolist()
+found = []
+highest = 0
+for i in range(len(new_df_list)):
+        for j in new_df_list[i]:
+            similarity_value = similarity_thing(j.lower())
+            #print(j)
+            #print(similarity_value)
+            if similarity_value> highest:
+                highest = similarity_value
+                found = new_df_list[i]
+
+print(found)    
+
+#extracting of management fee value into variable fee_value
 fee_value = ""
 for i in found:
     x = i.find("0.")
     if x != -1:
-        fee_value = i[x:len(i)]
-        print(x)
-
-investment_value = ""
-for i in found_investment:
-    x = i.find("$")
-    if x != -1:
-        investment_value = i[x:len(i)]
-        print(x)
+        fee_value = i[x:(x+10)]
 
 print(fee_value)
-print(investment_value)
-
-
-
-
-
-
-
-
-
 
 
 
