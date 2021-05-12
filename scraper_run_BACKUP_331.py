@@ -116,6 +116,13 @@ class SpiderHandler:
 
 #         reactor.stop()
 
+<<<<<<< HEAD
+#     crawl()
+
+#     reactor.run()
+
+#     #'''
+=======
 
 def run_scraper_traversal():
 
@@ -203,6 +210,7 @@ def run_scraper_traversal():
 run_scraper_traversal()
 
 #run_scraper()
+>>>>>>> feature/Site-Traversal
 
 #     print("Crawl Completed")
 

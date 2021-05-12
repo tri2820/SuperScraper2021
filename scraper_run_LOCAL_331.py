@@ -116,93 +116,11 @@ class SpiderHandler:
 
 #         reactor.stop()
 
+#     crawl()
 
-def run_scraper_traversal():
+#     reactor.run()
 
-    configure_logging()
-
-    runner = CrawlerRunner(get_project_settings())
-
-    fund_test_obj = {
-        'id_': 'RFA0059AU',
-        'name': 'Pendal Focus Australian Share Fund',
-        'APIR_code': 'RFA0059AU',
-        'metadata': {
-            'site_traversal_id': 'trav',
-            'pdf_url': 'uehfaouefu.pdf',
-        },
-    }
-
-
-    @defer.inlineCallbacks
-    def crawl():
-
-        traverse_data_1 = {
-            '_id': 'trav',
-            'file_extraction_rules': {
-                'allow': [
-                    '.+\.pdf.+',
-                    '.+\.pdf',
-                ],
-                'filters': [
-                    '.+product.disclosure.statement.+',
-                    '.+pds.+',
-                    '.+PDS.+',
-                ]
-            },
-            'domain': {
-                'domain_file': 'pendal',
-                'domain_name': 'www.pendalgroup.com',
-                'start_url': 'https://www.pendalgroup.com/',
-                'parse_select':'traverse',
-                'page_filters': {
-                    'RFA0059AU': ['RFA0059AU'],
-                    'BTA0061AU': ['BTA0061AU'],
-                    'WFS0377AU': ['WFS0377AU'],
-                },
-            },
-        }
-
-        yield runner.crawl('Traversal', traverse_data = traverse_data_1)
-
-        traverse_data_2 = {
-            '_id': 'trav2',
-            'file_extraction_rules': {
-                'allow': [
-                    '.+\.pdf.+',
-                    '.+\.pdf'
-                ],
-                'filters': [
-                    '.+product.disclosure.statement.+',
-                    '.+pds.+',
-                    '.+PDS.+',
-                ]
-            },
-            'domain': {
-                'domain_file': 'hyperion',
-                'domain_name': 'www.hyperion.com.au',
-                'start_url': 'https://www.hyperion.com.au',
-                'parse_select':'traverse',
-                'page_filters': {
-                    'BNT0003AU': ['BNT0003AU'],
-                },
-            },
-        }
-
-        yield runner.crawl('Traversal', traverse_data = traverse_data_2)
-
-        reactor.stop()
-
-    crawl()
-
-    reactor.run()
-
-    print("Crawl Completed")
-# --
-
-run_scraper_traversal()
-
-#run_scraper()
+#     #'''
 
 #     print("Crawl Completed")
 
@@ -215,33 +133,6 @@ run_scraper_traversal()
 
 
 
-'''
-traverse_data = {
-    '_id': 'trav',
-    'file_extraction_rules': {
-        'allow': [
-            '.+\.pdf.+',#.+\.pdf
-            '.+\.pdf',
-        ],
-        'filters': [
-            '.+product.disclosure.statement.+',#%
-            '.+pds.+',
-            '.+PDS.+',
-        ]
-    },
-    'domain': {
-        'domain_file': 'pendal',
-        'domain_name': 'www.pendalgroup.com',
-        'start_url': 'https://www.pendalgroup.com/',
-        'parse_select':'traverse',
-        'page_filters': {
-            'RFA0059AU': ['RFA0059AU'],#RFA0059AU
-            'BTA0061AU': ['BTA0061AU'],#'APIR',
-            'WFS0377AU': ['WFS0377AU'],
-        },
-    },
-}
-'''
 
 
 
@@ -250,17 +141,6 @@ traverse_data = {
 
 
 
-'''
-'domains': [
-    'www.pendalgroup.com'
-],
-'page_filters': [
-    ['RFA0818AU'],
-    ['RFA0059AU'],
-    ['RFA0818AU'],
-    ['BNT0003AU']
-]
-'''
 
 
 
