@@ -356,7 +356,7 @@ class SuperDataArange:
 '''
 
 
-class SiteTraversal:
+class SiteTraversalCSV:
 
     #file_name = 'pendal'
 
