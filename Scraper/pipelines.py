@@ -266,96 +266,6 @@ class SuperDataMongodb:
 
 
 
-
-
-'''
-class SuperDataMongodb:
-
-
-import re
-
-
-class ScraperPipeline:
-    def process_item(self, item, spider):
-
-        super_fund = ItemAdapter(item)
-
-        value_object_keys = ['Date','Value']
-        if 'value_object_keys' in super_fund:
-            value_object_keys = super_fund['value_object_keys']
-
-        # TODO: (Maybe) Loop through all fields in superfund item and if they are not there set them to None
-
-        # Handles changing indecies
-        if 'format_time' in super_fund:
-            if super_fund['format_time']:
-                if 'year_value' in super_fund:
-                    super_fund['scraped_data'].set_index(pd.Index(spiderdatautils.month_format(list(super_fund['scraped_data'].index), year_value = super_fund['year_value'])),inplace=True)
-                else:
-                    super_fund['scraped_data'].set_index(pd.Index(spiderdatautils.month_format(list(super_fund['scraped_data'].index), parse_order = 'DMY')),inplace=True)
-        # --
-        table_column_values = list(super_fund['scraped_data'].columns)
-        for table_column_value in table_column_values:
-            add_new = False
-            if 'add_new' in super_fund:
-                add_new = True
-            # --
-            offering = self.check_for_offering_exist(super_fund, table_column_value, add_new)
-            if offering == None:
-                offering = self.create_new_offering(super_fund, table_column_value)
-                if offering == None:
-                    continue
-                # --
-            # --
-
-            query = {'_id' : offering['_id']}
-
-            value_obj_list = []
-            value_obj_dict = super_fund['scraped_data'][table_column_value].to_dict()
-
-            # TODO: Mabye use zip, but this is fine for now
-            for key in value_obj_dict:
-                # Handle value conversions and format changes
-                data_value = spiderdatautils.digit_value_format(value_obj_dict[key])
-                # Apply lamda if needed
-                if 'value_mutator' in super_fund:
-                    data_value = super_fund['value_mutator'](data_value)
-                # --
-                #value_object = {'Date' : key, 'Value' : data_value}
-                value_object = {value_object_keys[0] : key, value_object_keys[1] : data_value}
-                value_obj_list.append(value_object)
-            # --
-            values = {'$addToSet': {super_fund['insert_cat'] : {'$each': value_obj_list}}}
-            self.db[self.collection_name].update_many(query, values)
-
-        # ---
-
-        return item
-
-
-# --
-'''
-
-
-
-'''
-class ScraperPipeline:
-    def process_item(self, item, spider):
-        return item
-
-
-
-
-# TODO: Partition database for names, id, ect .. |\ then format data
-
-class SuperDataArange:
-
-    def process_item(self, item, spider):
-        return item
-# --
-'''
-
-
 class SiteTraversalCSV:
 
     #file_name = 'pendal'
@@ -483,7 +393,92 @@ class SiteTraversalDB:
 
 
 
+'''
+class SuperDataMongodb:
 
+
+import re
+
+
+class ScraperPipeline:
+    def process_item(self, item, spider):
+
+        super_fund = ItemAdapter(item)
+
+        value_object_keys = ['Date','Value']
+        if 'value_object_keys' in super_fund:
+            value_object_keys = super_fund['value_object_keys']
+
+        # TODO: (Maybe) Loop through all fields in superfund item and if they are not there set them to None
+
+        # Handles changing indecies
+        if 'format_time' in super_fund:
+            if super_fund['format_time']:
+                if 'year_value' in super_fund:
+                    super_fund['scraped_data'].set_index(pd.Index(spiderdatautils.month_format(list(super_fund['scraped_data'].index), year_value = super_fund['year_value'])),inplace=True)
+                else:
+                    super_fund['scraped_data'].set_index(pd.Index(spiderdatautils.month_format(list(super_fund['scraped_data'].index), parse_order = 'DMY')),inplace=True)
+        # --
+        table_column_values = list(super_fund['scraped_data'].columns)
+        for table_column_value in table_column_values:
+            add_new = False
+            if 'add_new' in super_fund:
+                add_new = True
+            # --
+            offering = self.check_for_offering_exist(super_fund, table_column_value, add_new)
+            if offering == None:
+                offering = self.create_new_offering(super_fund, table_column_value)
+                if offering == None:
+                    continue
+                # --
+            # --
+
+            query = {'_id' : offering['_id']}
+
+            value_obj_list = []
+            value_obj_dict = super_fund['scraped_data'][table_column_value].to_dict()
+
+            # TODO: Mabye use zip, but this is fine for now
+            for key in value_obj_dict:
+                # Handle value conversions and format changes
+                data_value = spiderdatautils.digit_value_format(value_obj_dict[key])
+                # Apply lamda if needed
+                if 'value_mutator' in super_fund:
+                    data_value = super_fund['value_mutator'](data_value)
+                # --
+                #value_object = {'Date' : key, 'Value' : data_value}
+                value_object = {value_object_keys[0] : key, value_object_keys[1] : data_value}
+                value_obj_list.append(value_object)
+            # --
+            values = {'$addToSet': {super_fund['insert_cat'] : {'$each': value_obj_list}}}
+            self.db[self.collection_name].update_many(query, values)
+
+        # ---
+
+        return item
+
+
+# --
+'''
+
+
+
+'''
+class ScraperPipeline:
+    def process_item(self, item, spider):
+        return item
+
+
+
+
+# TODO: Partition database for names, id, ect .. |\ then format data
+
+class SuperDataArange:
+
+    def process_item(self, item, spider):
+        return item
+# --
+'''
 
 
 

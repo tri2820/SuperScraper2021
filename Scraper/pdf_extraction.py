@@ -157,53 +157,58 @@ Returns:
 
 '''
 
+#"https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund-PDS-Additional-Information.pdf"
 
-tables = camelot.read_pdf("https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund-PDS-Additional-Information.pdf",pages = 'all', flavor = 'stream',flag_size=True)
-df_list = []
-for table in tables:
-    # Turn into dataframe
-    table_df = table.df
-    table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
-    # Add to df_list
-    df_list.append(table_df)
-# --
+def run_extraction(pdf_url):
 
-# Now we can combine all of them into a new dataframe
-all_df = pd.concat(df_list)
+    tables = camelot.read_pdf(pdf_url,pages = 'all', flavor = 'stream',flag_size=True)
+    df_list = []
+    for table in tables:
+        # Turn into dataframe
+        table_df = table.df
+        table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+        # Add to df_list
+        df_list.append(table_df)
+    # --
 
-found = []
-found_investment = []
-for table in tables:
-    table_df = table.df
-    table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
-    df_list = table_df.values.tolist()
-    
-    for i in range(len(df_list)):
-        for j in df_list[i]:
-            similarity_ = SequenceMatcher(None,'Fees and expenses',j).ratio()
-            similarity_2 = SequenceMatcher(None,'initial investment',j).ratio()
-            if (similarity_ > 0.65):
-                found = df_list[i]
-            if (similarity_2 > 0.65):
-                found_investment = df_list[i]
+    # Now we can combine all of them into a new dataframe
+    all_df = pd.concat(df_list)
+
+    found = []
+    found_investment = []
+    for table in tables:
+        table_df = table.df
+        table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+        df_list = table_df.values.tolist()
+
+        for i in range(len(df_list)):
+            for j in df_list[i]:
+                similarity_ = SequenceMatcher(None,'Fees and expenses',j).ratio()
+                similarity_2 = SequenceMatcher(None,'initial investment',j).ratio()
+                if (similarity_ > 0.65):
+                    found = df_list[i]
+                if (similarity_2 > 0.65):
+                    found_investment = df_list[i]
 
 
-fee_value = ""
-for i in found:
-    x = i.find("0.")
-    if x != -1:
-        fee_value = i[x:len(i)]
-        print(x)
+    fee_value = ""
+    for i in found:
+        x = i.find("0.")
+        if x != -1:
+            fee_value = i[x:len(i)]
+            print(x)
 
-investment_value = ""
-for i in found_investment:
-    x = i.find("$")
-    if x != -1:
-        investment_value = i[x:len(i)]
-        print(x)
+    investment_value = ""
+    for i in found_investment:
+        x = i.find("$")
+        if x != -1:
+            investment_value = i[x:len(i)]
+            print(x)
 
-print(fee_value)
-print(investment_value)
+    #print('Fee & Investment values')
+    print(fee_value)
+    print(investment_value)
+    return fee_value, investment_value
 
 
 

@@ -124,7 +124,7 @@ def run_scraper_traversal():
     runner = CrawlerRunner(get_project_settings())
 
     fund_test_obj = {
-        'id_': 'RFA0059AU',
+        '_id': 'RFA0059AU',
         'name': 'Pendal Focus Australian Share Fund',
         'APIR_code': 'RFA0059AU',
         'metadata': {
