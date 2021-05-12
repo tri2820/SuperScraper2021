@@ -61,60 +61,60 @@ Later on try to use as little hardcoding as possible, try to make things have op
 
 #'''
 #testing for hyperian
-tables = camelot.read_pdf("https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund-PDS-Additional-Information.pdf",pages = 'all', flavor = 'stream',flag_size=True)
+#tables = camelot.read_pdf("https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund-PDS-Additional-Information.pdf",pages = 'all', flavor = 'stream',flag_size=True)
 
 
 # Print table types
-for table in tables:
-    print(type(table))
-    print(type(table.df))
-print(type(tables))
+#for table in tables:
+    #print(type(table))
+    #print(type(table.df))
+#print(type(tables))
 
 # Save all tables as test csv
 #tables.export('camalot_test.csv', f='csv')
 
 
 # Create one big dataframe of all tables
-df_list = []
-for table in tables:
+#df_list = []
+#for table in tables:
     # Turn into dataframe
-    table_df = table.df
+    #table_df = table.df
     # Add to df_list
-    df_list.append(table_df)
+    #df_list.append(table_df)
 # --
 
 # Now we can combine all of them into a new dataframe
-all_df = pd.concat(df_list)
+#all_df = pd.concat(df_list)
 #all_df.columns = range(len(all_df.columns))
-all_df.to_csv('camalot_test_dataframes.csv')#,index=True
-print(all_df)
+#all_df.to_csv('camalot_test_dataframes.csv')#,index=True
+#print(all_df)
 
 # Extracting first table
-temp_df = tables[0].df
+#temp_df = tables[0].df
 
-temp_df.rename(columns=temp_df.iloc[0]).drop(temp_df.index[0])
+#temp_df.rename(columns=temp_df.iloc[0]).drop(temp_df.index[0])
 
 #exporting to csv for trial
-temp_df.to_csv('tables.csv',index=True)
+#temp_df.to_csv('tables.csv',index=True)
 
 
 #checks for management fee in the table
 #outputs a dataframe of false and true values
-found = temp_df.apply(lambda row: row.astype(str).str.contains('Management fee').any(), axis=1)
-print(found)
+#found = temp_df.apply(lambda row: row.astype(str).str.contains('Management fee').any(), axis=1)
+#print(found)
 #'''
 
-def similarity_thing(string_):
-    similarity_ = SequenceMatcher(None,'Fees',string_).ratio()
-    return similarity_
+#def similarity_thing(string_):
+    #similarity_ = SequenceMatcher(None,'Fees',string_).ratio()
+    #return similarity_
 # --
 
 #SequenceMatcher(None, ,similar_string)
-def find_similar(similar_df,similar_string):
+#def find_similar(similar_df,similar_string):
     #new_df = similar_df.apply(similarity_thing)
-    new_df = [similar_df]
-    new_df = similar_df[similar_df[0]]
-    return new_df
+    #new_df = [similar_df]
+    #new_df = similar_df[similar_df[0]]
+    #return new_df
 # --
 
 
@@ -158,7 +158,52 @@ Returns:
 '''
 
 
+tables = camelot.read_pdf("https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund-PDS-Additional-Information.pdf",pages = 'all', flavor = 'stream',flag_size=True)
+df_list = []
+for table in tables:
+    # Turn into dataframe
+    table_df = table.df
+    table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+    # Add to df_list
+    df_list.append(table_df)
+# --
 
+# Now we can combine all of them into a new dataframe
+all_df = pd.concat(df_list)
+
+found = []
+found_investment = []
+for table in tables:
+    table_df = table.df
+    table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+    df_list = table_df.values.tolist()
+    
+    for i in range(len(df_list)):
+        for j in df_list[i]:
+            similarity_ = SequenceMatcher(None,'Fees and expenses',j).ratio()
+            similarity_2 = SequenceMatcher(None,'initial investment',j).ratio()
+            if (similarity_ > 0.65):
+                found = df_list[i]
+            if (similarity_2 > 0.65):
+                found_investment = df_list[i]
+
+
+fee_value = ""
+for i in found:
+    x = i.find("0.")
+    if x != -1:
+        fee_value = i[x:len(i)]
+        print(x)
+
+investment_value = ""
+for i in found_investment:
+    x = i.find("$")
+    if x != -1:
+        investment_value = i[x:len(i)]
+        print(x)
+
+print(fee_value)
+print(investment_value)
 
 
 
