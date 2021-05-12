@@ -39,8 +39,9 @@ class SiteTraversal(scrapy.Spider):
 
     def __init__(self, traverse_data = None, *args, **kwargs):
         super(SiteTraversal, self).__init__(*args, **kwargs)
+        self.set_variables()
         self.traverse_data = traverse_data
-        print('__init__ START ---- !*$(*!#%*&)')
+        #print('__init__ START ---- !*$(*!#%*&)')
         if self.traverse_data != None:
             self.init_crawler_urls()
         # --
@@ -60,11 +61,27 @@ class SiteTraversal(scrapy.Spider):
 
 
     def start_requests(self):
-        print('dom',self.domain)
+        #print('dom',self.domain)
         for selection in self.crawl_selections:
             parse_select, url = selection
             if hasattr(self, parse_select):
                 yield scrapy.Request(url=url, callback=getattr(self,parse_select))
+    # --
+
+    def set_variables(self):
+        self.crawl_selections = []
+
+        self.traverse_data = None
+
+        self.domain = None
+        self.file_extraction = None
+
+        self.file_extractor = None
+        self.link_extractor = None
+
+        self.traversed_urls = {}
+        self.file_urls = {}
+        self.filtered_pages = {}
     # --
 
 
@@ -77,8 +94,8 @@ class SiteTraversal(scrapy.Spider):
         else:
             self.traversed_urls[response.url] = response.url
         # --
-        print('dom',self.domain,'9(#*$(*#$))',response.url)
-        return
+        #print('dom',self.domain,'9(#*$(*#$))',response.url)
+        #return
 
         traverse_item = SuperTraversalData()
         traverse_item['_id'] = self.traverse_data['_id']
@@ -94,9 +111,10 @@ class SiteTraversal(scrapy.Spider):
         # Extract connected file links
         file_extractions = self.file_extractor.extract_links(response)
         for link in file_extractions:
+            file_urls_.append(link.url)
             if not link.url in self.file_urls:
-                self.file_urls[link.url] = link
-                file_urls_.append(link)
+                self.file_urls[link.url] = link.url
+                #file_urls_.append(link)
         # --
 
         # Test for stings and codes requered to identify certain pages
@@ -117,7 +135,7 @@ class SiteTraversal(scrapy.Spider):
                     'name': filter_name,
                     'url': response.url,
                     'page_filter': page_filter,
-                    'file_urls': file_extractions,
+                    'file_urls': file_urls_,#file_extractions
                 }
                 self.filtered_pages[filter_name] = filtered_page
             # --
@@ -125,14 +143,14 @@ class SiteTraversal(scrapy.Spider):
 
         # Run iterative traversal operations
         if depth < 2:
-            print(depth)
+            #print(depth)
             for link in page_urls_:
                 request = Request(link.url, callback=self.traverse)
                 request.cb_kwargs['depth'] = depth + 1
                 yield request
             # --
         # --
-        yield traverse_item
+        #yield traverse_item
     # --
 
 

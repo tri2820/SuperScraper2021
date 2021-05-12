@@ -95,6 +95,16 @@ def run_scraper_traversal():
 
     runner = CrawlerRunner(get_project_settings())
 
+    fund_test_obj = {
+        'id_': 'RFA0059AU',
+        'name': 'Pendal Focus Australian Share Fund',
+        'APIR_code': 'RFA0059AU',
+        'metadata': {
+            'site_traversal_id': 'trav',
+            'pdf_url': 'uehfaouefu.pdf',
+        },
+    }
+
 
     @defer.inlineCallbacks
     def crawl():
@@ -104,6 +114,7 @@ def run_scraper_traversal():
             'file_extraction_rules': {
                 'allow': [
                     '.+\.pdf.+',
+                    '.+\.pdf',
                 ],
                 'filters': [
                     '.+product.disclosure.statement.+',
@@ -127,7 +138,7 @@ def run_scraper_traversal():
         yield runner.crawl('Traversal', traverse_data = traverse_data_1)
 
         traverse_data_2 = {
-            '_id': 'trav',
+            '_id': 'trav2',
             'file_extraction_rules': {
                 'allow': [
                     '.+\.pdf.+',
@@ -181,6 +192,7 @@ traverse_data = {
     'file_extraction_rules': {
         'allow': [
             '.+\.pdf.+',#.+\.pdf
+            '.+\.pdf',
         ],
         'filters': [
             '.+product.disclosure.statement.+',#%

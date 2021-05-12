@@ -35,7 +35,6 @@ class ScraperPipeline:
         return item
 
 
-
 class SiteTraversal:
 
     #file_name = 'pendal'
@@ -79,6 +78,78 @@ class SiteTraversal:
             for obj in filtered_file_urls:
                 data_writer.writerow([filtered_file_urls[obj]])
     # --
+# --
+
+
+class SiteTraversalDB:
+
+    collection_name = 'site_traverse_data'
+
+    def __init__(self, mongo_uri, mongo_db):
+        self.mongo_uri = mongo_uri
+        self.mongo_db = mongo_db
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            mongo_uri = crawler.settings.get('MONGO_URI'),
+            mongo_db = crawler.settings.get('MONGO_DB')
+        )
+
+    def open_spider(self, spider):
+        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.db = self.client[self.mongo_db]
+
+    def process_item(self, item, spider):
+        traverse_item = ItemAdapter(item)
+        return item
+
+    def find_or_create_document(self, data_object, overwrite=False):
+        query = {'_id' : data_object['_id']}
+        document = self.db[self.collection_name].find_one(query)
+        # If none create one
+        if document == None:
+            self.db[self.collection_name].insert_one(data_object)
+            document = self.db[self.collection_name].find_one(query)
+        elif overwrite == True:
+            self.db[self.collection_name].update_one(query, {"$set": data_object})
+        # --
+        return document
+
+    def close_spider(self, spider):#spider.traverse_data
+
+        filtered_file_urls = {}
+        for obj in spider.file_urls:
+            for filter in spider.file_extraction['filters']:
+                #print(filter, spider.file_urls[obj])
+                match = re.match(filter, obj)
+                if match != None:
+                    #print(filter, spider.file_urls[obj])
+                    filtered_file_urls[obj] = obj
+                    #break
+        # --
+        new_document = spider.traverse_data
+        new_document['traverse_urls'] = list(spider.traversed_urls.values())
+        #new_document['filtered_traverse_urls'] = list(spider.filtered_pages.values())
+        new_document['filtered_traverse_urls'] = spider.filtered_pages#list(spider.filtered_pages.keys())
+        new_document['file_urls'] = list(spider.file_urls.values())
+        new_document['filtered_file_urls'] = list(filtered_file_urls.values())
+        #print(new_document['traverse_urls'][0])
+        #print(new_document['filtered_traverse_urls'][0])
+        #print(new_document['filtered_traverse_urls'])
+        #print(new_document['file_urls'][0])
+        #print(new_document['filtered_file_urls'][0])
+        document = self.find_or_create_document(new_document, True)
+        traversal_urls = spider.traversed_urls.values()
+
+        self.client.close()
+
+        #values = {'$addToSet': {super_fund['insert_cat'] : {'$each': traversal_urls}}}
+        #self.db[self.collection_name].update_many(query, values)
+
+
+
+
 # --
 
 
