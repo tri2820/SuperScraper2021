@@ -84,9 +84,9 @@ class StringTest:
         for page in pdfReader.pages:
             self.text += page.extractText()
         # --
-        #text_file = open("pdf_texts.txt", "w")
-        #text_file.write(text)
-        #text_file.close()
+        text_file = open("pdf_texts.txt", "w")
+        text_file.write(self.url_string)
+        text_file.close()
 
 
     def test_for_string(self, test_string):
