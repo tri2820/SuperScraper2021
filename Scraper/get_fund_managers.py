@@ -2,7 +2,7 @@ import pandas as pd
 from itemadapter import ItemAdapter
 import pymongo
 import logging
-from pdf_extraction import run_extraction
+from pdf_extraction import StringTest
 
 
 MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
@@ -83,10 +83,16 @@ print('Number of urls to check: ', number_files)
 for i in range(number_files):
     file_url = filtered_file_urls[i]
     print(f'-({i}/{number_files})- Url: {file_url}'.format())
-    fee_value, investment_value = run_extraction(file_url)
-    if len(fee_value) > 0 or len(investment_value) > 0:
-        print('-FOUND-', fee_value, investment_value)
+    #fee_value, investment_value = run_extraction(file_url)
+    string_tester = StringTest(file_url)
+    string_tester.extract_text()
+    found = string_tester.test_for_string(fund_document['APIR_code'])
+    if found:
+        print('-FOUND-', found)
         break
+    #if len(fee_value) > 0 or len(investment_value) > 0:
+    #    print('-FOUND-', fee_value, investment_value)
+    #    break
 # --
 
 
