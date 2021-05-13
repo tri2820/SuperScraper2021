@@ -114,7 +114,7 @@ class SpiderHandler:
 
 #         yield runner.crawl('Future', fund_data = future_fund_data)
 
-#         reactor.stop()
+#         reactor.stop()a
 
 
 def run_scraper_traversal():
