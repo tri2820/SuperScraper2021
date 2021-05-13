@@ -105,6 +105,147 @@ class StringTest:
 # --
 
 
+
+
+url_string = "https://www.vanguard.com.au/adviser/products/documents/8189/AU"
+compare_string_list = ['management fee','fees and expenses','estimated total management costs']
+def get_tables():
+        tables = camelot.read_pdf(url_string,pages = 'all', flavor = 'stream',flag_size=True)
+        return tables
+
+def similarity_thing(string_, compare_string_list_):
+        found = False
+        highest = 0
+        similarity_list = []
+        for item in compare_string_list_:
+            similarity_list.append(SequenceMatcher(None,item,string_).ratio())
+        for i in similarity_list:
+                if i > highest:
+                        highest = i
+        return highest
+
+def get_specific_tables():
+        tables = get_tables()
+        df_new_list =[]
+        all_df = pd.DataFrame()
+        for table in tables:
+                table_df = table.df
+                table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+                df_list = table_df.values.tolist()
+                for i in range(len(df_list)):
+                        for j in df_list[i]:
+                                x = SequenceMatcher(None,'type of fee or costs',j).ratio()
+                                if x > 0.6:
+                                        df_new_list.append(table_df)
+                                        all_df = pd.concat(df_new_list)
+        return all_df
+
+
+def get_similar_row(all_df):
+        new_df_list = all_df.values.tolist()
+        found = []
+        highest = 0
+        for i in range(len(new_df_list)):
+                for j in new_df_list[i]:
+                        similarity_value = similarity_thing(j.lower(),compare_string_list)
+                        if similarity_value> highest:
+                                highest = similarity_value
+                                found = new_df_list[i]
+        return found
+
+def extract_table():
+        all_df = get_specific_tables()
+        found = get_similar_row(all_df)
+
+        fee_value = ""
+        for i in found:
+                x = i.find("0.")
+                if x != -1:
+                        fee_value = i[x:(x+10)]
+
+        management_fee_list = []
+        management_fee_list.append(fee_value)
+        return management_fee_list
+
+#getting the dataframe
+management_fee_list = extract_table()
+data = {'Management fee': management_fee_list,'Intial Investment':[None],'Additional Investment':[None], 'Withdraw':[None],'Transfer':[None]}
+df = pd.DataFrame(data)
+
+#print(df)
+
+
+
+# class ExtractTable:
+
+#         url_string = ""
+#         compare_string_list = ['management fee','fees and expenses','estimated total management costs']
+
+#         def __init__(self, url_string_):
+#                 self.url_string = url_string_
+
+#         def get_tables(self, url_string):
+#                 tables = camelot.read_pdf(self.url_string,pages = 'all', flavor = 'stream',flag_size=True)
+#                 return tables
+
+#         def similarity_thing(self, string_,compare_string_list):
+#                 found = False
+#                 highest = 0
+#                 similarity_list = []
+#                 for item in self.compare_string_list:
+#                     similarity_list.append(SequenceMatcher(None,item,string_).ratio())
+#                 for i in similarity_list:
+#                         if i > highest:
+#                                 highest = i
+#                 return highest
+
+#         def get_specific_tables(self, url_string):
+#                 tables = get_tables(self.url_string)
+#                 df_new_list =[]
+#                 all_df = pd.DataFrame()
+#                 for table in tables:
+#                         table_df = table.df
+#                         table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+#                         df_list = table_df.values.tolist()
+#                         for i in range(len(df_list)):
+#                                 for j in df_list[i]:
+#                                         x = SequenceMatcher(None,'type of fee or costs',j).ratio()
+#                                         if x > 0.6:
+#                                                 df_new_list.append(table_df)
+#                                                 all_df = pd.concat(df_new_list)
+#                 return all_df
+
+
+#         def get_similar_row(self, all_df):
+#                 new_df_list = self.all_df.values.tolist()
+#                 found = []
+#                 highest = 0
+#                 for i in range(len(new_df_list)):
+#                         for j in new_df_list[i]:
+#                                 similarity_value = similarity_thing(j.lower(),compare_string_list)
+#                                 if similarity_value> highest:
+#                                         highest = similarity_value
+#                                         found = new_df_list[i]
+#                 return found
+
+#         def extract_table(self,url_string):
+#                 all_df = get_specific_tables(self.url_string)
+#                 found = get_similar_row(all_df)
+
+#                 fee_value = ""
+#                 for i in found:
+#                         x = i.find("0.")
+#                         if x != -1:
+#                                 fee_value = i[x:(x+10)]
+#                 management_fee_list = []
+#                 management_fee_list.append(fee_value)
+#                 return management_fee_list
+
+
+
+
+
+'''
 #import re
 #found = []
 #found_investment = []
@@ -183,110 +324,6 @@ def camalot_test():
 
     print(fee_value)
 
-
-
-
-
-
-
-
-
-'''
-
-#testing for hyperian
-#tables = camelot.read_pdf("https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund-PDS-Additional-Information.pdf",pages = 'all', flavor = 'stream',flag_size=True)
-
-
-# Print table types
-#for table in tables:
-    #print(type(table))
-    #print(type(table.df))
-#print(type(tables))
-
-# Save all tables as test csv
-#tables.export('camalot_test.csv', f='csv')
-
-
-# Create one big dataframe of all tables
-#df_list = []
-#for table in tables:
-    # Turn into dataframe
-    #table_df = table.df
-    # Add to df_list
-    #df_list.append(table_df)
-# --
-
-# Now we can combine all of them into a new dataframe
-#all_df = pd.concat(df_list)
-#all_df.columns = range(len(all_df.columns))
-#all_df.to_csv('camalot_test_dataframes.csv')#,index=True
-#print(all_df)
-
-# Extracting first table
-#temp_df = tables[0].df
-
-#temp_df.rename(columns=temp_df.iloc[0]).drop(temp_df.index[0])
-
-#exporting to csv for trial
-#temp_df.to_csv('tables.csv',index=True)
-
-
-#checks for management fee in the table
-#outputs a dataframe of false and true values
-#found = temp_df.apply(lambda row: row.astype(str).str.contains('Management fee').any(), axis=1)
-#print(found)
-
-
-#def similarity_thing(string_):
-    #similarity_ = SequenceMatcher(None,'Fees',string_).ratio()
-    #return similarity_
-# --
-
-#SequenceMatcher(None, ,similar_string)
-#def find_similar(similar_df,similar_string):
-    #new_df = similar_df.apply(similarity_thing)
-    #new_df = [similar_df]
-    #new_df = similar_df[similar_df[0]]
-    #return new_df
-# --
-
-
-
-
-
-
-# Testing how running against dataframes works
-
-df_test = pd.DataFrame(data={'num1':[0,1,2,3,4,5],'num2':[23,4,5,17,25,21],'num3':[1,2,3,21,5,6]})
-
-print(df_test)
-
-hmm_df = df_test[df_test > 3]#df_test.where(df_test[])
-
-hmm_df1 = df_test[df_test['num3'] > 3]
-
-print(hmm_df)
-print(hmm_df1)
-
-Returns:
-   num1  num2  num3
-0     0    23     1
-1     1     4     2
-2     2     5     3
-3     3    17    21
-4     4    25     5
-5     5    21     6
-   num1  num2  num3
-0   NaN    23   NaN
-1   NaN     4   NaN
-2   NaN     5   NaN
-3   NaN    17  21.0
-4   4.0    25   5.0
-5   5.0    21   6.0
-   num1  num2  num3
-3     3    17    21
-4     4    25     5
-5     5    21     6
 
 
 
