@@ -147,42 +147,33 @@
           border: 1px solid #ccc;  
         }
       }
-        
-      .dropbtn {
-        background-color: #b58bc2;
-        color: white;
-        padding: 16px;
-        font-size: 16px;
-        border: none;
-      }
-
-      .dropdown {
-        position: relative;
-        display: inline-block;
-      }
-
-      .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #f1f1f1;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-      }
-
-      .dropdown-content a {
-        color: black;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-      }
-
-      .dropdown-content a:hover {background-color: #ddd;}
-
-      .dropdown:hover .dropdown-content {display: block;}
-
-      .dropdown:hover .dropbtn {background-color: #b58bc2;}
     </style>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+      
+      //extracted data will go here
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Month', 'Hesta', 'Aware', 'Telstra'],
+          ['May',  1000,      400, 100],
+          ['April',  1170,      460, 500],
+          ['March',  660,       1120, 1000],
+          ['February',  1030,      540, 900]
+        ]);
+
+        var options = {
+          title: 'Monthly Super Performance',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
 </head>
 <body style="background: white;">
     <h1>Super Scraper <i class="fa fa-line-chart" style="font-size:24px"></i> </h1> 
@@ -202,41 +193,67 @@
 
     <p> </p>
     <div class="dropdown">
-      <button class="dropbtn">Hesta Super</button>
-      <div class="dropdown-content">
-        <a href="#">Balance Growth</a>
-        <a href="#">Conservative Growth</a>
-        <a href="#">High Growth</a>
-      </div>
+        <button onclick="myFunction()" class="dropbtn">Hesta Super</button>
+        <div id="myDropdown" class="dropdown-content">
+          <a href="index2.html">Balanced Growth</a>
+          <a href="#about">High Growth</a>
+          <a href="#contact">Conservative Growth</a>
+        </div>
+    </div>
+    <div class="dropdown">
+        <button onclick="myFunction()" class="dropbtn">Aware Super</button>
+        <div id="myDropdown" class="dropdown-content">
+          <a href="#home">Balanced Growth</a>
+          <a href="#about">High Growth</a>
+          <a href="#contact">Conservative Growth</a>
+        </div>
+    </div>
+      
+    <div class="dropdown">
+        <button onclick="myFunction()" class="dropbtn">Telstra Super</button>
+        <div id="myDropdown" class="dropdown-content">
+          <a href="#home">Balanced Growth</a>
+          <a href="#about">High Growth</a>
+          <a href="#contact">Conservative Growth</a>
+        </div>
     </div>
 
     <div class="dropdown">
-      <button class="dropbtn">Aware Super</button>
-      <div class="dropdown-content">
-        <a href="#">Balance Growth</a>
-        <a href="#">Conservative Growth</a>
-        <a href="#">High Growth</a>
-      </div>
+        <button onclick="myFunction()" class="dropbtn">Uni Super</button>
+        <div id="myDropdown" class="dropdown-content">
+          <a href="#home">Balanced Growth</a>
+          <a href="#about">High Growth</a>
+          <a href="#contact">Conservative Growth</a>
+        </div>
     </div>
 
     <div class="dropdown">
-      <button class="dropbtn">Telstra Super</button>
-      <div class="dropdown-content">
-        <a href="#">Balance Growth</a>
-        <a href="#">Conservative Growth</a>
-        <a href="#">High Growth</a>
-      </div>
+        <button onclick="myFunction()" class="dropbtn">Sun Super</button>
+        <div id="myDropdown" class="dropdown-content">
+          <a href="#home">Balanced Growth</a>
+          <a href="#about">High Growth</a>
+          <a href="#contact">Conservative Growth</a>
+        </div>
     </div>
 
-    <div class="dropdown">
-      <button class="dropbtn">Future Super</button>
-      <div class="dropdown-content">
-        <a href="#">Historical Data</a>
-      </div>
-    </div>
-
+      <script>
+      function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+      }
+      window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+          var dropdowns = document.getElementsByClassName("dropdown-content");
+          var i;
+          for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+            }
+          }
+        }
+      }
       </script> 
-      <p></p>
+      <div id="curve_chart" style="width: 900px; height: 500px"></div>
       
     
 </body>
