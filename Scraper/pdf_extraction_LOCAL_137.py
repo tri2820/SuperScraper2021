@@ -54,7 +54,7 @@ Can be done with this command: conda install -c conda-forge camelot-py
 Initially hardcoding for testing is good.
 Later on try to use as little hardcoding as possible, try to make things have options so they are dynamic.
 '''
-#randomedit
+
 
 
 
