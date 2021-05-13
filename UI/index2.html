@@ -150,68 +150,40 @@
     </style>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
+      google.charts.load('current', {'packages':['bar']});
       google.charts.setOnLoadCallback(drawChart);
-      
-      //extracted data will go here
+
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Month', 'Hesta', 'Aware', 'Telstra'],
-          ['May',  1000,      400, 100],
-          ['April',  1170,      460, 500],
-          ['March',  660,       1120, 1000],
-          ['February',  1030,      540, 900]
+          ['Month', 'Balanced Growth', 'High Growth', 'Conservative Growth'],
+          ['May', 1000, 400, 200],
+          ['Apr', 1170, 460, 250],
+          ['Mar', 660, 1120, 300],
+          ['Feb', 1030, 540, 350]
         ]);
 
         var options = {
-          title: 'Monthly Super Performance',
-          curveType: 'function',
-          legend: { position: 'bottom' }
+          chart: {
+            title: 'Company Performance',
+            subtitle: 'Sales, Expenses, and Profit: 2014-2017',
+          },
+          bars: 'horizontal' // Required for Material Bar Charts.
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        var chart = new google.charts.Bar(document.getElementById('barchart_material'));
 
-        chart.draw(data, options);
+        chart.draw(data, google.charts.Bar.convertOptions(options));
       }
     </script>
-
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript">
-    google.charts.load('current', {'packages':['bar']});
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ['Year', 'Sales', 'Expenses', 'Profit'],
-        ['2014', 1000, 400, 200],
-        ['2015', 1170, 460, 250],
-        ['2016', 660, 1120, 300],
-        ['2017', 1030, 540, 350]
-      ]);
-
-      var options = {
-        chart: {
-          title: 'Company Performance',
-          subtitle: 'Sales, Expenses, and Profit: 2014-2017',
-        },
-        bars: 'horizontal' // Required for Material Bar Charts.
-      };
-
-      var chart = new google.charts.Bar(document.getElementById('barchart_material'));
-
-      chart.draw(data, google.charts.Bar.convertOptions(options));
-    }
-  </script>
-
 </head>
 <body style="background: white;">
     <h1>Super Scraper <i class="fa fa-line-chart" style="font-size:24px"></i> </h1> 
     <div class="topnav">
-      <a class="active" href="#home">Home</a>
+      <a href="index.html">Home</a>
       <a href="#about">Contact</a>
       <a href="#contact">Extract</a>
       <a href="#contact">Scrape</a>
-      <a href="index.html">Refresh</a>
+      <a href="index2.html">Refresh</a>
       <div class="search-container">
         <form action="/action_page.php">
           <input type="text" placeholder="Search.." name="search">
@@ -224,7 +196,7 @@
     <div class="dropdown">
         <button onclick="myFunction()" class="dropbtn">Hesta Super</button>
         <div id="myDropdown" class="dropdown-content">
-          <a href="index2.html">Balanced Growth</a>
+          <a href="#home">Balanced Growth</a>
           <a href="#about">High Growth</a>
           <a href="#contact">Conservative Growth</a>
         </div>
@@ -265,6 +237,9 @@
         </div>
     </div>
 
+    <p>This page is for each super funds</p>
+
+
       <script>
       function myFunction() {
         document.getElementById("myDropdown").classList.toggle("show");
@@ -282,9 +257,7 @@
         }
       }
       </script> 
-      <div id="curve_chart" style="width: 850px; height: 500px"></div>
-
-
+      <div id="barchart_material" style="width: 750px; height: 500px"></div>
       
     
 </body>
