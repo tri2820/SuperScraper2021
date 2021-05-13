@@ -10,13 +10,13 @@ To include the extractor in another piece of code, it needs to be Included. An e
 Seeing as a table can be output in two different ways, with the X and Y axis flipped, both of these are output here. The period is typically on a month by month basis, in the format YYYY-MM
 #### **Performance.csv**
 As you can see this has the period along the x axis, funds along the y
-|...  | period_1 | period_2 | period_3 | ... | period_n |
-|-----|-----|-----|-----|-----|-----|
-| fund_1 | performance | performance | performance | ... | performance |
-| fund_2 | performance | performance | performance | ... | performance |
-| fund_3 | performance | performance | performance | ... | performance |
-| ... | ... | ... | ... | ... | ... |
-| fund_n | performance | performance | performance | ... | performance |
+...  | period_1 | period_2 | period_3 | ... | period_n 
+-----|-----|-----|-----|-----|-----|
+ fund_1 | performance | performance | performance | ... | performance 
+ fund_2 | performance | performance | performance | ... | performance 
+ fund_3 | performance | performance | performance | ... | performance 
+ ... | ... | ... | ... | ... | ... 
+ fund_n | performance | performance | performance | ... | performance 
 
 #### **Performance_pivot.csv**
 This is the transposed table, with funds along the x axis and periods down the y
