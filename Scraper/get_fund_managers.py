@@ -150,7 +150,7 @@ test_obj_list = [
 
 fund_manager_handler = FundManagerHandler()
 fund_manager_handler.init_connection()
-for test_obj in test_obj_list:
+for test_obj in test_obj_list[:1]:
     fund_manager_handler.find_pdf_urls(test_obj)
 # --
 fund_manager_handler.close_connection()

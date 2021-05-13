@@ -105,15 +105,16 @@ class StringTest:
 # --
 
 
-
-
-url_string = "https://www.vanguard.com.au/adviser/products/documents/8189/AU"
-compare_string_list = ['management fee','fees and expenses','estimated total management costs']
-def get_tables():
-        tables = camelot.read_pdf(url_string,pages = 'all', flavor = 'stream',flag_size=True)
+class ExtractTable:
+    # -Remmbe self.url_string
+    url_string = "https://www.vanguard.com.au/adviser/products/documents/8189/AU"
+    compare_string_list = ['management fee','fees and expenses','estimated total management costs']
+    
+    def get_tables():
+        tables = camelot.read_pdf(self.url_string,pages = 'all', flavor = 'stream',flag_size=True)
         return tables
 
-def similarity_thing(string_, compare_string_list_):
+    def similarity_thing(string_, compare_string_list_):
         found = False
         highest = 0
         similarity_list = []
@@ -124,7 +125,7 @@ def similarity_thing(string_, compare_string_list_):
                         highest = i
         return highest
 
-def get_specific_tables():
+    def get_specific_tables():
         tables = get_tables()
         df_new_list =[]
         all_df = pd.DataFrame()
@@ -141,7 +142,7 @@ def get_specific_tables():
         return all_df
 
 
-def get_similar_row(all_df):
+    def get_similar_row(all_df):
         new_df_list = all_df.values.tolist()
         found = []
         highest = 0
@@ -153,7 +154,7 @@ def get_similar_row(all_df):
                                 found = new_df_list[i]
         return found
 
-def extract_table():
+    def extract_table():
         all_df = get_specific_tables()
         found = get_similar_row(all_df)
 
@@ -168,9 +169,9 @@ def extract_table():
         return management_fee_list
 
 #getting the dataframe
-management_fee_list = extract_table()
-data = {'Management fee': management_fee_list,'Intial Investment':[None],'Additional Investment':[None], 'Withdraw':[None],'Transfer':[None]}
-df = pd.DataFrame(data)
+#management_fee_list = extract_table()
+#data = {'Management fee': management_fee_list,'Intial Investment':[None],'Additional Investment':[None], 'Withdraw':[None],'Transfer':[None]}
+#df = pd.DataFrame(data)
 
 #print(df)
 
