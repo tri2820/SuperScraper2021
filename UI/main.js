@@ -23,6 +23,17 @@ app.whenReady().then(() => {
   })
 })
 
+require('child_process').execFile("Users/priyankaram/super-scrapper/Extractor/extractor.py", [3000], (error, stdout, stderr) => {
+
+  if (error) {
+
+      console.log(error);
+
+  }
+  console.log(stdout);
+
+});
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
