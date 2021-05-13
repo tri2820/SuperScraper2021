@@ -19,7 +19,7 @@ traversal_collection = 'site_traverse_data'
 #mongo_db = MONGO_DB
 
 
-class FundManagers:
+class DBHandler:
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
@@ -49,60 +49,111 @@ class FundManagers:
 
 
 
-fund_manager = FundManagers(MONGO_URI, MONGO_DB)
 
-fund_manager.open_connection()
+class FundManagerHandler:
 
+    fund_test_obj = {
+        '_id': 'RFA0059AU',
+        'name': 'Pendal Focus Australian Share Fund',
+        'APIR_code': 'RFA0059AU',
+        'metadata': {
+            'site_traversal_id': 'pendal_site_traversal',
+            #'pdf_url': 'uehfaouefu.pdf',
+        },
+    }
 
-fund_test_obj = {
-    '_id': 'RFA0059AU',
-    'name': 'Pendal Focus Australian Share Fund',
-    'APIR_code': 'RFA0059AU',
-    'metadata': {
-        'site_traversal_id': 'trav',
-        #'pdf_url': 'uehfaouefu.pdf',
-    },
-}
+    def init_connection(self):
+        self.fund_manager = FundManagers(MONGO_URI, MONGO_DB)
+        self.fund_manager.open_connection()
+    # --
 
-fund_document = fund_manager.find_or_create_document(name_collection, fund_test_obj, True)
+    def find_pdf_urls(self, insert_document):
 
-fund_id = fund_document['_id']
+        fund_document = self.fund_manager.find_or_create_document(name_collection, insert_document, True)#fund_test_obj
 
-site_traversal_id = fund_document['metadata']['site_traversal_id']
+        fund_id = fund_document['_id']
 
-query = {'_id' : site_traversal_id}
+        site_traversal_id = fund_document['metadata']['site_traversal_id']
 
-traversal_document = fund_manager.db[traversal_collection].find_one(query)
+        query = {'_id' : site_traversal_id}
 
-filtered_file_urls = traversal_document['filtered_file_urls']
+        traversal_document = self.fund_manager.db[traversal_collection].find_one(query)
 
-number_files = len(filtered_file_urls)
+        filtered_file_urls = traversal_document['filtered_file_urls']
 
-print('Number of urls to check: ', number_files)
+        number_files = len(filtered_file_urls)
 
-for i in range(number_files):
-    file_url = filtered_file_urls[i]
-    print(f'-({i}/{number_files})- Url: {file_url}'.format())
-    #fee_value, investment_value = run_extraction(file_url)
-    string_tester = StringTest(file_url)
-    string_tester.extract_text()
-    found = string_tester.test_for_string(fund_document['APIR_code'])
-    if found:
-        print('-FOUND-', found)
-        break
-    #if len(fee_value) > 0 or len(investment_value) > 0:
-    #    print('-FOUND-', fee_value, investment_value)
-    #    break
+        print('Number of urls to check: ', number_files)
+
+        for i in range(number_files):
+            file_url = filtered_file_urls[i]
+            print(f'-({i}/{number_files})- Url: {file_url}'.format())
+            #fee_value, investment_value = run_extraction(file_url)
+            string_tester = StringTest(file_url)
+            string_tester.extract_text()
+            found = string_tester.test_for_string(fund_document['APIR_code'])
+            if found:
+                fund_document['metadata']['pdf_url'] = file_url
+                fund_document = self.fund_manager.find_or_create_document(name_collection, fund_document, True)
+                print('-FOUND-', found)
+                break
+            #if len(fee_value) > 0 or len(investment_value) > 0:
+            #    print('-FOUND-', fee_value, investment_value)
+            #    break
+        # --
+    # --
+
+    def close_connection(self):
+        self.fund_manager.close_connection()
+    # --
 # --
 
+test_obj_list = [
+    {
+        '_id': 'RFA0059AU',
+        'name': 'Pendal Focus Australian Share Fund',
+        'APIR_code': 'RFA0059AU',
+        'metadata': {
+            'site_traversal_id': 'pendal_site_traversal',
+            #'pdf_url': 'uehfaouefu.pdf',
+        },
+    },
+    {
+        '_id': 'BNT0003AU',
+        'name': 'Hyperion Australian Growth Companies Fund',
+        'APIR_code': 'BNT0003AU',
+        'metadata': {
+            'site_traversal_id': 'hyperion_site_traversal',
+            #'pdf_url': 'uehfaouefu.pdf',
+        },
+    },
+    {
+        '_id': 'FID0008AU',
+        'name': 'Fidelity Australian Equities',
+        'APIR_code': 'FID0008AU',
+        'metadata': {
+            'site_traversal_id': 'fidelity_site_traversal',
+            #'pdf_url': 'uehfaouefu.pdf',
+        },
+    },
+    {
+        '_id': 'VAN0002AU',
+        'name': 'Vanguard Australian Share Index',
+        'APIR_code': 'VAN0002AU',
+        'metadata': {
+            'site_traversal_id': 'vanguard_site_traversal',
+            #'pdf_url': 'uehfaouefu.pdf',
+        },
+    },
+]
 
-fund_manager.close_connection()
 
-
-
-
-
-
+fund_manager_handler = FundManagerHandler()
+fund_manager_handler.init_connection()
+for test_obj in test_obj_list:
+    fund_manager_handler.find_pdf_urls(test_obj)
+# --
+fund_manager_handler.close_connection()
 
 
 
