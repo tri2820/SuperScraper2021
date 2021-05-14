@@ -2,7 +2,7 @@ import pandas as pd
 from itemadapter import ItemAdapter
 import pymongo
 import logging
-from pdf_extraction import StringTest
+from pdf_extraction import StringTest, ExtractTableHandler
 
 
 MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
@@ -10,8 +10,8 @@ MONGO_DB = "SuperScrapper"
 
 
 
-name_collection = 'fund_managers'
-traversal_collection = 'site_traverse_data'
+#name_collection = 'fund_managers'
+#traversal_collection = 'site_traverse_data'
 
 #client = None
 #db = None
@@ -52,6 +52,9 @@ class DBHandler:
 
 class FundManagerHandler:
 
+    name_collection = 'fund_managers'
+    traversal_collection = 'site_traverse_data'
+
     fund_test_obj = {
         '_id': 'RFA0059AU',
         'name': 'Pendal Focus Australian Share Fund',
@@ -62,14 +65,18 @@ class FundManagerHandler:
         },
     }
 
-    def init_connection(self):
-        self.fund_manager = FundManagers(MONGO_URI, MONGO_DB)
-        self.fund_manager.open_connection()
+    def open_connection(self):
+        self.dbHandler = DBHandler(MONGO_URI, MONGO_DB)
+        self.dbHandler.open_connection()
+    # --
+
+    def close_connection(self):
+        self.dbHandler.close_connection()
     # --
 
     def find_pdf_urls(self, insert_document):
 
-        fund_document = self.fund_manager.find_or_create_document(name_collection, insert_document, True)#fund_test_obj
+        fund_document = self.dbHandler.find_or_create_document(self.name_collection, insert_document, True)
 
         fund_id = fund_document['_id']
 
@@ -77,7 +84,7 @@ class FundManagerHandler:
 
         query = {'_id' : site_traversal_id}
 
-        traversal_document = self.fund_manager.db[traversal_collection].find_one(query)
+        traversal_document = self.dbHandler.db[self.traversal_collection].find_one(query)
 
         filtered_file_urls = traversal_document['filtered_file_urls']
 
@@ -93,18 +100,38 @@ class FundManagerHandler:
             string_tester.extract_text()
             found = string_tester.test_for_string(fund_document['APIR_code'])
             if found:
-                fund_document['metadata']['pdf_url'] = file_url
-                fund_document = self.fund_manager.find_or_create_document(name_collection, fund_document, True)
+                self.set_pdf_url(file_url, fund_document)
                 print('-FOUND-', found)
                 break
-            #if len(fee_value) > 0 or len(investment_value) > 0:
-            #    print('-FOUND-', fee_value, investment_value)
-            #    break
+            # --
         # --
     # --
 
-    def close_connection(self):
-        self.fund_manager.close_connection()
+    def set_pdf_url(self, file_url, fund_document):
+        fund_document['metadata']['pdf_url'] = file_url
+        fund_document = self.dbHandler.find_or_create_document(self.name_collection, fund_document, True)
+    # --
+
+    def get_document_pdf_data(self,insert_document):
+
+        # Get document from database
+        fund_document = self.dbHandler.find_or_create_document(self.name_collection, insert_document, False)
+
+        if fund_document == None:
+            return
+
+        # Get ids
+        fund_id = fund_document['_id']
+        site_traversal_id = fund_document['metadata']['site_traversal_id']
+
+        table_handler = ExtractTableHandler(fund_document['metadata']['pdf_url'])
+        table_handler.get_tables()
+        management_fee_list = table_handler.extract_table()
+        data = {'Management fee': management_fee_list,'Intial Investment':[None],'Additional Investment':[None], 'Withdraw':[None],'Transfer':[None]}
+        df = pd.DataFrame(data)
+        print(df)
+        return df
+
     # --
 # --
 
@@ -149,9 +176,10 @@ test_obj_list = [
 
 
 fund_manager_handler = FundManagerHandler()
-fund_manager_handler.init_connection()
-for test_obj in test_obj_list[:1]:
+fund_manager_handler.open_connection()
+for test_obj in test_obj_list[:2]:
     fund_manager_handler.find_pdf_urls(test_obj)
+    fund_manager_handler.get_document_pdf_data(test_obj)
 # --
 fund_manager_handler.close_connection()
 

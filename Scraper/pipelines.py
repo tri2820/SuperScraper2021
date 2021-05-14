@@ -16,6 +16,11 @@ from collections import defaultdict
 
 from Scraper import spiderdatautils
 
+import re
+
+import json
+import csv
+
 
 
 '''
