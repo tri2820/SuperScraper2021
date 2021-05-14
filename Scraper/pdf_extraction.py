@@ -148,6 +148,7 @@ class ExtractTableHandler:
             #print(table_df, values_list)
             for i in range(len(values_list)):
                 for j in values_list[i]:
+                    # TODO: We cannot hardcode stuff like this, or it will not work
                     x = SequenceMatcher(None,'type of fee or costs',j).ratio()
                     if x > 0.6:
                         df_list.append(table_df)
