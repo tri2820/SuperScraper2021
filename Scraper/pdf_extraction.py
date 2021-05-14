@@ -150,9 +150,9 @@ class ExtractTableHandler:
                 for j in values_list[i]:
                     # TODO: We should unhard code stuff like this
                     x = SequenceMatcher(None,'type of fee or costs',j).ratio()
-                    #x = self.find_most_similar(j,self.compare_string_list)[2]
                     if x > 0.6:
                         df_list.append(table_df)
+                        print(table_df)
                         #matched_dfs = pd.concat(df_list)
         if len(df_list) > 0:
             matched_dfs = pd.concat(df_list)
@@ -193,15 +193,15 @@ class ExtractTableHandler:
 # --
 
 #getting the dataframe
-#table_handler = ExtractTableHandler("https://www.vanguard.com.au/adviser/products/documents/8189/AU")
-#table_handler.get_tables()
-#management_fee_list = table_handler.extract_table()
+table_handler = ExtractTableHandler("https://www.vanguard.com.au/adviser/products/documents/8189/AU")
+table_handler.get_tables()
+management_fee_list = table_handler.extract_table()
 
 
-#data = {'Management fee': management_fee_list,'Intial Investment':[None],'Additional Investment':[None], 'Withdraw':[None],'Transfer':[None]}
-#df = pd.DataFrame(data)
+data = {'Management fee': management_fee_list,'Intial Investment':[None],'Additional Investment':[None], 'Withdraw':[None],'Transfer':[None]}
+df = pd.DataFrame(data)
 
-#print(df)
+print(df)
 
 
 
