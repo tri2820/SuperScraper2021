@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         .dropbtn {
-        background-color: #997ab3;
+        background-color: #0115ca;
         color: white;
         padding: 16px;
         font-size: 16px;
@@ -17,7 +17,7 @@
         .dropbtn:hover, .dropbtn:focus {
         background-color: #997ab3;
         }
-        
+
         .dropdown {
         position: relative;
         display: inline-block;
@@ -40,7 +40,7 @@
         }
         
         .dropdown a:hover {background-color: #ddd;}
-
+        
         .btn:hover {
         background-color: #000d85;
         }
@@ -79,7 +79,7 @@
         .dropdown:hover .dropdown-content {display: block;}
  
         .dropdown:hover .dropbtn {background-color: #0b018d;}
-                
+        
         .show {display: block;}
 
         body {font-family: Arial, Helvetica, sans-serif;}
@@ -189,68 +189,61 @@
     </style>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
+      google.charts.load('current', {'packages':['bar']});
       google.charts.setOnLoadCallback(drawChart);
-      
-      //extracted data will go here
+
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Month', 'Hesta', 'Aware', 'Telstra'],
-          ['May',  1000,      400, 100],
-          ['April',  1170,      460, 500],
-          ['March',  660,       1120, 1000],
-          ['February',  1030,      540, 900]
+          ['Month', 'Balanced Growth', 'High Growth', 'Conservative Growth'],
+          ['Feb', 1000, 1200, 1400],
+          ['Mar', 1170, 1400, 1750],
+          ['Apr', 1029, 1290, 1600],
+          ['May', 1409, 2432, 1340]
         ]);
 
         var options = {
-          title: 'Monthly Super Performance',
-          curveType: 'function',
-          legend: { position: 'bottom' }
+          chart: {
+            title: 'Super Performance',
+            subtitle: 'Balanced growth, High Growth, and Conservative growth: 2021',
+          },
+          bars: 'vertical' // Required for Material Bar Charts.
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        var chart = new google.charts.Bar(document.getElementById('barchart_material'));
 
-        chart.draw(data, options);
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+      }
+    
+      google.charts.load('current', {'packages':['table']});
+      google.charts.setOnLoadCallback(drawTable);
+
+      function drawTable() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Type');
+        data.addColumn('number', 'Feb');
+        data.addColumn('number', 'Mar');
+        data.addColumn('number', 'Apr');
+        data.addColumn('number', 'May');
+        data.addRows([
+          ['Balanced Growth', 1000, 1170, 1029, 1409],
+          ['Conservative growth', 1400,  1290, 1800, 2432],
+          ['High Growth',1400, 1750, 1600, 1340]          
+        ]);
+
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+
+        table.draw(data, {showRowNumber: false, width: '100%', height: '100%'});
       }
     </script>
-
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript">
-    google.charts.load('current', {'packages':['bar']});
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ['Year', 'Sales', 'Expenses', 'Profit'],
-        ['2014', 1000, 400, 200],
-        ['2015', 1170, 460, 250],
-        ['2016', 660, 1120, 300],
-        ['2017', 1030, 540, 350]
-      ]);
-
-      var options = {
-        chart: {
-          title: 'Company Performance',
-          subtitle: 'Sales, Expenses, and Profit: 2014-2017',
-        },
-        bars: 'horizontal' // Required for Material Bar Charts.
-      };
-
-      var chart = new google.charts.Bar(document.getElementById('barchart_material'));
-
-      chart.draw(data, google.charts.Bar.convertOptions(options));
-    }
-  </script>
-
 </head>
 <body style="background: white;">
     <h1>Super Scraper <i class="fa fa-line-chart" style="font-size:24px"></i> </h1> 
     <div class="topnav">
-      <a class="active" href="index.html">Home</a>
+      <a href="index.html">Home</a>
       <a href="#about">Contact</a>
       <a href="#contact">Extract</a>
       <a href="#contact">Scrape</a>
-      <a href="index.html">Refresh</a>
+      <a href="hesta.html">Refresh</a>
       <div class="search-container">
         <form action="/action_page.php">
           <input type="text" placeholder="Search.." name="search">
@@ -293,6 +286,8 @@
         <a href="#">Historical Data</a>
         </div>
       </div>
+    <br>
+    <h2><b>Hesta Superannuation</b></h2>
 
       <script>
       function myFunction() {
@@ -311,10 +306,11 @@
         }
       }
       </script> 
-      <h2>Summary of Superannuation</h2>
-      <div id="curve_chart" style="width: 800px; height: 500px"></div>
-
-
+      <div id="barchart_material" style="width: 800px; height: 500px"></div>
+      <br>
+      <br>
+      <h2>Table Format</h2>
+      <div id="table_div" style="width: 800px; height: 500px"></div>
       
     
 </body>
