@@ -108,6 +108,21 @@ class StringTest:
 # --
 
 
+
+def find_most_similar(string_, compare_string_list_):
+    highest_match = ("","",0)
+    similarity_list = []
+    for item in compare_string_list_:
+        ratio_ = SequenceMatcher(None,item,string_).ratio()
+        match_info = (string_, item, ratio_)
+        similarity_list.append(match_info)
+
+    for match_info in similarity_list:
+        if match_info[2] > highest_match[2]:
+            highest_match = match_info
+    return highest_match
+
+
 class ExtractTableHandler:
     # -Remmbe self.url_string
     url_string = "https://www.vanguard.com.au/adviser/products/documents/8189/AU"
@@ -212,18 +227,18 @@ class TableExtraction:
     def __init__(self, url_string_):
         self.url_string = url_string_
 
-    def get_tables(self):
+    def extract_tables(self):
         self.extracted_tables['stream'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=False)
-        self.extracted_tables['lattice_b_t'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=False, process_background = True)
-        self.extracted_tables['lattice_b_f'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=False, process_background = False)
+        self.extracted_tables['lattice_b_t'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'lattice',flag_size=False, process_background = True)
+        self.extracted_tables['lattice_b_f'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'lattice',flag_size=False, process_background = False)
 
     def filter_tables(self):
 
         for table_type in self.extracted_tables:
             tables_ = self.extracted_tables[table_type]
             for table_ in tables_:
-                table_df = table.df
-                drop_table = Falsea
+                table_df = table_.df
+                drop_table = False
                 # If only one column or one row - drop
                 if table_.shape[0] <= 1 or table_.shape[1] <= 1:
                     drop_table = True
@@ -249,14 +264,14 @@ class TableExtraction:
         table_midpoint = (x_mid, y_mid)
 
         # Table area
-        table_area = (max(_cols_) - min(_cols_)) * (max(_rows_) - min(_rows_))
+        table_area = (max(cols_) - min(cols_)) * (max(rows_) - min(rows_))
 
         table_object = {
             'table': table_,
-            'table_bbox': table_bbox,
-            'table_bbox_string': table_bbox_string,
-            'table_midpoint': table_midpoint,
-            'table_area': table_area
+            'bbox': table_bbox,
+            'bbox_string': table_bbox_string,
+            'midpoint': table_midpoint,
+            'area': table_area
         }
 
         return table_object
@@ -264,8 +279,82 @@ class TableExtraction:
 
 class TableDataExtractor:
 
-    def __init__(self, url_string_):
-        self.url_string = url_string_
+    tables = []
+    tables_dfs = []
+    similarity_data = {}
+    similarity_df_list = {}
+
+    compare_string_list = ['management fee','fees and expenses','estimated total management costs']
+
+    def __init__(self):
+        self.tables = []
+        self.tables_dfs = []
+        self.similarity_data = {}
+        self.similarity_df_list = {}
+
+    def store_extracted_tables(self, extracted_tables_):
+
+        tables = []
+        tables_dfs = []
+
+        for table_type in extracted_tables_:
+            tables_ = extracted_tables_[table_type]
+            for table_data in tables_:
+                table_ = table_data['table']
+                self.tables.append(table_data)
+                self.tables_dfs.append(table_.df)
+
+    def extract_similar_rows(self):
+        # Returns string_, compared_string, ratio
+        #find_most_similar(value, compare_string_list)
+
+        for compare_value in self.compare_string_list:
+            self.similarity_data[compare_value] = []
+
+        for i in range(len(self.tables_dfs)):
+            table_df = self.tables_dfs[i]
+            for column_name in table_df.columns:
+                similarities_list = [(idx,i,find_most_similar(value, self.compare_string_list)) for (idx, value) in zip(table_df.index, table_df[column_name])]
+                for similarity_object in similarities_list:
+                    sim_val = similarity_object[2][2]
+                    if sim_val > 0.3:
+                        self.similarity_data[similarity_object[2][1]].append(similarity_object)
+        # --
+
+    def compile_similarity_data(self):
+
+        self.similarity_df_list = {}
+
+        for similarity_type in self.similarity_data:
+            sim_list = self.similarity_data[similarity_type]
+            sim_df_list = []
+            for sim_val in sim_list:
+                row = self.tables_dfs[sim_val[1]].iloc[[sim_val[0]]]
+                sim_df_list.append(row)
+            sim_df = pd.concat(sim_df_list)
+            self.similarity_df_list[similarity_type] = sim_df
+
+    def print_similarity_df(self):
+
+        for similarity_type in self.similarity_df_list:
+            print(f' ----- {similarity_type} ----- '.format())
+            sim_df = self.similarity_df_list[similarity_type]
+            print(sim_df)
+
+
+
+
+
+
+extraction = TableExtraction('https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund_PDS.pdf')
+extraction.extract_tables()
+extraction.filter_tables()
+
+extract_data = TableDataExtractor()
+extract_data.store_extracted_tables(extraction.filtered_tables)
+extract_data.extract_similar_rows()
+extract_data.compile_similarity_data()
+extract_data.print_similarity_df()
 
 
 #getting the dataframe
@@ -352,9 +441,7 @@ if len(tables_list) > 0:
                 #plt.close('all')
             input(' - Press Enter to proceed')
             plt.close('all')
-'''
 
-        '''
         for x in tables_:7
             #camelot.plot(x, kind='text').show()
             #camelot.plot(x, kind='grid').show()
@@ -377,7 +464,7 @@ if len(tables_list) > 0:
             print(x.parsing_report)
             input(' - Press Enter to proceed')
             plt.close('all')
-        '''
+'''
         # --
     # --
 # --
