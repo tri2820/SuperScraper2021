@@ -15,6 +15,7 @@ import PyPDF2
 
 import pandas as pd
 
+import matplotlib.pyplot as plt
 
 '''
 Below are some funds and the corrisponding links to the pdfs, i dont think we dont want to be uploading pdfs to the bitbucket, so download them and then move them out when uploading or something
@@ -192,7 +193,83 @@ class ExtractTableHandler:
 
 # --
 
+
+class TableExtraction:
+
+    url_string = ''
+    extracted_tables = {
+        'stream': [],
+        'lattice_b_t': [],
+        'lattice_b_f': [],
+    }
+
+    filtered_tables = {
+        'stream': [],
+        'lattice_b_t': [],
+        'lattice_b_f': [],
+    }
+
+    def __init__(self, url_string_):
+        self.url_string = url_string_
+
+    def get_tables(self):
+        self.extracted_tables['stream'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=False)
+        self.extracted_tables['lattice_b_t'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=False, process_background = True)
+        self.extracted_tables['lattice_b_f'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=False, process_background = False)
+
+    def filter_tables(self):
+
+        for table_type in self.extracted_tables:
+            tables_ = self.extracted_tables[table_type]
+            for table_ in tables_:
+                table_df = table.df
+                drop_table = Falsea
+                # If only one column or one row - drop
+                if table_.shape[0] <= 1 or table_.shape[1] <= 1:
+                    drop_table = True
+
+                if not drop_table:
+                    table_object = self.generate_table_stats(table_)
+                    self.filtered_tables[table_type].append(table_object)
+        # --
+
+    def generate_table_stats(self, table_):
+
+        # Table bbox
+        cols_ = [item for t in table_.cols for item in t]
+        rows_ = [item for t in table_.rows for item in t]
+
+        table_bbox = ((min(cols_),max(rows_)), (max(cols_), min(rows_)))
+        table_bbox_string = str(min(cols_)) + ',' + str(max(rows_)) + ',' + str(max(cols_)) + ',' + str(min(rows_))
+
+        # Table midpoint
+        x_mid = (min(cols_)+max(cols_))/2
+        y_mid = (min(rows_)+max(rows_))/2
+
+        table_midpoint = (x_mid, y_mid)
+
+        # Table area
+        table_area = (max(_cols_) - min(_cols_)) * (max(_rows_) - min(_rows_))
+
+        table_object = {
+            'table': table_,
+            'table_bbox': table_bbox,
+            'table_bbox_string': table_bbox_string,
+            'table_midpoint': table_midpoint,
+            'table_area': table_area
+        }
+
+        return table_object
+
+
+class TableDataExtractor:
+
+    def __init__(self, url_string_):
+        self.url_string = url_string_
+
+
 #getting the dataframe
+'''
 table_handler = ExtractTableHandler("https://www.vanguard.com.au/adviser/products/documents/8189/AU")
 table_handler.get_tables()
 management_fee_list = table_handler.extract_table()
@@ -202,6 +279,108 @@ data = {'Management fee': management_fee_list,'Intial Investment':[None],'Additi
 df = pd.DataFrame(data)
 
 print(df)
+'''
+
+# 'https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund_PDS.pdf'
+# 'https://www.pendalgroup.com/wp-content/uploads/docs/factsheets/PDS/Pendal%20Focus%20Australian%20Share%20Fund%20-%20PDS.pdf?v=2021-05-141620965181'
+
+'''
+
+url_string = 'https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund_PDS.pdf'
+
+#url_string = 'https://www.pendalgroup.com/wp-content/uploads/docs/factsheets/PDS/Pendal%20Focus%20Australian%20Share%20Fund%20-%20PDS.pdf?v=2021-05-141620965181'
+
+tables_list = []
+
+# '1,2,3,4,5,6,7,8,9,10,11,12,13'
+
+plt.rcParams["figure.figsize"] = (8,8)
+
+tables_streams = camelot.read_pdf(url_string, pages = 'all', flavor = 'stream', flag_size = True)
+tables_lattice_true = camelot.read_pdf(url_string, pages = 'all', flavor = 'lattice', process_background = True)
+tables_lattice_false = camelot.read_pdf(url_string, pages = 'all', flavor = 'lattice', process_background = False)#, flag_size = True
+
+#if tables.n > 0:
+tables_list.append((tables_streams,tables_lattice_true,tables_lattice_false))
+# --
+
+if len(tables_list) > 0:
+    for tables_a in tables_list:
+        tables_streams_ = tables_a[0]
+        tables_lattice_true_ = tables_a[1]
+        tables_lattice_false_ = tables_a[2]
+        lentgth = max([len(tables_streams_),len(tables_lattice_true_),len(tables_lattice_false_)])
+        for i in range(lentgth):
+            if i < len(tables_streams_):
+                x = tables_[i]
+                #camelot.plot(x, kind='text').show()
+                #camelot.plot(x, kind='grid').show()
+                plt.title('stream')
+                camelot.plot(x, kind='contour').show()
+                print(x.df)
+                #print('Accuracy: ', x.accuracy)
+                #print('Page: ', x.page)
+                print('stream')
+                print(x.parsing_report)
+                #input(' - Press Enter to proceed')
+                #plt.close('all')
+            if i < len(tables_lattice_true_):
+                x = tables_1[i]
+                #camelot.plot(x, kind='text').show()
+                #camelot.plot(x, kind='grid').show()
+                plt.title('tables_lattice')
+                camelot.plot(x, kind='contour').show()
+                print(x.df)
+                #print('Accuracy: ', x.accuracy)
+                #print('Page: ', x.page)
+                print('process_background = False')
+                print(x.parsing_report)
+                #input(' - Press Enter to proceed')
+                #plt.close('all')
+            if i < len(tables_lattice_false_):
+                x = tables_1[i]
+                #camelot.plot(x, kind='text').show()
+                #camelot.plot(x, kind='grid').show()
+                plt.title('tables_lattice_false')
+                camelot.plot(x, kind='contour').show()
+                print(x.df)
+                #print('Accuracy: ', x.accuracy)
+                #print('Page: ', x.page)
+                print('process_background = False')
+                print(x.parsing_report)
+                #input(' - Press Enter to proceed')
+                #plt.close('all')
+            input(' - Press Enter to proceed')
+            plt.close('all')
+'''
+
+        '''
+        for x in tables_:7
+            #camelot.plot(x, kind='text').show()
+            #camelot.plot(x, kind='grid').show()
+            camelot.plot(x, kind='contour').show()
+            print(x.df)
+            #print('Accuracy: ', x.accuracy)
+            #print('Page: ', x.page)
+            print(x.parsing_report)
+            input(' - Press Enter to proceed')
+            plt.close('all')
+        # --
+
+        for x in tables_1:
+            #camelot.plot(x, kind='text').show()
+            #camelot.plot(x, kind='grid').show()
+            camelot.plot(x, kind='contour').show()
+            print(x.df)
+            #print('Accuracy: ', x.accuracy)
+            #print('Page: ', x.page)
+            print(x.parsing_report)
+            input(' - Press Enter to proceed')
+            plt.close('all')
+        '''
+        # --
+    # --
+# --
 
 
 
