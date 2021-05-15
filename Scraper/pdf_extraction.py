@@ -17,6 +17,8 @@ import pandas as pd
 
 import matplotlib.pyplot as plt
 
+from operator import itemgetter
+
 '''
 Below are some funds and the corrisponding links to the pdfs, i dont think we dont want to be uploading pdfs to the bitbucket, so download them and then move them out when uploading or something
 https://www.pendalgroup.com/products/pendal-australian-share-fund/ : https://www.pendalgroup.com/wp-content/uploads/docs/factsheets/PDS/Pendal%20Australian%20Share%20Fund%20-%20PDS.pdf?v=2021-05-061620317117
@@ -284,7 +286,14 @@ class TableDataExtractor:
     similarity_data = {}
     similarity_df_list = {}
 
-    compare_string_list = ['management fee','fees and expenses','estimated total management costs']
+    compare_string_list = ['management fee','fees and expenses','estimated total management costs','buy/sell spread']
+
+    compare_catargories = {
+        'management fee': 'Management Fee',
+        'fees and expenses': 'Management Fee',
+        'estimated total management costs': 'Management Fee',
+        'buy/sell spread': 'Buy/Sell spread',
+    }
 
     def __init__(self):
         self.tables = []
@@ -304,7 +313,7 @@ class TableDataExtractor:
                 self.tables.append(table_data)
                 self.tables_dfs.append(table_.df)
 
-    def extract_similar_rows(self):
+    def extract_similar_rows(self, init_threshold):
         # Returns string_, compared_string, ratio
         #find_most_similar(value, compare_string_list)
 
@@ -317,7 +326,8 @@ class TableDataExtractor:
                 similarities_list = [(idx,i,find_most_similar(value, self.compare_string_list)) for (idx, value) in zip(table_df.index, table_df[column_name])]
                 for similarity_object in similarities_list:
                     sim_val = similarity_object[2][2]
-                    if sim_val > 0.3:
+                    # A more agressive threshold can be applied in data filter functions
+                    if sim_val > init_threshold:
                         self.similarity_data[similarity_object[2][1]].append(similarity_object)
         # --
 
@@ -328,11 +338,46 @@ class TableDataExtractor:
         for similarity_type in self.similarity_data:
             sim_list = self.similarity_data[similarity_type]
             sim_df_list = []
+            #count = 0
             for sim_val in sim_list:
                 row = self.tables_dfs[sim_val[1]].iloc[[sim_val[0]]]
+                #row.index = count
                 sim_df_list.append(row)
+                #count += 1
             sim_df = pd.concat(sim_df_list)
+            sim_df.set_index(pd.Index(range(len(sim_df))), inplace = True)
             self.similarity_df_list[similarity_type] = sim_df
+
+    def sort_as_most_similar(self, set_main_data=False, shrink=None):
+
+        shrinked_catagories = {}
+
+        for map_value in self.compare_catargories:
+            cat_value = self.compare_catargories[map_value]
+            shrinked_catagories[cat_value] = []
+
+        for sim_cat in self.similarity_data:
+            sim_data = self.similarity_data[sim_cat]
+            shrinked_catagories[self.compare_catargories[sim_cat]].extend(sim_data)
+
+        # Sort values by similarity threshold
+        for cat_name in shrinked_catagories:
+            sim_values = shrinked_catagories[cat_name]
+            sim_values = sorted(sim_values, key=lambda tup: tup[2][2], reverse=True)
+            #if shrink != None:
+            #    if shrink > 0:
+            shrinked_catagories[cat_name] = sim_values
+
+        #for cat_name in shrinked_catagories:
+        #    sim_values = shrinked_catagories[cat_name][:10]
+        #    for value in sim_values:
+        #        print(value)
+
+        if set_main_data:
+            self.similarity_data = shrinked_catagories
+
+        return shrinked_catagories[cat_name]
+
 
     def print_similarity_df(self):
 
@@ -346,15 +391,18 @@ class TableDataExtractor:
 
 
 
+'''
 extraction = TableExtraction('https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund_PDS.pdf')
 extraction.extract_tables()
 extraction.filter_tables()
 
 extract_data = TableDataExtractor()
 extract_data.store_extracted_tables(extraction.filtered_tables)
-extract_data.extract_similar_rows()
+extract_data.extract_similar_rows(0.2)
+extract_data.sort_as_most_similar(True)
 extract_data.compile_similarity_data()
 extract_data.print_similarity_df()
+'''
 
 
 #getting the dataframe

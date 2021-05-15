@@ -2,7 +2,7 @@ import pandas as pd
 from itemadapter import ItemAdapter
 import pymongo
 import logging
-from pdf_extraction import StringTest, ExtractTableHandler
+from pdf_extraction import StringTest, ExtractTableHandler, TableExtraction, TableDataExtractor
 
 
 MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
@@ -124,13 +124,31 @@ class FundManagerHandler:
         fund_id = fund_document['_id']
         site_traversal_id = fund_document['metadata']['site_traversal_id']
 
-        table_handler = ExtractTableHandler(fund_document['metadata']['pdf_url'])
-        table_handler.get_tables()
-        management_fee_list = table_handler.extract_table()
-        data = {'Management fee': management_fee_list,'Intial Investment':[None],'Additional Investment':[None], 'Withdraw':[None],'Transfer':[None]}
-        df = pd.DataFrame(data)
-        print(df)
-        return df
+        extraction = TableExtraction(fund_document['metadata']['pdf_url'])
+        extraction.extract_tables()
+        extraction.filter_tables()
+
+        extract_data = TableDataExtractor()
+        extract_data.store_extracted_tables(extraction.filtered_tables)
+        extract_data.extract_similar_rows(0.2)
+        extract_data.sort_as_most_similar(True)
+        extract_data.compile_similarity_data()
+        extract_data.print_similarity_df()
+
+        sim_df_list = extract_data.similarity_df_list
+
+        fund_document['Management Fee'] = sim_df_list['Management Fee']
+        fund_document['Buy/Sell spread'] = sim_df_list['Buy/Sell spread']
+
+        fund_document = self.dbHandler.find_or_create_document(self.name_collection, fund_document, True)
+
+        #table_handler = ExtractTableHandler(fund_document['metadata']['pdf_url'])
+        #table_handler.get_tables()
+        #management_fee_list = table_handler.extract_table()
+        #data = {'Management fee': management_fee_list,'Intial Investment':[None],'Additional Investment':[None], 'Withdraw':[None],'Transfer':[None]}
+        #df = pd.DataFrame(data)
+        #print(df)
+        #return df
 
     # --
 # --
