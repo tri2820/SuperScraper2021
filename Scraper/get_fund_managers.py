@@ -2,7 +2,7 @@ import pandas as pd
 from itemadapter import ItemAdapter
 import pymongo
 import logging
-from pdf_extraction import StringTest, ExtractTableHandler, TableExtraction, TableDataExtractor
+from Scraper.pdf_extraction import StringTest, ExtractTableHandler, TableExtraction, TableDataExtractor
 
 
 MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
@@ -137,8 +137,8 @@ class FundManagerHandler:
 
         sim_df_list = extract_data.similarity_df_list
 
-        fund_document['Management Fee'] = sim_df_list['Management Fee']
-        fund_document['Buy/Sell spread'] = sim_df_list['Buy/Sell spread']
+        fund_document['Management Fee'] = sim_df_list['Management Fee'][1][0]
+        fund_document['Buy/Sell spread'] = sim_df_list['Buy/Sell spread'][1][0]
 
         fund_document = self.dbHandler.find_or_create_document(self.name_collection, fund_document, True)
 
@@ -152,6 +152,11 @@ class FundManagerHandler:
 
     # --
 # --
+
+
+
+
+'''
 
 test_obj_list = [
     {
@@ -192,15 +197,65 @@ test_obj_list = [
     },
 ]
 
-
 fund_manager_handler = FundManagerHandler()
 fund_manager_handler.open_connection()
-for test_obj in test_obj_list[:2]:
+for test_obj in [test_obj_list[1]]:
     fund_manager_handler.find_pdf_urls(test_obj)
     fund_manager_handler.get_document_pdf_data(test_obj)
 # --
 fund_manager_handler.close_connection()
+'''
 
+
+def run_test():
+
+    test_obj_list = [
+        {
+            '_id': 'RFA0059AU',
+            'name': 'Pendal Focus Australian Share Fund',
+            'APIR_code': 'RFA0059AU',
+            'metadata': {
+                'site_traversal_id': 'pendal_site_traversal',
+                #'pdf_url': 'uehfaouefu.pdf',
+            },
+        },
+        {
+            '_id': 'BNT0003AU',
+            'name': 'Hyperion Australian Growth Companies Fund',
+            'APIR_code': 'BNT0003AU',
+            'metadata': {
+                'site_traversal_id': 'hyperion_site_traversal',
+                #'pdf_url': 'uehfaouefu.pdf',
+            },
+        },
+        {
+            '_id': 'FID0008AU',
+            'name': 'Fidelity Australian Equities',
+            'APIR_code': 'FID0008AU',
+            'metadata': {
+                'site_traversal_id': 'fidelity_site_traversal',
+                #'pdf_url': 'uehfaouefu.pdf',
+            },
+        },
+        {
+            '_id': 'VAN0002AU',
+            'name': 'Vanguard Australian Share Index',
+            'APIR_code': 'VAN0002AU',
+            'metadata': {
+                'site_traversal_id': 'vanguard_site_traversal',
+                #'pdf_url': 'uehfaouefu.pdf',
+            },
+        },
+    ]
+
+    fund_manager_handler = FundManagerHandler()
+    fund_manager_handler.open_connection()
+    for test_obj in [test_obj_list[1]]:
+        fund_manager_handler.find_pdf_urls(test_obj)
+        fund_manager_handler.get_document_pdf_data(test_obj)
+    # --
+    fund_manager_handler.close_connection()
+# --
 
 
 

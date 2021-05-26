@@ -147,13 +147,13 @@ def run_scraper_traversal():
                 'parse_select':'traverse',
                 'page_filters': {
                     'RFA0059AU': ['RFA0059AU'],
-                    'BTA0061AU': ['BTA0061AU'],
-                    'WFS0377AU': ['WFS0377AU'],
+                    #'BTA0061AU': ['BTA0061AU'],
+                    #'WFS0377AU': ['WFS0377AU'],
                 },
             },
         }
 
-        yield runner.crawl('Traversal', traverse_data = traverse_data_1)
+        #yield runner.crawl('Traversal', traverse_data = traverse_data_1)
 
         traverse_data_2 = {
             '_id': 'hyperion_site_traversal',
@@ -190,7 +190,7 @@ def run_scraper_traversal():
     print("Crawl Completed")
 # --
 
-run_scraper_traversal()
+#run_scraper_traversal()
 
 #run_scraper()
 

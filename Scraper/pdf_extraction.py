@@ -75,7 +75,7 @@ import io
 import requests
 
 
-tables = camelot.read_pdf("https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund-PDS-Additional-Information.pdf",pages = 'all', flavor = 'stream',flag_size=True)
+#tables = camelot.read_pdf("https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund-PDS-Additional-Information.pdf",pages = 'all', flavor = 'stream',flag_size=True)
 
 
 class StringTest:
@@ -115,7 +115,7 @@ def find_most_similar(string_, compare_string_list_):
     highest_match = ("","",0)
     similarity_list = []
     for item in compare_string_list_:
-        ratio_ = SequenceMatcher(None,item,string_).ratio()
+        ratio_ = SequenceMatcher(None,item,string_.lower()).ratio()
         match_info = (string_, item, ratio_)
         similarity_list.append(match_info)
 

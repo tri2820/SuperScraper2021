@@ -9,9 +9,21 @@ import tkinter as tk
 import os
 from Extractor.extractor import extract
 
-from scraper_run import SpiderHandler
+from scraper_run import SpiderHandler, run_scraper_traversal
 
 from Maintenance.Maintenance import clear_docs, delete_docs
+
+#from Scraper.get_fund_managers import run_test
+
+#from Scraper import pdf_extraction
+
+#from Scraper import  get_fund_managers
+
+from Scraper.get_fund_managers import run_test
+
+#from Scraper import pdf_extraction
+
+#from Scraper.pdf_extraction import StringTest, ExtractTableHandler, TableExtraction, TableDataExtractor
 
 spider_handler = SpiderHandler()
 
@@ -43,6 +55,12 @@ button_5.pack()
 
 button_6 = tk.Button(r, text = "Delete Database Docs", command = delete_docs)
 button_6.pack()
+
+button_7 = tk.Button(r, text = "Traverse test sites", command = run_scraper_traversal)
+button_7.pack()
+
+button_8 = tk.Button(r, text = "Extract pdf file data", command = run_test)
+button_8.pack()
 
 r.geometry("500x500")
 r.mainloop()
