@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
+
+    /*Intergrating design aspects to dropdown buttons*/
         .dropbtn {
         background-color: #997ab3;
         color: white;
@@ -13,16 +15,16 @@
         border: none;
         cursor: pointer;
         }
-        
+        /*Implementing hover button color*/
         .dropbtn:hover, .dropbtn:focus {
         background-color: #997ab3;
         }
-        
+        /*Creating Dropdown menu*/
         .dropdown {
         position: relative;
         display: inline-block;
         }
-        
+        /*Creating Dropdown Menu*/
         .dropdown-content {
         display: none;
         position: absolute;
@@ -32,6 +34,7 @@
         z-index: 1;
         }
         
+        /*Creating Dropdown Menu*/
         .dropdown-content a {
         color: black;
         padding: 12px 16px;
@@ -39,18 +42,20 @@
         display: block;
         }
         
+        /*Implementing font color for hover button options*/
         .dropdown a:hover {background-color: #ddd;}
         
         .show {display: block;}
 
         body {font-family: Arial, Helvetica, sans-serif;}
 
+       /*Creating Navigation bar*/       
         .navbar {
         width: 100%;
         background-color: rgb(138, 135, 135);
         overflow: auto;
         }
-
+      /*Creating Navigation bar*/   
         .navbar a {
         float: left;
         padding: 12px;
@@ -58,7 +63,7 @@
         text-decoration: none;
         font-size: 17px;
         }
-
+        /*Implementing colour for hover button in navigation bar*/   
         .navbar a:hover {
         background-color: #000;
         }
@@ -79,12 +84,12 @@
         margin: 0;
         font-family: Arial, Helvetica, sans-serif;
       }
-
+      /*Creating Top navigation bar*/   
       .topnav {
         overflow: hidden;
         background-color: #e9e9e9;
       }
-
+      /*Positioning of Top navigation bar*/   
       .topnav a {
         float: left;
         display: block;
@@ -94,28 +99,28 @@
         text-decoration: none;
         font-size: 17px;
       }
-
+      /*Implenting color for top navigation bar hover button*/   
       .topnav a:hover {
         background-color: #ddd;
         color: black;
       }
-
+      /*Implementing background colour for top bar navigation button*/   
       .topnav a.active {
         background-color: #556068;
         color: white;
       }
-
+      /*Creating search bar in the top navigation bar*/   
       .topnav .search-container {
         float: right;
       }
-
+      /*Creating input bar for search bar*/  
       .topnav input[type=text] {
         padding: 6px;
         margin-top: 8px;
         font-size: 17px;
         border: none;
       }
-
+      /*Positioning the search icon*/  
       .topnav .search-container button {
         float: right;
         padding: 6px 10px;
@@ -147,7 +152,7 @@
           border: 1px solid #ccc;  
         }
       }
-        
+        /*Intergrating design aspects to dropdown buttons*/
       .dropbtn {
         background-color: #b58bc2;
         color: white;
@@ -155,12 +160,12 @@
         font-size: 16px;
         border: none;
       }
-
+      /*Positioning drop down buttons*/
       .dropdown {
         position: relative;
         display: inline-block;
       }
-
+      /*Intergrating design aspects to dropdown buttons*/
       .dropdown-content {
         display: none;
         position: absolute;
@@ -169,7 +174,7 @@
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 1;
       }
-
+      /*Positioning of drop downbar*/
       .dropdown-content a {
         color: black;
         padding: 12px 16px;
@@ -182,13 +187,15 @@
       .dropdown:hover .dropdown-content {display: block;}
 
       .dropdown:hover .dropbtn {background-color: #b58bc2;}
+
     </style>
+    /*Creating line chart using google chart to show relative data*/
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart);
     
-    //extracted data will go here
+    /*Adding relevent attributes and data for the linechart*/
     function drawChart() {
       var data = google.visualization.arrayToDataTable([
         ['Month', 'Hesta', 'Aware', 'Telstra'],
@@ -197,7 +204,7 @@
         ['March',  660,       1120, 1000],
         ['February',  1030,      540, 900]
       ]);
-
+      /*Adding the title and postioning of line graph*/
       var options = {
         title: 'Monthly Super Performance',
         curveType: 'function',
@@ -209,6 +216,7 @@
       chart.draw(data, options);
     }
   </script>
+/*Added the top navigation bar, contact, extract, scrape and refresh buttons*/
 </head>
 <body style="background: white;">
     <h1>Super Scraper <i class="fa fa-line-chart" style="font-size:24px"></i> </h1> 
@@ -225,7 +233,7 @@
         </form>
       </div>
     </div>
-
+    /*Added the names of each superannuation offering for drop down menu*/
     <p> </p>
     <div class="dropdown">
       <button class="dropbtn">Hesta Super</button>
@@ -235,7 +243,7 @@
         <a href="#">High Growth</a>
       </div>
     </div>
-
+    /*Added the names of each superannuation offering for drop down menu*/
     <div class="dropdown">
       <button class="dropbtn">Aware Super</button>
       <div class="dropdown-content">
@@ -244,7 +252,7 @@
         <a href="#">High Growth</a>
       </div>
     </div>
-
+    /*Added the names of each superannuation offering for drop down menu*/
     <div class="dropdown">
       <button class="dropbtn">Telstra Super</button>
       <div class="dropdown-content">
@@ -253,13 +261,14 @@
         <a href="#">High Growth</a>
       </div>
     </div>
-
+    /*Added the names of each superannuation offering for drop down menu*/
     <div class="dropdown">
       <button class="dropbtn">Future Super</button>
       <div class="dropdown-content">
         <a href="#">Historical Data</a>
       </div>
     </div>
+    /*Showing the line curve on the window*/
     <div id="curve_chart" style="width: 900px; height: 500px"></div>
    
       <p></p>
