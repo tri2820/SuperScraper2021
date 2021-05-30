@@ -21,6 +21,12 @@ from Maintenance.Maintenance import clear_docs, delete_docs
 
 from Scraper.get_fund_managers import run_test
 
+import matplotlib
+
+import camelot
+
+#from Scraper import settings
+
 #from Scraper import pdf_extraction
 
 #from Scraper.pdf_extraction import StringTest, ExtractTableHandler, TableExtraction, TableDataExtractor

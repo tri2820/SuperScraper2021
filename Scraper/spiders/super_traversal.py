@@ -15,6 +15,7 @@ from scrapy.linkextractors import LinkExtractor
 
 from scrapy.http import Request
 
+
 from difflib import SequenceMatcher
 
 
