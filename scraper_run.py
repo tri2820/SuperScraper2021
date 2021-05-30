@@ -1,3 +1,5 @@
+from Scraper import settings
+
 #from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
@@ -48,17 +50,18 @@ class DatabaseHandler:
 
 # data-csv-url
 
+
 # spider handler class
 class SpiderHandler:
     fund_data_list = ["hesta", "telstra","future", "aware"]
-    spider_crawl_list= ['Hesta','Telstra', 'Future', 'Aware']
+    spider_crawl_list = ['Hesta','Telstra', 'Future', 'Aware']
 
-    def run_scraper():
-    #'''
+    def run_scraper(self):
         db_connection = DatabaseHandler(MONGO_URI, MONGO_DB)
         db_connection.open_connection()
-        for i in range(len(fund_data_list)):
-            fund_data = db_connection.retrieve_fund_data(fund_data_list[i])
+        fund_datas = []
+        for i in range(len(self.fund_data_list)):
+            fund_datas.append(db_connection.retrieve_fund_data(self.fund_data_list[i]))
         db_connection.close_connection()
 
         configure_logging()
@@ -68,9 +71,9 @@ class SpiderHandler:
 
         @defer.inlineCallbacks
         def crawl():
-            for i in range(len(spider_crawl_list)):
-                yield runner.crawl(spider_crawl_list[i], fund_data = aware_fund_data)
-                reactor.stop()
+            for i in range(len(fund_datas)):
+                yield runner.crawl(self.spider_crawl_list[i], fund_data = fund_datas[i])
+            reactor.stop()
 
         crawl()
 
@@ -78,6 +81,10 @@ class SpiderHandler:
 
         print("Crawl Completed")
 # --
+
+#spider = SpiderHandler()
+#print(spider.fund_data_list)
+#spider.run_scraper()
 
 
 # #run_scraper()
@@ -109,13 +116,85 @@ class SpiderHandler:
 
 #         yield runner.crawl('Future', fund_data = future_fund_data)
 
-#         reactor.stop()
+#         reactor.stop()a
 
-#     crawl()
 
-#     reactor.run()
+def run_scraper_traversal():
 
-#     #'''
+    configure_logging()
+
+    runner = CrawlerRunner(get_project_settings())
+
+
+    @defer.inlineCallbacks
+    def crawl():
+
+        traverse_data_1 = {
+            '_id': 'pendal_site_traversal',
+            'file_extraction_rules': {
+                'allow': [
+                    '.+\.pdf.+',
+                    '.+\.pdf',
+                ],
+                'filters': [
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ]
+            },
+            'domain': {
+                'domain_file': 'pendal',
+                'domain_name': 'www.pendalgroup.com',
+                'start_url': 'https://www.pendalgroup.com/',
+                'parse_select':'traverse',
+                'page_filters': {
+                    'RFA0059AU': ['RFA0059AU'],
+                    #'BTA0061AU': ['BTA0061AU'],
+                    #'WFS0377AU': ['WFS0377AU'],
+                },
+            },
+        }
+
+        #yield runner.crawl('Traversal', traverse_data = traverse_data_1)
+
+        traverse_data_2 = {
+            '_id': 'hyperion_site_traversal',
+            'file_extraction_rules': {
+                'allow': [
+                    '.+\.pdf.+',
+                    '.+\.pdf'
+                ],
+                'filters': [
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ]
+            },
+            'domain': {
+                'domain_file': 'hyperion',
+                'domain_name': 'www.hyperion.com.au',
+                'start_url': 'https://www.hyperion.com.au',
+                'parse_select':'traverse',
+                'page_filters': {
+                    'BNT0003AU': ['BNT0003AU'],
+                },
+            },
+        }
+
+        yield runner.crawl('Traversal', traverse_data = traverse_data_2)
+
+        reactor.stop()
+
+    crawl()
+
+    reactor.run()
+
+    print("Crawl Completed")
+# --
+
+#run_scraper_traversal()
+
+#run_scraper()
 
 #     print("Crawl Completed")
 
@@ -124,6 +203,47 @@ class SpiderHandler:
 
 
 
+'''
+fund_test_obj = {
+    '_id': 'RFA0059AU',
+    'name': 'Pendal Focus Australian Share Fund',
+    'APIR_code': 'RFA0059AU',
+    'metadata': {
+        'site_traversal_id': 'trav',
+        'pdf_url': 'uehfaouefu.pdf',
+    },
+}
+'''
+
+
+
+'''
+traverse_data = {
+    '_id': 'trav',
+    'file_extraction_rules': {
+        'allow': [
+            '.+\.pdf.+',#.+\.pdf
+            '.+\.pdf',
+        ],
+        'filters': [
+            '.+product.disclosure.statement.+',#%
+            '.+pds.+',
+            '.+PDS.+',
+        ]
+    },
+    'domain': {
+        'domain_file': 'pendal',
+        'domain_name': 'www.pendalgroup.com',
+        'start_url': 'https://www.pendalgroup.com/',
+        'parse_select':'traverse',
+        'page_filters': {
+            'RFA0059AU': ['RFA0059AU'],#RFA0059AU
+            'BTA0061AU': ['BTA0061AU'],#'APIR',
+            'WFS0377AU': ['WFS0377AU'],
+        },
+    },
+}
+'''
 
 
 
@@ -132,10 +252,17 @@ class SpiderHandler:
 
 
 
-
-
-
-
+'''
+'domains': [
+    'www.pendalgroup.com'
+],
+'page_filters': [
+    ['RFA0818AU'],
+    ['RFA0059AU'],
+    ['RFA0818AU'],
+    ['BNT0003AU']
+]
+'''
 
 
 

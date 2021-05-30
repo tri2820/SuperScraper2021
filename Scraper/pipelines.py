@@ -16,6 +16,11 @@ from collections import defaultdict
 
 from Scraper import spiderdatautils
 
+import re
+
+import json
+import csv
+
 
 
 '''
@@ -266,13 +271,56 @@ class SuperDataMongodb:
 
 
 
+class SiteTraversalCSV:
+
+    #file_name = 'pendal'
+
+    def process_item(self, item, spider):
+        traverse_item = ItemAdapter(item)
+        return item
+    # --
+
+    def close_spider(self, spider):
+        print('*!)$&*#&$)&* CLOSE SPIDER!')
+        with open(spider.domain['domain_file'] + '_traversed_urls.csv', 'w') as fp:
+            data_writer = csv.writer(fp)
+            for link in spider.traversed_urls:
+                data_writer.writerow([link])
+
+        with open(spider.domain['domain_file'] + '_file_urls.csv', 'w') as fp:
+            data_writer = csv.writer(fp)
+            for link in spider.file_urls:
+                data_writer.writerow([link])
+
+        with open(spider.domain['domain_file'] + '_filtered_pages.csv', 'w') as fp:
+            data_writer = csv.writer(fp)
+            for obj in spider.filtered_pages:
+                print(spider.filtered_pages[obj].values())
+                data_writer.writerow(spider.filtered_pages[obj].values())
+        # --
+
+        filtered_file_urls = {}
+        for obj in spider.file_urls:
+            for filter in spider.file_extraction['filters']:
+                print(filter, spider.file_urls[obj])
+                match = re.match(filter, obj)
+                if match != None:
+                    filtered_file_urls[obj] = obj
+                    break
+        # --
+
+        with open(spider.domain['domain_file'] + '_filtered_file_urls.csv', 'w') as fp:
+            data_writer = csv.writer(fp)
+            for obj in filtered_file_urls:
+                data_writer.writerow([filtered_file_urls[obj]])
+    # --
+# --
 
 
-'''
-class SuperDataMongodb:
+class SiteTraversalDB:
 
-    collection_name = 'offerings'
-    #monthly_performances
+    collection_name = 'site_traverse_data'
+
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
@@ -288,9 +336,76 @@ class SuperDataMongodb:
         self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
 
-    def close_spider(self, spider):
+    def process_item(self, item, spider):
+        traverse_item = ItemAdapter(item)
+        return item
+
+    def find_or_create_document(self, data_object, overwrite=False):
+        query = {'_id' : data_object['_id']}
+        document = self.db[self.collection_name].find_one(query)
+        # If none create one
+        if document == None:
+            self.db[self.collection_name].insert_one(data_object)
+            document = self.db[self.collection_name].find_one(query)
+        elif overwrite == True:
+            self.db[self.collection_name].update_one(query, {"$set": data_object})
+        # --
+        return document
+
+    def close_spider(self, spider):#spider.traverse_data
+
+        filtered_file_urls = {}
+        for obj in spider.file_urls:
+            for filter in spider.file_extraction['filters']:
+                #print(filter, spider.file_urls[obj])
+                match = re.match(filter, obj)
+                if match != None:
+                    #print(filter, spider.file_urls[obj])
+                    filtered_file_urls[obj] = obj
+                    #break
+        # --
+        new_document = spider.traverse_data
+        new_document['traverse_urls'] = list(spider.traversed_urls.values())
+        #new_document['filtered_traverse_urls'] = list(spider.filtered_pages.values())
+        new_document['filtered_traverse_urls'] = spider.filtered_pages#list(spider.filtered_pages.keys())
+        new_document['file_urls'] = list(spider.file_urls.values())
+        new_document['filtered_file_urls'] = list(filtered_file_urls.values())
+        #print(new_document['traverse_urls'][0])
+        #print(new_document['filtered_traverse_urls'][0])
+        #print(new_document['filtered_traverse_urls'])
+        #print(new_document['file_urls'][0])
+        #print(new_document['filtered_file_urls'][0])
+        document = self.find_or_create_document(new_document, True)
+        traversal_urls = spider.traversed_urls.values()
+
         self.client.close()
 
+        #values = {'$addToSet': {super_fund['insert_cat'] : {'$each': traversal_urls}}}
+        #self.db[self.collection_name].update_many(query, values)
+
+
+
+
+# --
+
+
+
+
+
+
+
+
+
+
+
+'''
+class SuperDataMongodb:
+
+
+import re
+
+
+class ScraperPipeline:
     def process_item(self, item, spider):
 
         super_fund = ItemAdapter(item)
@@ -346,72 +461,6 @@ class SuperDataMongodb:
         # ---
 
         return item
-    # --
-
-    def check_offering(self, super_fund, table_column_value, offering_query):
-        #offering_query = {'metadata.table_strings' : table_column_value}
-        offering = self.db[self.collection_name].find_one(offering_query)
-        # Ensure that this offering data is of the correct super fund
-        if offering == None:
-            return None
-        if super_fund['_id'] != offering['fund_id']:
-            return None
-        return offering
-
-
-    def check_for_offering_exist(self, super_fund, table_column_value, add_to_table = False):
-
-        # Check if offering already exists using metadata table string
-        offering_query = {'metadata.table_strings' : table_column_value}
-        offering = self.check_offering(super_fund, table_column_value, offering_query)
-
-        # Return offering if exists
-        if offering != None:
-            return offering
-
-        # Check if offering of same id type already exists
-        offering_id = super_fund['_id'] + '_' + table_column_value
-        offering_id = spiderdatautils.lower_underscore(offering_id)
-
-        offering_query = {'_id' : offering_id}
-        offering = self.check_offering(super_fund, table_column_value, offering_query)
-        #offering = self.db[self.collection_name].find_one(offering_query)
-
-        if offering == None:
-            return None
-        else:
-            # Ensure that this offering data is of the correct super fund
-            #if super_fund['_id'] != offering['fund_id']:
-            #    return None
-            # If add_to_table, add string if offer exists
-            if add_to_table:
-                query = {'_id' : offering['_id']}
-                values = {'$addToSet': {'metadata.table_strings' : {'$each': [offering_id]}}}
-                self.db[self.collection_name].update_many(query, values)
-            return offering
-    # --
-
-
-    def create_new_offering(self, super_fund, table_column_value):
-        offering_id = super_fund['_id'] + '_' + table_column_value
-        offering_id = spiderdatautils.lower_underscore(offering_id)
-        new_offering = {
-            '_id': offering_id,
-            'fund_id': super_fund['_id'],
-            'name': table_column_value,
-            'monthly_performances': [],
-            'historial_performances': [],
-            'costs_fees': [],
-            'allocations': [],
-            'inception': 'N/A',
-            'metadata': {'table_strings': [table_column_value]}
-            }
-        self.db[self.collection_name].insert_one(new_offering)
-        offering_query = {'_id' : new_offering['_id']}
-        queried_offering = self.check_offering(super_fund, table_column_value, offering_query)
-        return queried_offering
-    # --
-
 
 
 # --
@@ -435,20 +484,6 @@ class SuperDataArange:
         return item
 # --
 '''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

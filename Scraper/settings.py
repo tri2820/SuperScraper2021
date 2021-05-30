@@ -29,12 +29,17 @@ MONGO_COLLECTIONS = ["funds","offerings"]
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'Scraper.pipelines.SuperDataClean': 1,
-    'Scraper.pipelines.SuperDataMongodb': 2,
+    #'Scraper.pipelines.SuperDataClean': 1,
+    #'Scraper.pipelines.SuperDataMongodb': 2,
+    #'Scraper.pipelines.SuperTestTraversal': 1,
+    #'Scraper.pipelines.SiteTraversal': 1,
+    'Scraper.pipelines.SiteTraversalDB': 1,
+    #'Scraper.pipelines.SiteTraversalCSV': 2,
+    #'Scraper.pipelines.SuperDataMongodb': 300,
 }
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 32
+#CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
