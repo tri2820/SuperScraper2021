@@ -187,6 +187,7 @@
         }
       }
     </style>
+    <!--Bar chart settings-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
       google.charts.load('current', {'packages':['bar']});
@@ -213,7 +214,7 @@
 
         chart.draw(data, google.charts.Bar.convertOptions(options));
       }
-    
+      //Table format settings
       google.charts.load('current', {'packages':['table']});
       google.charts.setOnLoadCallback(drawTable);
 
@@ -306,10 +307,12 @@
         }
       }
       </script> 
+      <!--Call bar chart-->
       <div id="barchart_material" style="width: 800px; height: 500px"></div>
       <br>
       <br>
       <h2>Table Format</h2>
+      <!--Call table format-->
       <div id="table_div" style="width: 800px; height: 500px"></div>
       
     
