@@ -2,7 +2,29 @@
 
 
 
-### Installation
+## Installation
+
+### Installation - Standalone
+
+###### 1. Download
+
+Download and unzip the file.
+
+
+###### 2. Run install .bat or .bash
+
+Go to /install and run: 
+``` install.bat ```
+
+Wait until it says it is finished
+
+###### 3. Running program
+
+Go to the main directory and run:
+``` run_refreashbutton.bat ```
+
+
+### Installation - Dev
 
 ###### 1. Install Anaconda(Python)
 
