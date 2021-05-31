@@ -188,6 +188,7 @@
   google.charts.load('current', {'packages':['bar']});
   google.charts.setOnLoadCallback(drawChart);
 
+  /*Adding relevent attributes and data for the barchart*/
   function drawChart() {
     var data = google.visualization.arrayToDataTable([
       ['Year', 'Conservative Growth', 'Balanced Growth', 'High Growth'],
@@ -196,7 +197,7 @@
       ['2015',786, 453, 1264],
       ['2016', 921, 1036, 837]
     ]);
-
+/*Adding the title and axis names for the barchart*/
     var options = {
       chart: {
         title: 'Telstra Superannuation Performance',
@@ -211,6 +212,7 @@
   }
 </script>
 </head>
+<!--Navigating thorugh diferant windows using href-->
 <body style="background: white;">
     <h1>Super Scraper <i class="fa fa-line-chart" style="font-size:24px"></i> </h1> 
     <div class="topnav">
