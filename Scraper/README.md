@@ -15,22 +15,53 @@ Click download and choose the version in accordance with your OS.
 
 Install anaconda, follow the installation instructions.
 
-###### 2. Open Anacond Prompt
+###### 2. Download the files
+
+Download this repo.
+It will be in a zip file, extract it.
+
+###### 3. Change directory to the downloaded files
+
+Navigate to the files that you just extracted and copy the directory address (underlined in red)
+
+![Example on windows](../repo_images/extract_file_location.png)
+
+
+###### 4. Open Anaconda Prompt
 
 Once anaconda is installed you will need to open anaconda prompt.
 
 Search for 'anaconda prompt' and run it.
 
-![Example on windows](repo_images/anaconda_prompt.png)
+![Example on windows](../repo_images/anaconda_prompt.png)
+
+
+###### 5. Navigate to the extracted files in anaconda prompt
+
+Enter the following command to navigate to the files:
+``` cd {the directory address you copied} ```
+
+Make sure that you successfully navigated to that directory
+
+###### 6. Run the following commands
+
+When running the commands type 'y' to accept when prompted.
+
+``` conda deactivate ```
+
+``` conda create --name ScrapperTest --file requirements.txt --channel default --channel conda-forge --channel anaconda ```
+
+``` conda activate ScrapperTest ```
+
+If this all works then the installation was successful
+
 
 
 ### How To Run This
 
-Navigate to the base directory (Its name is 'Scraper' and it has this file in it)
+In the anaconda prompt console (or in IDE ect..) type: 'python refreshbutton.py' .
 
-In the anaconda prompt console (or in IDE ect..) type: 'python scraper_run.py' .
-
-This will run everything that is setup so far-ish.
+This will run the scraper.
 
 
 ### How Scrapy Works - ish
