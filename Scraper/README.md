@@ -21,6 +21,8 @@ Once anaconda is installed you will need to open anaconda prompt.
 
 Search for 'anaconda prompt' and run it.
 
+![Example on windows](/../repo_images/anaconda_prompt.png)
+
 
 ### How To Run This
 
