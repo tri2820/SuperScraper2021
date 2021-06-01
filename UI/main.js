@@ -32,9 +32,8 @@ require('child_process').execFile("Users/priyankaram/super-scrapper/Extractor/ex
 
   }
   console.log(stdout);
-
-});
-// Allows to quit the window 
+})
+// Intergrating python script with electron JS 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
