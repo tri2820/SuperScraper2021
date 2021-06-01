@@ -7,6 +7,8 @@ MONGODB_DB = "SuperScrapper"
 # These are collection names(currently in database)
 MONGODB_COLLECTIONS = ["funds","offerings"]
 
+''' --- Needs possible updating --- '''
+
 '''
 
 Before using this scipt:
