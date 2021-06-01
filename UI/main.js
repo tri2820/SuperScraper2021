@@ -1,6 +1,7 @@
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
 
+// Creating Desktop Window and loading index.html 
 function createWindow () {
   const win = new BrowserWindow({
     width: 800,
@@ -12,7 +13,7 @@ function createWindow () {
 
   win.loadFile('index.html')
 }
-
+// Enabling browsing via desktop window 
 app.whenReady().then(() => {
   createWindow()
 
@@ -22,7 +23,18 @@ app.whenReady().then(() => {
     }
   })
 })
+// Intergrating python script with electron JS 
+require('child_process').execFile("Users/priyankaram/super-scrapper/Extractor/extractor.py", [3000], (error, stdout, stderr) => {
 
+  if (error) {
+
+      console.log(error);
+
+  }
+  console.log(stdout);
+
+});
+// Allows to quit the window 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
