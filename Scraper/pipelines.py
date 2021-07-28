@@ -300,13 +300,32 @@ class SiteTraversalCSV:
         # --
 
         filtered_file_urls = {}
-        for obj in spider.file_urls:
+        for obj_string in spider.file_urls:
+            obj = spider.file_urls[obj_string]
+            '''
             for filter in spider.file_extraction['filters']:
                 print(filter, spider.file_urls[obj])
                 match = re.match(filter, obj)
                 if match != None:
                     filtered_file_urls[obj] = obj
                     break
+            '''
+            for filter in spider.file_extraction['filters']:
+                #print(filter, spider.file_urls[obj])
+                match = re.match(filter, obj.url)
+                if match != None:
+                    #print(filter, spider.file_urls[obj])
+                    filtered_file_urls[obj.url] = obj.url
+                    break
+            for restrict_text in spider.file_extraction['restrict_text']:
+                #print(restrict_text, spider.file_urls[obj])
+                if obj.text and len(obj.text) > 0:
+                    #print(restrict_text, '----',obj.text)
+                    match = re.match(restrict_text, obj.text)
+                    if match != None:
+                        #print(restrict_text, spider.file_urls[obj])
+                        filtered_file_urls[obj.url] = obj.url
+                        break
         # --
 
         with open(spider.domain['domain_file'] + '_filtered_file_urls.csv', 'w') as fp:
@@ -355,21 +374,30 @@ class SiteTraversalDB:
     def close_spider(self, spider):#spider.traverse_data
 
         filtered_file_urls = {}
-        for obj in spider.file_urls:
+        for obj_string in spider.file_urls:
+            obj = spider.file_urls[obj_string]
             for filter in spider.file_extraction['filters']:
                 #print(filter, spider.file_urls[obj])
-                match = re.match(filter, obj)
+                match = re.match(filter, obj.url)
                 if match != None:
                     #print(filter, spider.file_urls[obj])
-                    filtered_file_urls[obj] = obj
-                    #break
+                    filtered_file_urls[obj.url] = obj.url
+                    break
+            for restrict_text in spider.file_extraction['restrict_text']:
+                #print(restrict_text, spider.file_urls[obj])
+                match = re.match(restrict_text, obj.text)
+                if match != None:
+                    #print(restrict_text, spider.file_urls[obj])
+                    filtered_file_urls[obj.url] = obj.url
+                    break
         # --
         new_document = spider.traverse_data
         new_document['traverse_urls'] = list(spider.traversed_urls.values())
         #new_document['filtered_traverse_urls'] = list(spider.filtered_pages.values())
         new_document['filtered_traverse_urls'] = spider.filtered_pages#list(spider.filtered_pages.keys())
-        new_document['file_urls'] = list(spider.file_urls.values())
+        new_document['file_urls'] = [x.url for x in list(spider.file_urls.values())]
         new_document['filtered_file_urls'] = list(filtered_file_urls.values())
+        #new_document['file_urls'] = list(spider.file_urls.values())
         #print(new_document['traverse_urls'][0])
         #print(new_document['filtered_traverse_urls'][0])
         #print(new_document['filtered_traverse_urls'])

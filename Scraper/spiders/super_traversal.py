@@ -11,12 +11,14 @@ from io import StringIO
 
 #from Scraper.spiders.super_base import BaseSpider
 
-from scrapy.linkextractors import LinkExtractor
+from scrapy.linkextractors import LinkExtractor, IGNORED_EXTENSIONS
 
 from scrapy.http import Request
 
 
 from difflib import SequenceMatcher
+
+import requests
 
 
 
@@ -33,6 +35,10 @@ class SiteTraversal(scrapy.Spider):
 
     file_extractor = None
     link_extractor = None
+
+    file_extractor = {
+        ''
+    }
 
     traversed_urls = {}
     file_urls = {}
@@ -53,7 +59,18 @@ class SiteTraversal(scrapy.Spider):
         self.file_extraction = self.traverse_data['file_extraction_rules']
 
         self.link_extractor = LinkExtractor(allow_domains = [self.domain['domain_name']])
-        self.file_extractor = LinkExtractor(allow = self.file_extraction['allow'], deny_extensions = [])
+        # TODO: Make deny_extensions = DENY_EXTENSIONS(scrapy global) minus pdf
+        deny_extensions_ = []
+        if 'deny_extensions' in self.file_extraction:
+            deny_extensions_ = self.file_extraction['deny_extensions']
+        # --
+        #'restrict_text'
+        #restrict_text_ = []
+        #if 'restrict_text' in self.file_extraction:
+        #    restrict_text_ = self.file_extraction['restrict_text']
+        # --
+        # Setup extractor for pdf files allow = self.file_extraction['allow'], restrict_text = restrict_text_, 
+        self.file_extractor = LinkExtractor(deny_extensions = deny_extensions_)
 
         parse_object = (self.domain['parse_select'], self.domain['start_url'])
         self.crawl_selections.append(parse_object)
@@ -114,7 +131,7 @@ class SiteTraversal(scrapy.Spider):
         for link in file_extractions:
             file_urls_.append(link.url)
             if not link.url in self.file_urls:
-                self.file_urls[link.url] = link.url
+                self.file_urls[link.url] = link#link.url
                 #file_urls_.append(link)
         # --
 

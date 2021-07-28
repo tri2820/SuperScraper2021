@@ -7,6 +7,8 @@ from twisted.internet import reactor, defer
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.log import configure_logging
 
+from scrapy.linkextractors import IGNORED_EXTENSIONS
+
 
 import pymongo
 import logging
@@ -18,7 +20,23 @@ MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongod
 MONGO_DB = "SuperScrapper"
 MONGO_COLLECTIONS = ["funds","offerings"]
 
+DENY_EXTENSIONS = []
 
+
+
+def configure_extension_requests(dny_ext,remove_extensions, add_extensions):
+    dny_ext = IGNORED_EXTENSIONS.copy()
+    for extension in remove_extensions:
+        if extension in dny_ext:
+            dny_ext.pop(dny_ext.index(extension))
+    for extension in add_extensions:
+        dny_ext.append(extension)
+    # --
+    return dny_ext
+# --
+
+
+DENY_EXTENSIONS = configure_extension_requests(DENY_EXTENSIONS,['pdf'],['html'])
 
 
 
@@ -119,6 +137,7 @@ class SpiderHandler:
 #         reactor.stop()a
 
 
+
 def run_scraper_traversal():
 
     configure_logging()
@@ -132,9 +151,10 @@ def run_scraper_traversal():
         traverse_data_1 = {
             '_id': 'pendal_site_traversal',
             'file_extraction_rules': {
+                'deny_extensions': DENY_EXTENSIONS,
                 'allow': [
-                    '.+\.pdf.+',
-                    '.+\.pdf',
+                    #'.+\.pdf.+',
+                    #'.+\.pdf',
                 ],
                 'filters': [
                     '.+product.disclosure.statement.+',
@@ -160,10 +180,21 @@ def run_scraper_traversal():
         traverse_data_2 = {
             '_id': 'hyperion_site_traversal',
             'file_extraction_rules': {
+                # Only allows certain file types
+                'deny_extensions': DENY_EXTENSIONS,
+                # Regex that the url must match during extraction
                 'allow': [
-                    '.+\.pdf.+',
-                    '.+\.pdf'
+                    #'.+\.pdf.+',
+                    #'.+\.pdf'
                 ],
+                # The following are now pipeline filters (after extraction)
+                # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+                'restrict_text': [
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ],
+                # Filters applied to urls after extraction and before entering into DB
                 'filters': [
                     '.+product.disclosure.statement.+',
                     '.+pds.+',
@@ -181,7 +212,38 @@ def run_scraper_traversal():
             },
         }
 
-        yield runner.crawl('Traversal', traverse_data = traverse_data_2)
+        traverse_data_3 = {
+            '_id': 'vanguard_site_traversal',
+            'file_extraction_rules': {
+                'deny_extensions': DENY_EXTENSIONS,
+                'allow': [
+                    #'.+\.pdf.+',
+                    #'.+\.pdf'
+                ],
+                'restrict_text': [
+                    '+disclosure.statement.+',
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ],
+                'filters': [
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ]
+            },
+            'domain': {
+                'domain_file': 'vanguard',
+                'domain_name': 'www.vanguard.com.au',
+                'start_url': 'https://www.vanguard.com.au/',
+                'parse_select':'traverse',
+                'page_filters': {
+                    'VAN0002AU': ['VAN0002AU'],
+                },
+            },
+        }
+
+        yield runner.crawl('Traversal', traverse_data = traverse_data_3)
 
         reactor.stop()
 
@@ -192,7 +254,8 @@ def run_scraper_traversal():
     print("Crawl Completed")
 # --
 
-#run_scraper_traversal()
+
+run_scraper_traversal()
 
 #run_scraper()
 
