@@ -15,10 +15,14 @@ from scrapy.linkextractors import LinkExtractor, IGNORED_EXTENSIONS
 
 from scrapy.http import Request
 
+#from scrapy_selenium import SeleniumRequest
+
 
 from difflib import SequenceMatcher
 
 import requests
+
+#from selenium import webdriver
 
 
 
@@ -36,10 +40,6 @@ class SiteTraversal(scrapy.Spider):
     file_extractor = None
     link_extractor = None
 
-    file_extractor = {
-        ''
-    }
-
     traversed_urls = {}
     file_urls = {}
     filtered_pages = {}
@@ -47,6 +47,7 @@ class SiteTraversal(scrapy.Spider):
     def __init__(self, traverse_data = None, *args, **kwargs):
         super(SiteTraversal, self).__init__(*args, **kwargs)
         self.set_variables()
+        #self.driver_awd = webdriver.Chrome(executable_path="chromedriver.exe")
         self.traverse_data = traverse_data
         #print('__init__ START ---- !*$(*!#%*&)')
         if self.traverse_data != None:
@@ -57,8 +58,8 @@ class SiteTraversal(scrapy.Spider):
     def init_crawler_urls(self):
         self.domain = self.traverse_data['domain']
         self.file_extraction = self.traverse_data['file_extraction_rules']
-
-        self.link_extractor = LinkExtractor(allow_domains = [self.domain['domain_name']])
+        #allow_domains = ['api.vanguard.com',self.domain['domain_name']]
+        self.link_extractor = LinkExtractor(allow_domains = ['api.vanguard.com',self.domain['domain_name']])
         # TODO: Make deny_extensions = DENY_EXTENSIONS(scrapy global) minus pdf
         deny_extensions_ = []
         if 'deny_extensions' in self.file_extraction:
@@ -106,6 +107,23 @@ class SiteTraversal(scrapy.Spider):
 
     def traverse(self, response, depth = 0):
 
+        '''
+        self.driver_awd.get(response.url)
+        self.driver_awd.get(response.url)
+        filename = "angular_data.csv"
+        with open(filename, 'a+') as f:
+            writer = csv.writer(f)
+            # Selector for all the names from the link with class 'ng-binding'
+            #names = self.driver_awd.find_elements_by_css_selector("a.ng-binding")
+            names = []
+            for a in self.driver_awd.find_elements_by_xpath('.//a'):
+                names.append(a.get_attribute('href'))
+            for name in names:
+                title = name.text
+                writer.writerow([title])
+        self.log('Saved file %s' % filename)
+        '''
+
         # Do not re-traverse already traversed urls
         if response.url in self.traversed_urls:
             return
@@ -123,12 +141,14 @@ class SiteTraversal(scrapy.Spider):
 
         # Extract connected urls links
         for link in self.link_extractor.extract_links(response):
+            #print(link.url)
             if not link.url in self.traversed_urls:
                 page_urls_.append(link)
         # --
         # Extract connected file links
         file_extractions = self.file_extractor.extract_links(response)
         for link in file_extractions:
+            #print(link.url)
             file_urls_.append(link.url)
             if not link.url in self.file_urls:
                 self.file_urls[link.url] = link#link.url
@@ -160,10 +180,11 @@ class SiteTraversal(scrapy.Spider):
         # --
 
         # Run iterative traversal operations
-        if depth < 2:
+        if depth < 3:
             #print(depth)
             for link in page_urls_:
                 request = Request(link.url, callback=self.traverse)
+                #request = SeleniumRequest(link.url, callback=self.traverse)
                 request.cb_kwargs['depth'] = depth + 1
                 yield request
             # --

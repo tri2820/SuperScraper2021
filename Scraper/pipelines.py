@@ -22,7 +22,6 @@ import json
 import csv
 
 
-
 '''
 SuperDataClean
 
@@ -289,8 +288,9 @@ class SiteTraversalCSV:
 
         with open(spider.domain['domain_file'] + '_file_urls.csv', 'w') as fp:
             data_writer = csv.writer(fp)
-            for link in spider.file_urls:
-                data_writer.writerow([link])
+            for link_string in spider.file_urls:
+                link_obj = spider.file_urls[link_string]
+                data_writer.writerow([link_obj.url])
 
         with open(spider.domain['domain_file'] + '_filtered_pages.csv', 'w') as fp:
             data_writer = csv.writer(fp)

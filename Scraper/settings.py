@@ -34,9 +34,22 @@ ITEM_PIPELINES = {
     #'Scraper.pipelines.SuperTestTraversal': 1,
     #'Scraper.pipelines.SiteTraversal': 1,
     #'Scraper.pipelines.SiteTraversalDB': 1,
-    'Scraper.pipelines.SiteTraversalCSV': 2,
+    'Scraper.pipelines.SiteTraversalCSV': 800,
     #'Scraper.pipelines.SuperDataMongodb': 300,
 }
+
+
+#from shutil import which
+
+#'''
+#SELENIUM_DRIVER_NAME = 'chrome'
+#SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
+#SELENIUM_DRIVER_ARGUMENTS=['-headless']
+
+DOWNLOADER_MIDDLEWARES = {
+    'Scraper.middlewares.SeleniumMiddleware': 543
+}
+#'''
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32

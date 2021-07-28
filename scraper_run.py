@@ -36,7 +36,7 @@ def configure_extension_requests(dny_ext,remove_extensions, add_extensions):
 # --
 
 
-DENY_EXTENSIONS = configure_extension_requests(DENY_EXTENSIONS,['pdf'],['html'])
+DENY_EXTENSIONS = configure_extension_requests(DENY_EXTENSIONS,['pdf'],[])
 
 
 
@@ -221,7 +221,7 @@ def run_scraper_traversal():
                     #'.+\.pdf'
                 ],
                 'restrict_text': [
-                    '+disclosure.statement.+',
+                    '.+disclosure.statement.+',
                     '.+product.disclosure.statement.+',
                     '.+pds.+',
                     '.+PDS.+',
@@ -233,9 +233,9 @@ def run_scraper_traversal():
                 ]
             },
             'domain': {
-                'domain_file': 'vanguard',
-                'domain_name': 'www.vanguard.com.au',
-                'start_url': 'https://www.vanguard.com.au/',
+                'domain_file': 'vanguard',#https://www.vanguard.com.au/
+                'domain_name': 'www.vanguard.com.au',#https://www.vanguard.com.au/adviser/products/en/list/overview
+                'start_url': 'https://www.vanguard.com.au/',#https://www.vanguard.com.au/
                 'parse_select':'traverse',
                 'page_filters': {
                     'VAN0002AU': ['VAN0002AU'],

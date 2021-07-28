@@ -101,3 +101,28 @@ class ScraperDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+
+
+
+
+
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from scrapy.http import HtmlResponse
+
+class SeleniumMiddleware(object):
+
+    def __init__(self):
+        options = Options()
+        options.headless = True
+        self.chrome_options=options
+        self.driver = webdriver.Chrome(executable_path = "../chromedriver.exe", options=options) # Or whichever browser you want
+
+    # Here you get the request you are making to the urls which your LinkExtractor found and use selenium to get them and return a response.
+    def process_request(self, request, spider):
+        self.driver.get(request.url)
+        body = self.driver.page_source
+        return HtmlResponse(self.driver.current_url, body=body, encoding='utf-8', request=request)
