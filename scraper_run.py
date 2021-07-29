@@ -140,7 +140,7 @@ class SpiderHandler:
 
 def run_scraper_traversal():
 
-    #configure_logging()
+    configure_logging()
 
     runner = CrawlerRunner(get_project_settings())
 
@@ -231,8 +231,8 @@ def run_scraper_traversal():
                 ]
             },
             'domain': {
-                'domain_file': 'vanguard',
-                'domain_name': 'www.vanguard.com.au',#https://www.vanguard.com.au/
+                'domain_file': 'vanguard',# https://www.vanguard.com.au/personal/products/documents/22444/AU
+                'domain_name': 'www.vanguard.com.au',# https://www.vanguard.com.au/ # https://www.vanguard.com.au/personal/products/en/detail/8100/resources
                 'start_url': 'https://www.vanguard.com.au/personal/products/en/detail/8100/resources',
                 'parse_select':'traverse',
                 'page_filters': {

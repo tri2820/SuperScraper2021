@@ -131,21 +131,27 @@ class SeleniumMiddleware(object):
         #print('-- process_request')
 
         # This allows for the retival of headers, so that stuff like 'content-type' can be retived, does however result in double request being executed
-        #head_r = requests.get(request.url)
-        #print('HEADERS url:',request.url,' Content-type: ',head_r.headers.get('content-type'))
+        head_r = requests.get(request.url)
+        #print('HEADERS url:',request.url,' Content-type: ',head_r.headers.get('content-type')) #, encoding='utf-8'
+        #response = HtmlResponse(self.driver.current_url, body=body, request=request)
 
-        return HtmlResponse(self.driver.current_url, body=body, encoding='utf-8', request=request)#, headers=head_r.headers
+        #if not response.headers:
+        #    response.headers = {}
+        #response.headers['content-type'] = head_r.headers.get('content-type')
+
+        #return response#, headers=head_r.headers
+        return HtmlResponse(self.driver.current_url, body=body, encoding='utf-8', request=request)
     
+    #'''
     def process_response(self, request, response, spider):
         #print('-- process_response')
 
         # This allows for the retival of headers, so that stuff like 'content-type' can be retived, does however result in double request being executed
         head_r = requests.get(request.url)
         #print('HEADERS -- process_response -- url:',request.url,' Content-type: ',head_r.headers.get('content-type'))
-        print('HEADERS -- process_response -- Content-type: ',head_r.headers.get('content-type'), ' response.url: ',request.url)
-        response.headers = head_r.headers
+        #print('HEADERS -- process_response -- Content-type: ',head_r.headers.get('content-type'), ' response.url: ',request.url)
+        #response.headers = head_r.headers
+        response.headers['content-type'] = head_r.headers.get('content-type')
         return response
+    #'''
 
-
-
-#class ResponseHeadersMiddleware(object):

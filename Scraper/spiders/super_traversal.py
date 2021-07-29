@@ -55,18 +55,11 @@ class SiteTraversal(scrapy.Spider):
     def init_crawler_urls(self):
         self.domain = self.traverse_data['domain']
         self.file_extraction = self.traverse_data['file_extraction_rules']
-        #allow_domains = ['api.vanguard.com',self.domain['domain_name']]
-        self.link_extractor = LinkExtractor(allow_domains = ['api.vanguard.com',self.domain['domain_name']])
-        # TODO: Make deny_extensions = DENY_EXTENSIONS(scrapy global) minus pdf
         deny_extensions_ = []
         if 'deny_extensions' in self.file_extraction:
             deny_extensions_ = self.file_extraction['deny_extensions']
         # --
-        #'restrict_text'
-        #restrict_text_ = []
-        #if 'restrict_text' in self.file_extraction:
-        #    restrict_text_ = self.file_extraction['restrict_text']
-        # --
+        self.link_extractor = LinkExtractor(allow_domains = [self.domain['domain_name']])
         # Setup extractor for pdf files allow = self.file_extraction['allow'], restrict_text = restrict_text_,
         self.file_extractor = LinkExtractor(deny_extensions = deny_extensions_)
 
@@ -104,15 +97,13 @@ class SiteTraversal(scrapy.Spider):
 
     def traverse(self, response, depth = 0):
 
-        print('HEADERS -- Traversal -- Content-type: ',response.headers.get('content-type'), ' response.url: ',response.url)
+        #print('HEADERS -- Traversal -- Content-type: ',response.headers.get('content-type'), ' response.url: ',response.url)
         # Do not re-traverse already traversed urls
         if response.url in self.traversed_urls:
             return
         else:
             self.traversed_urls[response.url] = response.url
         # --
-        #r = requests.get(response.url)
-        #print('HEADERS url:',response.url,' Content-type: ',r.headers.get('content-type'))
 
         traverse_item = SuperTraversalData()
         traverse_item['_id'] = self.traverse_data['_id']
@@ -157,9 +148,10 @@ class SiteTraversal(scrapy.Spider):
         # --
 
         # Run iterative traversal operations
-        if depth < 1:
+        if depth < 2:
             #print(depth)
             for link in page_urls_:
+                #print(link.url)
                 request = Request(link.url, callback=self.traverse)
                 request.cb_kwargs['depth'] = depth + 1
                 yield request
