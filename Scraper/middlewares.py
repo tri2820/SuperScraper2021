@@ -108,7 +108,7 @@ class ScraperDownloaderMiddleware:
 
 
 
-
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from scrapy.http import HtmlResponse
@@ -118,6 +118,9 @@ class SeleniumMiddleware(object):
     def __init__(self):
         options = Options()
         options.headless = True
+        options.add_argument("--log-level=3")
+        options.add_argument("--disable-logging")
+        options.add_argument("--disable-gpu")
         self.chrome_options=options
         self.driver = webdriver.Chrome(executable_path = "../chromedriver.exe", options=options) # Or whichever browser you want
 
@@ -125,4 +128,24 @@ class SeleniumMiddleware(object):
     def process_request(self, request, spider):
         self.driver.get(request.url)
         body = self.driver.page_source
-        return HtmlResponse(self.driver.current_url, body=body, encoding='utf-8', request=request)
+        #print('-- process_request')
+
+        # This allows for the retival of headers, so that stuff like 'content-type' can be retived, does however result in double request being executed
+        #head_r = requests.get(request.url)
+        #print('HEADERS url:',request.url,' Content-type: ',head_r.headers.get('content-type'))
+
+        return HtmlResponse(self.driver.current_url, body=body, encoding='utf-8', request=request)#, headers=head_r.headers
+    
+    def process_response(self, request, response, spider):
+        #print('-- process_response')
+
+        # This allows for the retival of headers, so that stuff like 'content-type' can be retived, does however result in double request being executed
+        head_r = requests.get(request.url)
+        #print('HEADERS -- process_response -- url:',request.url,' Content-type: ',head_r.headers.get('content-type'))
+        print('HEADERS -- process_response -- Content-type: ',head_r.headers.get('content-type'), ' response.url: ',request.url)
+        response.headers = head_r.headers
+        return response
+
+
+
+#class ResponseHeadersMiddleware(object):

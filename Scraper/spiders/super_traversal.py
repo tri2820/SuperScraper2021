@@ -15,14 +15,11 @@ from scrapy.linkextractors import LinkExtractor, IGNORED_EXTENSIONS
 
 from scrapy.http import Request
 
-#from scrapy_selenium import SeleniumRequest
 
 
 from difflib import SequenceMatcher
 
 import requests
-
-#from selenium import webdriver
 
 
 
@@ -70,7 +67,7 @@ class SiteTraversal(scrapy.Spider):
         #if 'restrict_text' in self.file_extraction:
         #    restrict_text_ = self.file_extraction['restrict_text']
         # --
-        # Setup extractor for pdf files allow = self.file_extraction['allow'], restrict_text = restrict_text_, 
+        # Setup extractor for pdf files allow = self.file_extraction['allow'], restrict_text = restrict_text_,
         self.file_extractor = LinkExtractor(deny_extensions = deny_extensions_)
 
         parse_object = (self.domain['parse_select'], self.domain['start_url'])
@@ -107,31 +104,15 @@ class SiteTraversal(scrapy.Spider):
 
     def traverse(self, response, depth = 0):
 
-        '''
-        self.driver_awd.get(response.url)
-        self.driver_awd.get(response.url)
-        filename = "angular_data.csv"
-        with open(filename, 'a+') as f:
-            writer = csv.writer(f)
-            # Selector for all the names from the link with class 'ng-binding'
-            #names = self.driver_awd.find_elements_by_css_selector("a.ng-binding")
-            names = []
-            for a in self.driver_awd.find_elements_by_xpath('.//a'):
-                names.append(a.get_attribute('href'))
-            for name in names:
-                title = name.text
-                writer.writerow([title])
-        self.log('Saved file %s' % filename)
-        '''
-
+        print('HEADERS -- Traversal -- Content-type: ',response.headers.get('content-type'), ' response.url: ',response.url)
         # Do not re-traverse already traversed urls
         if response.url in self.traversed_urls:
             return
         else:
             self.traversed_urls[response.url] = response.url
         # --
-        #print('dom',self.domain,'9(#*$(*#$))',response.url)
-        #return
+        #r = requests.get(response.url)
+        #print('HEADERS url:',response.url,' Content-type: ',r.headers.get('content-type'))
 
         traverse_item = SuperTraversalData()
         traverse_item['_id'] = self.traverse_data['_id']
@@ -141,19 +122,15 @@ class SiteTraversal(scrapy.Spider):
 
         # Extract connected urls links
         for link in self.link_extractor.extract_links(response):
-            #print(link.url)
             if not link.url in self.traversed_urls:
                 page_urls_.append(link)
         # --
         # Extract connected file links
         file_extractions = self.file_extractor.extract_links(response)
         for link in file_extractions:
-            #print(link.url)
             file_urls_.append(link.url)
             if not link.url in self.file_urls:
-                self.file_urls[link.url] = link#link.url
-                #file_urls_.append(link)
-        # --
+                self.file_urls[link.url] = link
 
         # Test for stings and codes requered to identify certain pages
         texts = response.css("::text").getall()
@@ -173,18 +150,17 @@ class SiteTraversal(scrapy.Spider):
                     'name': filter_name,
                     'url': response.url,
                     'page_filter': page_filter,
-                    'file_urls': file_urls_,#file_extractions
+                    'file_urls': file_urls_,
                 }
                 self.filtered_pages[filter_name] = filtered_page
             # --
         # --
 
         # Run iterative traversal operations
-        if depth < 3:
+        if depth < 1:
             #print(depth)
             for link in page_urls_:
                 request = Request(link.url, callback=self.traverse)
-                #request = SeleniumRequest(link.url, callback=self.traverse)
                 request.cb_kwargs['depth'] = depth + 1
                 yield request
             # --
@@ -234,7 +210,22 @@ class SiteTraversal(scrapy.Spider):
 
 
 
-
+'''
+self.driver_awd.get(response.url)
+self.driver_awd.get(response.url)
+filename = "angular_data.csv"
+with open(filename, 'a+') as f:
+    writer = csv.writer(f)
+    # Selector for all the names from the link with class 'ng-binding'
+    #names = self.driver_awd.find_elements_by_css_selector("a.ng-binding")
+    names = []
+    for a in self.driver_awd.find_elements_by_xpath('.//a'):
+        names.append(a.get_attribute('href'))
+    for name in names:
+        title = name.text
+        writer.writerow([title])
+self.log('Saved file %s' % filename)
+'''
 
 
 

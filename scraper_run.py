@@ -36,7 +36,7 @@ def configure_extension_requests(dny_ext,remove_extensions, add_extensions):
 # --
 
 
-DENY_EXTENSIONS = configure_extension_requests(DENY_EXTENSIONS,['pdf'],[])
+DENY_EXTENSIONS = configure_extension_requests(DENY_EXTENSIONS,['pdf'],[])#'html'
 
 
 
@@ -140,7 +140,7 @@ class SpiderHandler:
 
 def run_scraper_traversal():
 
-    configure_logging()
+    #configure_logging()
 
     runner = CrawlerRunner(get_project_settings())
 
@@ -217,8 +217,6 @@ def run_scraper_traversal():
             'file_extraction_rules': {
                 'deny_extensions': DENY_EXTENSIONS,
                 'allow': [
-                    #'.+\.pdf.+',
-                    #'.+\.pdf'
                 ],
                 'restrict_text': [
                     '.+disclosure.statement.+',
@@ -233,9 +231,9 @@ def run_scraper_traversal():
                 ]
             },
             'domain': {
-                'domain_file': 'vanguard',#https://www.vanguard.com.au/
-                'domain_name': 'www.vanguard.com.au',#https://www.vanguard.com.au/adviser/products/en/list/overview
-                'start_url': 'https://www.vanguard.com.au/',#https://www.vanguard.com.au/
+                'domain_file': 'vanguard',
+                'domain_name': 'www.vanguard.com.au',#https://www.vanguard.com.au/
+                'start_url': 'https://www.vanguard.com.au/personal/products/en/detail/8100/resources',
                 'parse_select':'traverse',
                 'page_filters': {
                     'VAN0002AU': ['VAN0002AU'],
@@ -254,6 +252,7 @@ def run_scraper_traversal():
     print("Crawl Completed")
 # --
 
+#print(DENY_EXTENSIONS)
 
 run_scraper_traversal()
 

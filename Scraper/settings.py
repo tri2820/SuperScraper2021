@@ -33,8 +33,8 @@ ITEM_PIPELINES = {
     #'Scraper.pipelines.SuperDataMongodb': 2,
     #'Scraper.pipelines.SuperTestTraversal': 1,
     #'Scraper.pipelines.SiteTraversal': 1,
-    #'Scraper.pipelines.SiteTraversalDB': 1,
-    'Scraper.pipelines.SiteTraversalCSV': 800,
+    #'Scraper.pipelines.SiteTraversalDB': 800,
+    'Scraper.pipelines.SiteTraversalCSV': 801,
     #'Scraper.pipelines.SuperDataMongodb': 300,
 }
 
@@ -46,9 +46,6 @@ ITEM_PIPELINES = {
 #SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
 #SELENIUM_DRIVER_ARGUMENTS=['-headless']
 
-DOWNLOADER_MIDDLEWARES = {
-    'Scraper.middlewares.SeleniumMiddleware': 543
-}
 #'''
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
@@ -70,7 +67,7 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Override the default request headers:
 #DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+#   'Accept': 'text/html,application/xhtml+xml,application/pdf,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
 #}
 
@@ -82,9 +79,9 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'Scraper.middlewares.ScraperDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+    'Scraper.middlewares.SeleniumMiddleware': 543,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
