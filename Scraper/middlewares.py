@@ -139,9 +139,9 @@ class SeleniumMiddleware(object):
 class SetupHeadersMiddleware(object):
 
     def process_response(self, request, response, spider):
-        #print('-- process_response')
+        print('-- process_response')
         # This allows for the retival of headers, so that stuff like 'content-type' can be retived, does however result in double request being executed
         head_r = requests.get(response.url)
-        #print('HEADERS -- process_response -- Content-type: ',head_r.headers.get('content-type'), ' response.url: ',request.url)
+        print('HEADERS -- process_response -- Content-type: ',head_r.headers.get('content-type'), ' response.url: ',request.url)
         response.headers['content-type'] = head_r.headers.get('content-type')
         return response

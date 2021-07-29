@@ -59,6 +59,7 @@ class SiteTraversal(scrapy.Spider):
         }
     }
 
+    # TODO: May need some tweeking
     def log_progress(self):
         self.log_info['time']['current'] = round(time.time() - self.log_info['time']['start'], 1)
 
@@ -67,7 +68,7 @@ class SiteTraversal(scrapy.Spider):
 
             # Calculate per minute
             traversed_per_min = self.log_info['total_traversed'] - self.log_info['last_traversed']
-            considered_per_min = self.log_info['last_considered'] - self.log_info['total_files_considered']
+            considered_per_min = self.log_info['total_files_considered'] - self.log_info['last_considered']
             self.log_info['traversal_per_minute'] = traversed_per_min
             self.log_info['considered_per_minute'] = considered_per_min
 
@@ -79,12 +80,12 @@ class SiteTraversal(scrapy.Spider):
         # --
 
         # Logging
-        logging.info("Total time: {}".format(self.log_info['time']['current']))
-        logging.info("Total traversed: {}".format(self.log_info['total_traversed']))
-        logging.info("Total considered: {}".format(self.log_info['total_files_considered']))
+        self.logger.info("Total time: {}".format(self.log_info['time']['current']))
+        self.logger.info("Total traversed: {}".format(self.log_info['total_traversed']))
+        self.logger.info("Total considered: {}".format(self.log_info['total_files_considered']))
 
-        logging.info("Traversal per-min: {}".format(self.log_info['traversal_per_minute']))
-        logging.info("Considered per-min: {}".format(self.log_info['considered_per_minute']))
+        self.logger.info("Traversal per-min: {}".format(self.log_info['traversal_per_minute']))
+        self.logger.info("Considered per-min: {}".format(self.log_info['considered_per_minute']))
         return
 
     def __init__(self, traverse_data = None, *args, **kwargs):
@@ -143,9 +144,9 @@ class SiteTraversal(scrapy.Spider):
             'total_files_considered': 0,
 
             'last_traversed': 0,
-            'traversal_per_minute': 0,
-            
             'last_considered': 0,
+
+            'traversal_per_minute': 0,
             'considered_per_minute': 0,
 
             'time': {
@@ -159,6 +160,8 @@ class SiteTraversal(scrapy.Spider):
 
 
     def traverse(self, response, depth = 0):
+        
+        self.log_info['total_traversed'] += 1
 
         #print('HEADERS -- Traversal -- Content-type: ',response.headers.get('content-type'), ' response.url: ',response.url)
         # Do not re-traverse already traversed urls
@@ -168,30 +171,32 @@ class SiteTraversal(scrapy.Spider):
             self.traversed_urls[response.url] = response.url
         # --
 
-        # Consider logging
-        self.log_progress()
-
         traverse_item = SuperTraversalData()
         traverse_item['_id'] = self.traverse_data['_id']
 
         page_urls_ = []
         file_urls_ = []
 
+        # TRAVERSAL LINK EXTRACTION
         # Extract connected urls links
         for link in self.link_extractor.extract_links(response):
             if not link.url in self.traversed_urls:
                 page_urls_.append(link)
         # --
+
+        # FILE EXTRACTION
         # Extract connected file links
         file_extractions = self.file_extractor.extract_links(response)
         for link in file_extractions:
             file_urls_.append(link.url)
             if not link.url in self.file_urls:
+                self.log_info['total_files_considered'] += 1
                 self.file_urls[link.url] = link
+        # --
 
+        # PAGES
         # Test for stings and codes requered to identify certain pages
         texts = response.css("::text").getall()
-
         for filter_name in self.domain['page_filters']:
             page_filter = self.domain['page_filters'][filter_name]
             successes = {}
@@ -214,8 +219,10 @@ class SiteTraversal(scrapy.Spider):
         # --
 
         # Run iterative traversal operations
-        if depth < 1:
+        if depth < 2:
             for link in page_urls_:
+                # Consider logging
+                self.log_progress()
                 request = Request(link.url, callback=self.traverse)
                 request.cb_kwargs['depth'] = depth + 1
                 yield request

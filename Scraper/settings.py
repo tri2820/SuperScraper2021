@@ -33,8 +33,8 @@ ITEM_PIPELINES = {
     #'Scraper.pipelines.SuperDataMongodb': 2,
     #'Scraper.pipelines.SuperTestTraversal': 1,
     #'Scraper.pipelines.SiteTraversal': 1,
-    #'Scraper.pipelines.SiteTraversalDB': 800,
-    'Scraper.pipelines.SiteTraversalCSV': 801,
+    'Scraper.pipelines.SiteTraversalDB': 800,
+    #'Scraper.pipelines.SiteTraversalCSV': 801,
     #'Scraper.pipelines.SuperDataMongodb': 300,
 }
 
