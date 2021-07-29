@@ -1,10 +1,9 @@
-import { MongoClient } from 'mongodb'
-const uri = "mongodb+srv://<dataInput>:<EfzSbrRahyKau9BD>@cluster0.tadma.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb+srv://extractor:I62EK5HE5yBL59Yz@cluster0.tadma.mongodb.net/SuperScrapper?retryWrites=true&w=majority";
 
 function notify(){
     var site = document.getElementById("site").value;
-    var url = document.getElementById("url").value;
+    //var url = document.getElementById("url").value;
     var apir = document.getElementById("apir").value;
     
     var output = document.getElementById('data')
@@ -14,15 +13,15 @@ function notify(){
 function mong(){
     console.log("mong1");
     
-    client.connect(err => {
-        const collection = client.db("superScrapper").collection("site_traverse_data");
-        // perform actions on the collection object
-        var cursor = collection.find({});
-        cursor.nextObject(function(err, item) {
-            console.log(item);
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("SuperScrapper");
+        dbo.collection("offerings").find({fund_id:"hesta"}).toArray(function(err, result) {
+          if (err) throw err;
+          console.log(result);
         });
-        client.close();
-    });
+      });
 
     console.log("mong2");
 }
+
