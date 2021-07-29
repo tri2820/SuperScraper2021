@@ -5,7 +5,7 @@ import logging
 from Scraper.items import SuperFundData, SuperTraversalData
 import pandas as pd
 
-from Scraper import spiderdatautils
+#from Scraper.spiderdatautils import check_content_type
 
 from io import StringIO
 
@@ -15,12 +15,13 @@ from scrapy.linkextractors import LinkExtractor, IGNORED_EXTENSIONS
 
 from scrapy.http import Request
 
+import time
+
 
 
 from difflib import SequenceMatcher
 
-import requests
-
+#import re
 
 
 class SiteTraversal(scrapy.Spider):
@@ -41,6 +42,51 @@ class SiteTraversal(scrapy.Spider):
     file_urls = {}
     filtered_pages = {}
 
+    log_info = {
+        'total_traversed': 0,
+        'total_files_considered': 0,
+
+        'last_traversed': 0,
+        'last_considered': 0,
+
+        'traversal_per_minute': 0,
+        'considered_per_minute': 0,
+
+        'time': {
+            'start': 0,
+            'current': 0,
+            'last_min': 0
+        }
+    }
+
+    def log_progress(self):
+        self.log_info['time']['current'] = round(time.time() - self.log_info['time']['start'], 1)
+
+        if self.log_info['time']['current'] / 60 > self.log_info['time']['last_min']:
+            self.log_info['time']['last_min'] = round(self.log_info['time']['current'] / 60, 1)
+
+            # Calculate per minute
+            traversed_per_min = self.log_info['total_traversed'] - self.log_info['last_traversed']
+            considered_per_min = self.log_info['last_considered'] - self.log_info['total_files_considered']
+            self.log_info['traversal_per_minute'] = traversed_per_min
+            self.log_info['considered_per_minute'] = considered_per_min
+
+            # Update per min values
+            self.log_info['last_traversed'] = self.log_info['total_traversed']
+            self.log_info['last_considered'] = self.log_info['total_files_considered']
+        else:
+            return
+        # --
+
+        # Logging
+        logging.info("Total time: {}".format(self.log_info['time']['current']))
+        logging.info("Total traversed: {}".format(self.log_info['total_traversed']))
+        logging.info("Total considered: {}".format(self.log_info['total_files_considered']))
+
+        logging.info("Traversal per-min: {}".format(self.log_info['traversal_per_minute']))
+        logging.info("Considered per-min: {}".format(self.log_info['considered_per_minute']))
+        return
+
     def __init__(self, traverse_data = None, *args, **kwargs):
         super(SiteTraversal, self).__init__(*args, **kwargs)
         self.set_variables()
@@ -60,8 +106,8 @@ class SiteTraversal(scrapy.Spider):
             deny_extensions_ = self.file_extraction['deny_extensions']
         # --
         self.link_extractor = LinkExtractor(allow_domains = [self.domain['domain_name']])
-        # Setup extractor for pdf files allow = self.file_extraction['allow'], restrict_text = restrict_text_,
-        self.file_extractor = LinkExtractor(deny_extensions = deny_extensions_)
+        # Setup extractor for pdf files
+        self.file_extractor = LinkExtractor(allow_domains = [self.domain['domain_name']], deny_extensions = deny_extensions_)# allow = self.file_extraction['allow'], restrict_text = restrict_text_,
 
         parse_object = (self.domain['parse_select'], self.domain['start_url'])
         self.crawl_selections.append(parse_object)
@@ -91,6 +137,23 @@ class SiteTraversal(scrapy.Spider):
         self.traversed_urls = {}
         self.file_urls = {}
         self.filtered_pages = {}
+
+        self.log_info = {
+            'total_traversed': 0,
+            'total_files_considered': 0,
+
+            'last_traversed': 0,
+            'traversal_per_minute': 0,
+            
+            'last_considered': 0,
+            'considered_per_minute': 0,
+
+            'time': {
+                'start': time.time(),
+                'current': 0,
+                'last_min': 0
+            }
+        }
     # --
 
 
@@ -104,6 +167,9 @@ class SiteTraversal(scrapy.Spider):
         else:
             self.traversed_urls[response.url] = response.url
         # --
+
+        # Consider logging
+        self.log_progress()
 
         traverse_item = SuperTraversalData()
         traverse_item['_id'] = self.traverse_data['_id']
@@ -148,10 +214,8 @@ class SiteTraversal(scrapy.Spider):
         # --
 
         # Run iterative traversal operations
-        if depth < 2:
-            #print(depth)
+        if depth < 1:
             for link in page_urls_:
-                #print(link.url)
                 request = Request(link.url, callback=self.traverse)
                 request.cb_kwargs['depth'] = depth + 1
                 yield request
@@ -199,25 +263,6 @@ class SiteTraversal(scrapy.Spider):
 
 
 
-
-
-
-'''
-self.driver_awd.get(response.url)
-self.driver_awd.get(response.url)
-filename = "angular_data.csv"
-with open(filename, 'a+') as f:
-    writer = csv.writer(f)
-    # Selector for all the names from the link with class 'ng-binding'
-    #names = self.driver_awd.find_elements_by_css_selector("a.ng-binding")
-    names = []
-    for a in self.driver_awd.find_elements_by_xpath('.//a'):
-        names.append(a.get_attribute('href'))
-    for name in names:
-        title = name.text
-        writer.writerow([title])
-self.log('Saved file %s' % filename)
-'''
 
 
 

@@ -4,6 +4,9 @@ import datetime
 
 import re
 
+import requests
+from scrapy.utils.response import response_status_message
+
 
 
 
@@ -91,8 +94,26 @@ def lower_underscore(start_string):
 
 
 
+class requests_session_handler:
+    
+    def __init__(self):
+        self.session = requests.Session()
 
+    def check_content_type(self, url):
+        try:
+            response = self.session.get(url)
+            if response.status_code == '404':
+                return None
+            content_type = response.headers.get('content-type')
+            response.close()
+            return content_type
+        except:
+            return None
+    # --
 
+    def close_session(self):
+        self.session.close()
+        return
 
 
 

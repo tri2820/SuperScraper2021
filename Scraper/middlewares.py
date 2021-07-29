@@ -9,6 +9,7 @@ from scrapy import signals
 from itemadapter import is_item, ItemAdapter
 
 
+'''
 class ScraperSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -102,6 +103,7 @@ class ScraperDownloaderMiddleware:
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
 
+'''
 
 
 
@@ -122,36 +124,24 @@ class SeleniumMiddleware(object):
         options.add_argument("--disable-logging")
         options.add_argument("--disable-gpu")
         self.chrome_options=options
-        self.driver = webdriver.Chrome(executable_path = "../chromedriver.exe", options=options) # Or whichever browser you want
+        self.driver = webdriver.Chrome(executable_path = "../chromedriver.exe", options=options)
 
     # Here you get the request you are making to the urls which your LinkExtractor found and use selenium to get them and return a response.
     def process_request(self, request, spider):
         self.driver.get(request.url)
         body = self.driver.page_source
         #print('-- process_request')
+        response = HtmlResponse(self.driver.current_url, body=body, encoding='utf-8', request=request)
+        if len(self.driver.window_handles) > 1:
+            self.driver.close()
+        return response
 
-        # This allows for the retival of headers, so that stuff like 'content-type' can be retived, does however result in double request being executed
-        head_r = requests.get(request.url)
-        #print('HEADERS url:',request.url,' Content-type: ',head_r.headers.get('content-type')) #, encoding='utf-8'
-        #response = HtmlResponse(self.driver.current_url, body=body, request=request)
+class SetupHeadersMiddleware(object):
 
-        #if not response.headers:
-        #    response.headers = {}
-        #response.headers['content-type'] = head_r.headers.get('content-type')
-
-        #return response#, headers=head_r.headers
-        return HtmlResponse(self.driver.current_url, body=body, encoding='utf-8', request=request)
-    
-    #'''
     def process_response(self, request, response, spider):
         #print('-- process_response')
-
         # This allows for the retival of headers, so that stuff like 'content-type' can be retived, does however result in double request being executed
-        head_r = requests.get(request.url)
-        #print('HEADERS -- process_response -- url:',request.url,' Content-type: ',head_r.headers.get('content-type'))
+        head_r = requests.get(response.url)
         #print('HEADERS -- process_response -- Content-type: ',head_r.headers.get('content-type'), ' response.url: ',request.url)
-        #response.headers = head_r.headers
         response.headers['content-type'] = head_r.headers.get('content-type')
         return response
-    #'''
-

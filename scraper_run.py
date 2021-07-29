@@ -140,7 +140,7 @@ class SpiderHandler:
 
 def run_scraper_traversal():
 
-    configure_logging()
+    #configure_logging()
 
     runner = CrawlerRunner(get_project_settings())
 
@@ -187,6 +187,10 @@ def run_scraper_traversal():
                     #'.+\.pdf.+',
                     #'.+\.pdf'
                 ],
+                # Page content types that must apply for file type urls
+                'content_types': [
+                    "application/pdf"
+                ],
                 # The following are now pipeline filters (after extraction)
                 # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
                 'restrict_text': [
@@ -218,6 +222,9 @@ def run_scraper_traversal():
                 'deny_extensions': DENY_EXTENSIONS,
                 'allow': [
                 ],
+                'content_types': [
+                    "application/pdf"
+                ],
                 'restrict_text': [
                     '.+disclosure.statement.+',
                     '.+product.disclosure.statement.+',
@@ -241,7 +248,7 @@ def run_scraper_traversal():
             },
         }
 
-        yield runner.crawl('Traversal', traverse_data = traverse_data_3)
+        yield runner.crawl('Traversal', traverse_data = traverse_data_2)
 
         reactor.stop()
 

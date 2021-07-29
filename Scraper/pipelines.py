@@ -14,12 +14,17 @@ import numpy as np
 
 from collections import defaultdict
 
+from requests.api import request
+
 from Scraper import spiderdatautils
 
 import re
 
 import json
 import csv
+
+from Scraper.spiderdatautils import requests_session_handler
+
 
 
 '''
@@ -285,12 +290,26 @@ class SiteTraversalCSV:
             data_writer = csv.writer(fp)
             for link in spider.traversed_urls:
                 data_writer.writerow([link])
+        # --
+
+        session_handler = requests_session_handler()
+
+        file_urls = {}
+
+        for key in spider.file_urls:
+            obj = spider.file_urls[key]
+            content_type = session_handler.check_content_type(obj.url)
+            for re_content_match in spider.file_extraction['content_types']:
+                if content_type:
+                    if re.match(content_type,re_content_match):
+                        file_urls[obj.url] = obj
+                        break
 
         with open(spider.domain['domain_file'] + '_file_urls.csv', 'w') as fp:
             data_writer = csv.writer(fp)
-            for link_string in spider.file_urls:
-                link_obj = spider.file_urls[link_string]
-                data_writer.writerow([link_obj.url])
+            for link_string in file_urls:#spider.file_urls:
+                #link_obj = #spider.file_urls[link_string]
+                data_writer.writerow([link_string])
 
         with open(spider.domain['domain_file'] + '_filtered_pages.csv', 'w') as fp:
             data_writer = csv.writer(fp)
@@ -300,8 +319,8 @@ class SiteTraversalCSV:
         # --
 
         filtered_file_urls = {}
-        for obj_string in spider.file_urls:
-            obj = spider.file_urls[obj_string]
+        for key in file_urls:
+            obj = file_urls[key]
             for filter in spider.file_extraction['filters']:
                 match = re.match(filter, obj.url)
                 if match != None:
@@ -319,6 +338,9 @@ class SiteTraversalCSV:
             data_writer = csv.writer(fp)
             for obj in filtered_file_urls:
                 data_writer.writerow([filtered_file_urls[obj]])
+        # --
+
+        session_handler.close_session()
     # --
 # --
 
@@ -360,7 +382,59 @@ class SiteTraversalDB:
 
     def close_spider(self, spider):#spider.traverse_data
         print('*!)$&*#&$)&* CLOSE SPIDER!')
+
+        session_handler = requests_session_handler()
+
+        file_urls = {}
+
+        for key in spider.file_urls:
+            obj = spider.file_urls[key]
+            content_type = session_handler.check_content_type(obj.url)
+            for re_content_match in spider.file_extraction['content_types']:
+                if content_type:
+                    if re.match(content_type,re_content_match):
+                        file_urls[obj.url] = obj
+                        break
+        # --
         filtered_file_urls = {}
+        for key in file_urls:
+            obj = file_urls[key]
+            for filter in spider.file_extraction['filters']:
+                match = re.match(filter.lower(), obj.url.lower())
+                if match != None:
+                    filtered_file_urls[obj.url] = obj.url
+                    break
+            for restrict_text in spider.file_extraction['restrict_text']:
+                if obj.text and len(obj.text) > 0:
+                    match = re.match(restrict_text.lower(), obj.text.lower())
+                    if match != None:
+                        filtered_file_urls[obj.url] = obj.url
+                        break
+        # --
+
+        session_handler.close_session()
+
+        new_document = spider.traverse_data
+        new_document['traverse_urls'] = list(spider.traversed_urls.values())
+        #new_document['filtered_traverse_urls'] = list(spider.filtered_pages.values())
+        new_document['filtered_traverse_urls'] = spider.filtered_pages#list(spider.filtered_pages.keys())
+        #new_document['file_urls'] = [x.url for x in list(spider.file_urls.values())]
+        new_document['file_urls'] = [x.url for x in list(file_urls.values())]
+        new_document['filtered_file_urls'] = list(filtered_file_urls.values())
+
+        document = self.find_or_create_document(new_document, True)
+        traversal_urls = spider.traversed_urls.values()
+
+        self.client.close()
+
+        #values = {'$addToSet': {super_fund['insert_cat'] : {'$each': traversal_urls}}}
+        #self.db[self.collection_name].update_many(query, values)
+    # --
+# --
+
+
+'''
+filtered_file_urls = {}
         for obj_string in spider.file_urls:
             obj = spider.file_urls[obj_string]
             for filter in spider.file_extraction['filters']:
@@ -375,28 +449,7 @@ class SiteTraversalDB:
                         filtered_file_urls[obj.url] = obj.url
                         break
         # --
-        new_document = spider.traverse_data
-        new_document['traverse_urls'] = list(spider.traversed_urls.values())
-        #new_document['filtered_traverse_urls'] = list(spider.filtered_pages.values())
-        new_document['filtered_traverse_urls'] = spider.filtered_pages#list(spider.filtered_pages.keys())
-        new_document['file_urls'] = [x.url for x in list(spider.file_urls.values())]
-        new_document['filtered_file_urls'] = list(filtered_file_urls.values())
-
-        document = self.find_or_create_document(new_document, True)
-        traversal_urls = spider.traversed_urls.values()
-
-        self.client.close()
-
-        #values = {'$addToSet': {super_fund['insert_cat'] : {'$each': traversal_urls}}}
-        #self.db[self.collection_name].update_many(query, values)
-
-
-
-
-# --
-
-
-
+'''
 
 
 

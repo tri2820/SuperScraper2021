@@ -67,10 +67,11 @@ ITEM_PIPELINES = {
 
 # Override the default request headers:
 #'''
-DEFAULT_REQUEST_HEADERS = {
-   'Accept': 'text/html,application/xhtml+xml,application/pdf,application/xml;q=0.9,*/*;q=0.8',
-   'Accept-Language': 'en',
-}
+#,application/pdf
+#DEFAULT_REQUEST_HEADERS = {
+#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+#   'Accept-Language': 'en',
+#}
 #'''
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
@@ -81,8 +82,9 @@ DEFAULT_REQUEST_HEADERS = {
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    'Scraper.middlewares.SeleniumMiddleware': 543,
-    'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware': None
+    'Scraper.middlewares.SeleniumMiddleware': 540,
+    #'Scraper.middlewares.SetupHeadersMiddleware': 541,
+    #'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware': None
 }
 
 # Enable or disable extensions
