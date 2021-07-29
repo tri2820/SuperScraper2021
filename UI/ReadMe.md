@@ -1,43 +1,4 @@
-# Super Scraper – UI
-
-## Installation
-
-### Installation - Dev
-
-###### 1. Install IDE/Text Editor
-
-Any IDE or text editor will do, most popular editors have plugins and libaries for electron & webdev. However vscode has alot of relevant functionality out of the box with some nice plugins.
-The UI team currently uses visual studio code.
-
-
-###### 2. Install Node
-
-Download Node.js from this link:
-https://nodejs.org/en/download/
-
-This will also install "npm" (node package manager)
-
-Verify that node is installed by entering ``` node -v ``` into cmd or terminal(mac)
-
-Verify that npm is installed by entering ``` npm -v ``` into cmd or terminal(mac)
-
-![Example on windows](../repo_images/node_npm_v.png)
-
-###### 3. Install electron.js
-
-Run the following command (-g is important):
-``` npm install electron -g ```
-
-The argument -g will ensure the the electron package is installed globally and thus avoid installing electron as a local package in the git files.
-
-If experiencing errors & for futher infomation visit the electron website:
-https://www.electronjs.org/
-
-![Example on windows](../repo_images/electron_install.png)
-
-### ----
-
-
+Super Scraper – UI
 
 The Super Scraper’s UI team has researched and designed a User Interface that is going to be both user friendly and efficient. The designs were created on Figma and are represented through both low and hi- fi frames. When it came to building the desktop application, the team explored various platforms. We started off with using Python’s Tkinter, as this would have allowed seamless integration with the backend. However, this software did not meet our standards, thus, we have decided to use electron JS to build the desktop application. 
 
