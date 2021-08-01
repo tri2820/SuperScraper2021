@@ -30,7 +30,7 @@ LABEL_MAP_NAME = 'label_map.pbtxt'
 
 #def detect_tables():
 
-    #camelot.read_pdf(filepath=pdf_file, flavor="stream", table_areas=interesting_areas)
+    #camelot.read_pdf(filepath=pdf_file, flavor="stream", table_areas=interesting_areas)a
 
 # --
 
