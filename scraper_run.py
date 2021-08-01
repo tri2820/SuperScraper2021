@@ -64,6 +64,19 @@ class DatabaseHandler:
         fund_data = self.db[self.collection_name].find_one(query)
 
         return fund_data
+    
+    def find_or_create_document(self, collection_name_, data_object, overwrite=False):
+        query = {'_id' : data_object['_id']}
+        print(type(collection_name_))
+        document = self.db[collection_name_].find_one(query)
+        # If none create one
+        if document == None:
+            self.db[collection_name_].insert_one(data_object)
+            document = self.db[collection_name_].find_one(query)
+        elif overwrite == True:
+            self.db[collection_name_].update_one(query, {"$set": data_object})
+        # --
+        return document
 
 
 # data-csv-url
@@ -143,6 +156,12 @@ def run_scraper_traversal():
     configure_logging()
 
     runner = CrawlerRunner(get_project_settings())
+
+    test_handler = DatabaseHandler(MONGO_URI, MONGO_DB)
+
+    test_handler.open_connection()
+    traverse_data_4 = test_handler.find_or_create_document('site_traverse_data', {'_id': 'pendal_site_traversal'}, False)
+    test_handler.close_connection()
 
 
     @defer.inlineCallbacks
@@ -235,15 +254,17 @@ def run_scraper_traversal():
                     '.+product.disclosure.statement.+',
                     '.+pds.+',
                     '.+PDS.+',
-                ]
-            },
+                ]# https://www.vanguard.com.au/personal/products/en/detail/8100/resources
+            },# scrapy shell "https://www.vanguard.com.au/personal/products/en/detail/8100/resources"
+            # view(response)
             'domain': {
                 'domain_file': 'vanguard',# https://www.vanguard.com.au/personal/products/documents/22444/AU
                 'domain_name': 'www.vanguard.com.au',# https://www.vanguard.com.au/ # https://www.vanguard.com.au/personal/products/en/detail/8100/resources
-                'start_url': 'https://www.vanguard.com.au/',
+                'start_url': 'https://www.vanguard.com.au/personal/products/en/detail/8100/resources',
                 'parse_select':'traverse',
                 'page_filters': {
                     'VAN0002AU': ['VAN0002AU'],
+                    'BNT0003AU': ['BNT0003AU'],
                 },
             },
         }

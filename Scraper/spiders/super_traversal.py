@@ -107,8 +107,8 @@ class SiteTraversal(scrapy.Spider):
             deny_extensions_ = self.file_extraction['deny_extensions']
         # --
         self.link_extractor = LinkExtractor(allow_domains = [self.domain['domain_name']])
-        # Setup extractor for pdf files
-        self.file_extractor = LinkExtractor(allow_domains = [self.domain['domain_name']], deny_extensions = deny_extensions_)# allow = self.file_extraction['allow'], restrict_text = restrict_text_,
+        # Setup extractor for pdf files # allow_domains = [self.domain['domain_name']],
+        self.file_extractor = LinkExtractor( deny_extensions = deny_extensions_)# allow = self.file_extraction['allow'], restrict_text = restrict_text_,
 
         parse_object = (self.domain['parse_select'], self.domain['start_url'])
         self.crawl_selections.append(parse_object)
@@ -219,7 +219,7 @@ class SiteTraversal(scrapy.Spider):
         # --
 
         # Run iterative traversal operations
-        if depth < 2:
+        if depth < 3:
             for link in page_urls_:
                 # Consider logging
                 self.log_progress()
