@@ -160,20 +160,21 @@ function setup(){
             var line = item.split(",")
             var csvApir = line[1];
             var manager = line[2];
-            var url = line[3];
+            var link = line[3];
 
             
             /*Yeah checking if the type is explicitly equivalent to the string string is good and normal
             What a great language*/
             if(typeof csvApir === 'string'){
                 if(csvApir.length > 4){
-                        /*Clean out url stuff*/
-                    url = url.replace("https://", "")
-                    url = url.replace("http://", "")
+                    /*Clean out link stuff*/
+                    link = link.replace("https://", "")
+                    link = link.replace("http://", "")
 
                     /*remove spaces from name*/
                     manager = manager.replaceAll(" ", "")
-                    submitData(manager, csvApir, url);
+                    submitData(manager, csvApir, link);
+                        
                 }
                 
             }
@@ -185,12 +186,12 @@ function setup(){
     });
 }
 
-function submitData(manager, csvApir, url){
+function submitData(manager, csvApir, link){
     console.log(`submitting data for ${csvApir}`)
-    getMongoData(manager, csvApir, url)
+    getMongoData(manager, csvApir, link)
 };
 
-function getMongoData(manager, csvApir, url){
+function getMongoData(manager, csvApir, link){
     var info = {
         _id: `${manager}_site_traversal`,
         file_extraction_rules: {
@@ -283,8 +284,8 @@ function getMongoData(manager, csvApir, url){
         },
         domain: {
             domain_file: `${manager}`,
-            domain_name: `${url}`,
-            start_url: `https://${url}`,
+            domain_name: `${link}`,
+            start_url: `https://${link}`,
             parse_select: "traverse",
             page_filters: {
                 [csvApir]: [
@@ -293,10 +294,13 @@ function getMongoData(manager, csvApir, url){
             }
         }
     };
+    console.log(info.domain.domain_file)
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("SuperScrapper");
-        dbo.collection("site_traverse_data").updateOne(info, function(err, result) {
+        var filter = {"_id": `${info._id}`}
+        var options = { upsert: true };
+        dbo.collection("site_traverse_data").updateOne(filter, {$set: {info}}, options, function(err, result) {
             if (err) throw err;
             console.log(result);
             console.log("Database updated!")
