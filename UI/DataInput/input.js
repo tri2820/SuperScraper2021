@@ -1,6 +1,8 @@
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb+srv://dataInput:lOIIVKEKLoTtOdQH@cluster0.tadma.mongodb.net/SuperScrapper?retryWrites=true&w=majority";
 
+
+
 function notify(){
     var site = document.getElementById("site").value;
     var domain = document.getElementById("url").value;
@@ -14,7 +16,7 @@ function mong(){
     var site = document.getElementById("site").value.toLowerCase().replace(" ", "");
     var domain = document.getElementById("url").value.toLowerCase();
     var apir = document.getElementById("apir").value.toUpperCase();
-    console.log("mong1");
+    console.log("inserting into database ...");
     var newObj = {
                     _id: `${site}_site_traversal`,
                     file_extraction_rules: {
@@ -90,6 +92,9 @@ function mong(){
                             "apk"
                         ],
                         allow: [],
+                        content_types: [
+                            "application/pdf"
+                          ],
                         restrict_text: [
                             ".+disclosure.statement.+",
                             ".+product.disclosure.statement.+",
@@ -122,9 +127,11 @@ function mong(){
         dbo.collection("site_traverse_data").insertOne(newObj, function(err, result) {
           if (err) throw err;
           console.log(result);
+          console.log("Database updated!")
+          document.location.href="https://cloud.mongodb.com/v2/60653aa7a8fb40147a2882e8#metrics/replicaSet/60653ba8dad21c1b3cb5d799/explorer/SuperScrapper";
+
         });
       });
 
-    console.log("mong2");
 }
 
