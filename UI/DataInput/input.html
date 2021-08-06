@@ -28,24 +28,6 @@
             <br />
             <input type="submit" value="Submit" />
           </form>
-          <script>
-            const myForm = document.getElementById("myForm");
-            const csvFile = document.getElementById("csvFile");
-        
-            myForm.addEventListener("submit", function (e) {
-              e.preventDefault();
-              var input = csvFile.files[0];
-              var reader = new FileReader();
-    
-              reader.onload = function (e) {
-                var text = e.target.result;
-                var contents = text.split(",")
-                document.write(JSON.stringify(contents[3]));
-                };
-        
-              reader.readAsText(input);
-            });
-
-          </script>
     </body>
+    <script>window.onload = setup()</script>
 </html>

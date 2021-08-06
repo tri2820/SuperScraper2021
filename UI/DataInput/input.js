@@ -1,5 +1,5 @@
-var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb+srv://dataInput:lOIIVKEKLoTtOdQH@cluster0.tadma.mongodb.net/SuperScrapper?retryWrites=true&w=majority";
+const MongoClient = require('mongodb').MongoClient;
+const url = "mongodb+srv://dataInput:lOIIVKEKLoTtOdQH@cluster0.tadma.mongodb.net/SuperScrapper?retryWrites=true&w=majority";
 
 
 
@@ -135,3 +135,172 @@ function mong(){
 
 }
 
+function setup(){
+    const myForm = document.getElementById("myForm");
+    const csvFile = document.getElementById("csvFile");
+
+    myForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var input = csvFile.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+        var text = e.target.result;
+        /*Build array of items split on newlines
+        IMPORTANT: CURRENTLY JUST USES EXCELS \r\n
+        SHOULD BE MADE MORE FLEXIBLE*/
+        var contents = text.split("\r\n")
+        contents.forEach(function (item, index) {
+            /* Build array for each item
+            0 = Fund Name
+            1 = APIR
+            2 = Fund Manager
+            3 = URL
+            */ 
+            var line = item.split(",")
+            var csvApir = line[1];
+            var manager = line[2];
+            var url = line[3];
+
+            
+            /*Yeah checking if the type is explicitly equivalent to the string string is good and normal
+            What a great language*/
+            if(typeof csvApir === 'string'){
+                if(csvApir.length > 4){
+                        /*Clean out url stuff*/
+                    url = url.replace("https://", "")
+                    url = url.replace("http://", "")
+
+                    /*remove spaces from name*/
+                    manager = manager.replaceAll(" ", "")
+                    submitData(manager, csvApir, url);
+                }
+                
+            }
+        })
+        document.write(JSON.stringify(contents));
+        };
+
+        reader.readAsText(input);
+    });
+}
+
+function submitData(manager, csvApir, url){
+    console.log(`submitting data for ${csvApir}`)
+    getMongoData(manager, csvApir, url)
+};
+
+function getMongoData(manager, csvApir, url){
+    var info = {
+        _id: `${manager}_site_traversal`,
+        file_extraction_rules: {
+            deny_extensions: [
+                "7z",
+                "7zip",
+                "bz2",
+                "rar",
+                "tar",
+                "tar.gz",
+                "xz",
+                "zip",
+                "mng",
+                "pct",
+                "bmp",
+                "gif",
+                "jpg",
+                "jpeg",
+                "png",
+                "pst",
+                "psp",
+                "tif",
+                "tiff",
+                "ai",
+                "drw",
+                "dxf",
+                "eps",
+                "ps",
+                "svg",
+                "cdr",
+                "ico",
+                "mp3",
+                "wma",
+                "ogg",
+                "wav",
+                "ra",
+                "aac",
+                "mid",
+                "au",
+                "aiff",
+                "3gp",
+                "asf",
+                "asx",
+                "avi",
+                "mov",
+                "mp4",
+                "mpg",
+                "qt",
+                "rm",
+                "swf",
+                "wmv",
+                "m4a",
+                "m4v",
+                "flv",
+                "webm",
+                "xls",
+                "xlsx",
+                "ppt",
+                "pptx",
+                "pps",
+                "doc",
+                "docx",
+                "odt",
+                "ods",
+                "odg",
+                "odp",
+                "css",
+                "exe",
+                "bin",
+                "rss",
+                "dmg",
+                "iso",
+                "apk"
+            ],
+            allow: [],
+            content_types: [
+                "application/pdf"
+                ],
+            restrict_text: [
+                ".+disclosure.statement.+",
+                ".+product.disclosure.statement.+",
+                ".+pds.+",
+                ".+PDS.+"
+            ],
+            filters: [
+                ".+product.disclosure.statement.+",
+                ".+pds.+",
+                ".+PDS.+"
+            ]
+        },
+        domain: {
+            domain_file: `${manager}`,
+            domain_name: `${url}`,
+            start_url: `https://${url}`,
+            parse_select: "traverse",
+            page_filters: {
+                [csvApir]: [
+                `${csvApir}`
+                ]
+            }
+        }
+    };
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("SuperScrapper");
+        dbo.collection("site_traverse_data").updateOne(info, function(err, result) {
+            if (err) throw err;
+            console.log(result);
+            console.log("Database updated!")
+        });
+    });
+    console.log(info)
+}
