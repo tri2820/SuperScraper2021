@@ -14,7 +14,10 @@ from PIL import Image
 
 import pdfplumber
 
-#from pdf2image import convert_from_path, convert_from_bytes
+from pdf2image import convert_from_path, convert_from_bytes
+
+
+#pip install pdf2image
 #pip3 install torch torchvision torchaudio
 #pip install onnx
 #pip install pdfplumber
@@ -22,6 +25,23 @@ import pdfplumber
 
 
 #ONNEX_MODEL_PATH = 'best2.onnx'
+
+
+
+import io
+import requests
+
+
+def pdf_to_images(pdf_url,dpi=200):
+    r = requests.get(pdf_url)
+    f = io.BytesIO(r.content)
+
+    # https://github.com/Belval/pdf2image
+    # use_pdftocairo = True (peformance improvement - look into if no crash?)
+    pdf_images = convert_from_bytes(f.read(), dpi=dpi, poppler_path = r"C:\Program Files\poppler-21.03.0\Library\bin", thread_count=2)
+    return pdf_images
+
+
 
 
 
@@ -85,8 +105,8 @@ class onnx_detection_handler:
         # Candidates that fall over the confidence threshold
         xc = prediction[..., 4] > conf_thres
         # Checks
-        assert 0 <= conf_thres <= 1, f'Invalid Confidence threshold {conf_thres}, valid values are between 0.0 and 1.0'
-        assert 0 <= iou_thres <= 1, f'Invalid IoU {iou_thres}, valid values are between 0.0 and 1.0'
+        assert 0 <= conf_thres <= 1, f'Invalid Confidence threshold {conf_thres}, 0 - 1'
+        assert 0 <= iou_thres <= 1, f'Invalid IoU {iou_thres}, 0 - 1'
         # Settings
         min_wh, max_wh = 2, 4096# (pixels) min and max box width and height
         max_nms = 30000
@@ -198,7 +218,7 @@ class onnx_detection_handler:
         img_in /= 255.0
         input_name = self.session.get_inputs()[0].name
         outputs = self.session.run(None, {input_name: img_in})
-        filterd_predictions = self.non_max_suppression(torch.tensor(outputs[0]), conf_thres = 0.1, iou_thres = 0.45)
+        filterd_predictions = self.non_max_suppression(torch.tensor(outputs[0]), conf_thres = 0.3, iou_thres = 0.45)
         return filterd_predictions
 
     def get_detection_boxes(self, img, predictions, image_path=None):
@@ -221,6 +241,7 @@ class onnx_detection_handler:
         if image_path:
             img_name = image_path.split('\\')[-1]
             path_prefix = image_path.split('\\')[0]
+            print('{}/det-{}'.format(path_prefix, img_name))
             cv2.imwrite('{}/det-{}'.format(path_prefix, img_name), new_img)
             #print('Saved: data/det-{}'.format(img_name))
         # --
@@ -229,19 +250,38 @@ class onnx_detection_handler:
 
 
 
+def test_run_images():
+    onnx_test = onnx_detection_handler()
+    onnx_test.init_session()
 
-onnx_test = onnx_detection_handler()
-onnx_test.init_session()
-
-for image_name in os.listdir('data'):
-    image_path = os.path.join('data', image_name)
-    img = cv2.imread(image_path)
-    inference_tensors = onnx_test.run_image_detection(img)
-    onnx_test.get_detection_boxes(img, inference_tensors, image_path)
-
+    for image_name in os.listdir('data'):
+        image_path = os.path.join('data', image_name)
+        img = cv2.imread(image_path)
+        inference_tensors = onnx_test.run_image_detection(img)
+        onnx_test.get_detection_boxes(img, inference_tensors, image_path)
+    return
+# --
 
 
+def test_run_pdf(pdf_url):
+    pdf_images = pdf_to_images(pdf_url)
 
+    onnx_test = onnx_detection_handler()
+    onnx_test.init_session()
+
+    image_number = 0
+    for pil_img in pdf_images:
+        image_path = 'data\\{}-img.jpg'.format(str(image_number))
+        image_number += 1
+        cv2_img = np.array(pil_img)
+        inference_tensors = onnx_test.run_image_detection(cv2_img)
+        onnx_test.get_detection_boxes(cv2_img, inference_tensors, image_path)
+    return
+# --
+
+test_url = "https://www.pendalgroup.com/wp-content/uploads/docs/factsheets/PDS/Pendal%20Australian%20Share%20Fund%20-%20PDS.pdf?v=2021-08-091628536541"
+
+test_run_pdf(test_url)
 
 
 
