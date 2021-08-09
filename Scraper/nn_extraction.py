@@ -74,10 +74,11 @@ class onnx_detection_handler:
         return img, ratio, (dw, dh)
 
 
-    def non_max_suppression(self, prediction, conf_thres=0.25, iou_thres=0.45, classes=None, agnostic=True, multi_label=False,
-                            labels=(), max_det=300):
-        """###Runs Non-Maximum Suppression (NMS) on inference results
-        List of detections, on (n,6) tensor per image [xyxy, conf, cls]
+    def non_max_suppression(self, prediction, conf_thres=0.25, iou_thres=0.45, classes=None, agnostic=True, multi_label=False, labels=(), max_det=300):
+        """
+        This is a temporary, it should be setup differently at somepoint
+        For an explination on non-max sup and IoU: https://github.com/dylanamiller/non_max_suppression
+        :)
         """
         # Cut off for number of classes
         nc = prediction.shape[2] - 5
@@ -87,16 +88,14 @@ class onnx_detection_handler:
         assert 0 <= conf_thres <= 1, f'Invalid Confidence threshold {conf_thres}, valid values are between 0.0 and 1.0'
         assert 0 <= iou_thres <= 1, f'Invalid IoU {iou_thres}, valid values are between 0.0 and 1.0'
         # Settings
-        min_wh, max_wh = 2, 4096  # (pixels) min and max box width and height
-        max_nms = 30000  # Maximum number of boxes into torchvision.ops.nms()
-        time_limit = 10.0  # Seconds to quit after
-        redundant = True  # Require redundant detections
+        min_wh, max_wh = 2, 4096# (pixels) min and max box width and height
+        max_nms = 30000
+        time_limit = 10.0 
+        redundant = True
         multi_label &= nc > 1  # Multiple labels per box (adds 0.5ms/img)
         t = time.time()
         output = [torch.zeros((0, 6), device=prediction.device)] * prediction.shape[0]
-        for xi, x in enumerate(prediction):  # image index, image inference
-            # Apply constraints
-            # x[((x[..., 2:4] < min_wh) | (x[..., 2:4] > max_wh)).any(1), 4] = 0  # width-height
+        for xi, x in enumerate(prediction):
             x = x[xc[xi]]  # confidence
             # Cat apriori labels if autolabelling
             if labels and len(labels[xi]):
@@ -111,7 +110,7 @@ class onnx_detection_handler:
                 continue
             # Compute conf
             x[:, 5:] *= x[:, 4:5]  # conf = obj_conf * cls_conf
-            # Box (center x, center y, width, height) to (x1, y1, x2, y2)
+            # Width & Height ---> tl, br
             box = self.xywh2xyxy(x[:, :4])
             # Detections matrix nx6 (xyxy, conf, cls)
             if multi_label:
@@ -137,7 +136,6 @@ class onnx_detection_handler:
                 i = i[:max_det]
             output[xi] = x[i]
             if (time.time() - t) > time_limit:
-                print(f'WARNING: NMS time limit {time_limit}s exceeded')
                 break  # Time limit exceeded
         return output
 
@@ -163,6 +161,10 @@ class onnx_detection_handler:
 
 
     def scale_coords(self, img1_shape, coords, img0_shape, ratio_pad=None):
+        """
+        Needs fixin up so it doesent need to cringe abt potential differences with tensors, lists, ints, floats and other assorted nosense
+        (:
+        """
         # Rescale coords (xyxy) img1_shape ---> img0_shape
         if ratio_pad is None:  # Calculate from img0_shape
             # gain  = old / new
@@ -202,8 +204,6 @@ class onnx_detection_handler:
     def get_detection_boxes(self, img, predictions, image_path=None):
         xyxy = []
         table_areas = []
-        if image_path:
-            img_name = image_path.split('\\')[-1]
         new_img = img.copy()
         for i, det in enumerate(predictions):
             det[:, :4] = self.scale_coords([self.img_size_h, self.img_size_w], det[:, :4], new_img.shape).round()
@@ -219,8 +219,10 @@ class onnx_detection_handler:
                 table_areas.append(table_area)
         # --
         if image_path:
-            cv2.imwrite('{}-{}'.format(image_path, img_name), new_img)
-            print('Saved: data/det-{}'.format(img_name))
+            img_name = image_path.split('\\')[-1]
+            path_prefix = image_path.split('\\')[0]
+            cv2.imwrite('{}/det-{}'.format(path_prefix, img_name), new_img)
+            #print('Saved: data/det-{}'.format(img_name))
         # --
         return table_areas, new_img
     # --
@@ -228,9 +230,14 @@ class onnx_detection_handler:
 
 
 
+onnx_test = onnx_detection_handler()
+onnx_test.init_session()
 
-
-
+for image_name in os.listdir('data'):
+    image_path = os.path.join('data', image_name)
+    img = cv2.imread(image_path)
+    inference_tensors = onnx_test.run_image_detection(img)
+    onnx_test.get_detection_boxes(img, inference_tensors, image_path)
 
 
 
