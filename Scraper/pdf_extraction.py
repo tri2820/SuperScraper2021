@@ -34,10 +34,10 @@ Can be done with this command: conda install -c conda-forge camelot-py
 
 # TODO: Extract tables from pdf (this can be all of them, we can always choose which ones we want after extraction)
 # TODO: Extract text from pdf: https://www.geeksforgeeks.org/working-with-pdf-files-in-python/ look at first point in this tutorial
-        for a simple starting setup.
+		for a simple starting setup.
 
 # TODO: Function that can find a specific sting in the pdf. This can then be used to find the sting of the APIR code eg: 'RFA0059AU'
-        additionally we should also extract the 'ARSN' which is a different identification code in documents
+		additionally we should also extract the 'ARSN' which is a different identification code in documents
 # TODO: Classes and/or functions that extract tables from pdfs in pandas dataframe form.
 
 
@@ -64,10 +64,13 @@ Later on try to use as little hardcoding as possible, try to make things have op
 '''
 
 
+from nn_extraction import run_pdf_table_detection
 
 
 
 
+
+import pdfplumber
 
 
 import io
@@ -80,316 +83,530 @@ import requests
 
 class StringTest:
 
-    url_string = ""
-    text = ""
+	url_string = ""
+	text = ""
 
-    def __init__(self, url_string_):
-        self.url_string = url_string_
-
-
-    def extract_text(self):
-        r = requests.get(self.url_string)
-        f = io.BytesIO(r.content)
-
-        pdfReader = PyPDF2.PdfFileReader(f)
-        #print(pdfReader.numPages)
-        self.text = ""
-
-        for page in pdfReader.pages:
-            self.text += page.extractText()
-        # --
-        text_file = open("pdf_texts.txt", "w")
-        text_file.write(self.url_string)
-        text_file.close()
+	def __init__(self, url_string_):
+		self.url_string = url_string_
 
 
-    def test_for_string(self, test_string):
-        found = self.text.find(test_string) != -1
-        return found
+	def extract_text(self):
+		r = requests.get(self.url_string)
+		f = io.BytesIO(r.content)
+
+		pdfReader = PyPDF2.PdfFileReader(f)
+		#print(pdfReader.numPages)
+		self.text = ""
+
+		for page in pdfReader.pages:
+			self.text += page.extractText()
+		# --
+		text_file = open("pdf_texts.txt", "w")
+		text_file.write(self.url_string)
+		text_file.close()
+
+
+	def test_for_string(self, test_string):
+		found = self.text.find(test_string) != -1
+		return found
 
 # --
 
 
 
 def find_most_similar(string_, compare_string_list_):
-    highest_match = ("","",0)
-    similarity_list = []
-    for item in compare_string_list_:
-        ratio_ = SequenceMatcher(None,item,string_.lower()).ratio()
-        match_info = (string_, item, ratio_)
-        similarity_list.append(match_info)
+	highest_match = ("","",0)
+	similarity_list = []
+	for item in compare_string_list_:
+		ratio_ = SequenceMatcher(None,item,string_.lower()).ratio()
+		match_info = (string_, item, ratio_)
+		similarity_list.append(match_info)
 
-    for match_info in similarity_list:
-        if match_info[2] > highest_match[2]:
-            highest_match = match_info
-    return highest_match
+	for match_info in similarity_list:
+		if match_info[2] > highest_match[2]:
+			highest_match = match_info
+	return highest_match
 
 
 class ExtractTableHandler:
-    # -Remmbe self.url_string
-    url_string = "https://www.vanguard.com.au/adviser/products/documents/8189/AU"
-    compare_string_list = ['management fee','fees and expenses','estimated total management costs']
+	# -Remmbe self.url_string
+	url_string = "https://www.vanguard.com.au/adviser/products/documents/8189/AU"
+	compare_string_list = ['management fee','fees and expenses','estimated total management costs']
 
-    tables = []
+	tables = []
 
-    # The function that runs upon creation
-    def __init__(self, url_string_, compare_string_list_ = ['management fee','fees and expenses','estimated total management costs']):
-        # Set the input url given on class creation ie: ExtractTable("https://www.vanguard.com.au/adviser/products/documents/8189/AU")
-        self.url_string = url_string_
-        self.compare_string_list = compare_string_list_
+	# The function that runs upon creation
+	def __init__(self, url_string_, compare_string_list_ = ['management fee','fees and expenses','estimated total management costs']):
+		# Set the input url given on class creation ie: ExtractTable("https://www.vanguard.com.au/adviser/products/documents/8189/AU")
+		self.url_string = url_string_
+		self.compare_string_list = compare_string_list_
 
-    def get_tables(self):
-        self.tables = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=True)
+	def get_tables(self):
+		self.tables = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=True)
 
-    def find_most_similar(self, string_, compare_string_list_):
-        highest_match = ("","",0)
-        similarity_list = []
-        for item in compare_string_list_:
-            ratio_ = SequenceMatcher(None,item,string_).ratio()
-            match_info = (string_, item, ratio_)
-            similarity_list.append(match_info)
+	def find_most_similar(self, string_, compare_string_list_):
+		highest_match = ("","",0)
+		similarity_list = []
+		for item in compare_string_list_:
+			ratio_ = SequenceMatcher(None,item,string_).ratio()
+			match_info = (string_, item, ratio_)
+			similarity_list.append(match_info)
 
-        for match_info in similarity_list:
-            if match_info[2] > highest_match[2]:
-                highest_match = match_info
-        return highest_match
+		for match_info in similarity_list:
+			if match_info[2] > highest_match[2]:
+				highest_match = match_info
+		return highest_match
 
-    def extract_match_tables(self):
-        df_list = []
-        matched_dfs = pd.DataFrame()
-        for table in self.tables:
-            table_df = table.df
-            table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
-            # Convert to list and extract lists that are similar
-            # TODO: Do this using a dataframe at some point (not priority)
-            values_list = table_df.values.tolist()
-            #print(table_df, values_list)
-            for i in range(len(values_list)):
-                for j in values_list[i]:
-                    # TODO: We should unhard code stuff like this
-                    x = SequenceMatcher(None,'type of fee or costs',j).ratio()
-                    if x > 0.6:
-                        df_list.append(table_df)
-                        print(table_df)
-                        #matched_dfs = pd.concat(df_list)
-        if len(df_list) > 0:
-            matched_dfs = pd.concat(df_list)
-        return matched_dfs
+	def extract_match_tables(self):
+		df_list = []
+		matched_dfs = pd.DataFrame()
+		for table in self.tables:
+			table_df = table.df
+			table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+			# Convert to list and extract lists that are similar
+			# TODO: Do this using a dataframe at some point (not priority)
+			values_list = table_df.values.tolist()
+			#print(table_df, values_list)
+			for i in range(len(values_list)):
+				for j in values_list[i]:
+					# TODO: We should unhard code stuff like this
+					x = SequenceMatcher(None,'type of fee or costs',j).ratio()
+					if x > 0.6:
+						df_list.append(table_df)
+						print(table_df)
+						#matched_dfs = pd.concat(df_list)
+		if len(df_list) > 0:
+			matched_dfs = pd.concat(df_list)
+		return matched_dfs
 
 
-    def get_similar_row(self, matched_dfs):
-        df_list = matched_dfs.values.tolist()
-        #print(df_list)
-        found = []
-        highest = 0
-        for i in range(len(df_list)):
-            for j in df_list[i]:
-                similarity_info = self.find_most_similar(str(j).lower(),self.compare_string_list)#j.lower()
-                similarity_value = similarity_info[2]
-                if similarity_value > highest:
-                    highest = similarity_value
-                    found = df_list[i]
-        return found
+	def get_similar_row(self, matched_dfs):
+		df_list = matched_dfs.values.tolist()
+		#print(df_list)
+		found = []
+		highest = 0
+		for i in range(len(df_list)):
+			for j in df_list[i]:
+				similarity_info = self.find_most_similar(str(j).lower(),self.compare_string_list)#j.lower()
+				similarity_value = similarity_info[2]
+				if similarity_value > highest:
+					highest = similarity_value
+					found = df_list[i]
+		return found
 
-    def extract_table(self):
-        matched_dfs = self.extract_match_tables()
-        found = self.get_similar_row(matched_dfs)
+	def extract_table(self):
+		matched_dfs = self.extract_match_tables()
+		found = self.get_similar_row(matched_dfs)
 
-        # TODO: Mabye move these cleaning operations to a different class or functions,
-        # reason being because this data cleaning operation is specifically for fund managers (not prio)
-        # NOTE: Look into regex
-        fee_value = ""
-        for i in found:
-            x = i.find("0.")
-            if x != -1:
-                fee_value = i[x:(x+10)]
+		# TODO: Mabye move these cleaning operations to a different class or functions,
+		# reason being because this data cleaning operation is specifically for fund managers (not prio)
+		# NOTE: Look into regex
+		fee_value = ""
+		for i in found:
+			x = i.find("0.")
+			if x != -1:
+				fee_value = i[x:(x+10)]
 
-        management_fee_list = []
-        management_fee_list.append(fee_value)
-        return management_fee_list
+		management_fee_list = []
+		management_fee_list.append(fee_value)
+		return management_fee_list
 
 # --
 
 
-class TableExtraction:
+class DocumentExtraction:
+	url_string = ''
+	"""
+	table_areas: {'bbox': [int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])], 'conf': conf, 'class': names[c]}
+	"""
+	detected_tables = []
+	pages_data = []
 
-    url_string = ''
-    extracted_tables = {
-        'stream': [],
-        'lattice_b_t': [],
-        'lattice_b_f': [],
-    }
+	def __init__(self, url_string_):
+		self.url_string = url_string_
 
-    filtered_tables = {
-        'stream': [],
-        'lattice_b_t': [],
-        'lattice_b_f': [],
-    }
+	def detect_tables(self):
+		page_table_detections = run_pdf_table_detection(self.url_string)
+		self.detected_tables = page_table_detections
 
-    def __init__(self, url_string_):
-        self.url_string = url_string_
+	def extract_tables(self):
+		self.detect_tables()
+		self.setup_pages()
 
-    def extract_tables(self):
-        self.extracted_tables['stream'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=False)
-        self.extracted_tables['lattice_b_t'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'lattice',flag_size=False, process_background = True)
-        self.extracted_tables['lattice_b_f'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'lattice',flag_size=False, process_background = False)
+		r = requests.get(self.url_string)
+		f = io.BytesIO(r.content)
 
-    def filter_tables(self):
+		#page_numbers = [x['page_number'] for x in self.pages_data]
 
-        for table_type in self.extracted_tables:
-            tables_ = self.extracted_tables[table_type]
-            for table_ in tables_:
-                table_df = table_.df
-                drop_table = False
-                # If only one column or one row - drop
-                if table_.shape[0] <= 1 or table_.shape[1] <= 1:
-                    drop_table = True
+		# This is the pixel resolution, pdfplumber uses 72
+		local_dpi = 72
+		# If you change this, go look at the nn_extraction and change the dpi there as well
+		global_dpi = 200
 
-                if not drop_table:
-                    table_object = self.generate_table_stats(table_)
-                    self.filtered_tables[table_type].append(table_object)
-        # --
+		with pdfplumber.open(f.read()) as pdf:
+			# Get pdf initial page size
+			first_page = pdf.pages[0]
+			print('PDF Size: ', (first_page.width,first_page.height))
 
-    def generate_table_stats(self, table_):
+			# Iterate over the pages detected
+			for page_data in self.pages_data:
+				# Get the pdf page
+				pdf_page = pdf.pages[page_data['page_number']]
 
-        # Table bbox
-        cols_ = [item for t in table_.cols for item in t]
-        rows_ = [item for t in table_.rows for item in t]
+				tables = page_data['tables']
+				for table in tables:
+					table['page_number'] = page_data['page_number']
+					bbox = table['bbox']
 
-        table_bbox = ((min(cols_),max(rows_)), (max(cols_), min(rows_)))
-        table_bbox_string = str(min(cols_)) + ',' + str(max(rows_)) + ',' + str(max(cols_)) + ',' + str(min(rows_))
+					pad_amount = 0
+					xy1 = (int(bbox[0] - pad_amount),int(bbox[1]) - pad_amount)
+					xy2 = (int(bbox[2] + pad_amount),int(bbox[3]) + pad_amount)
 
-        # Table midpoint
-        x_mid = (min(cols_)+max(cols_))/2
-        y_mid = (min(rows_)+max(rows_))/2
+					dpi_ratio = local_dpi / global_dpi
 
-        table_midpoint = (x_mid, y_mid)
+					xy1 = (int(xy1[0] * dpi_ratio),int(xy1[1] * dpi_ratio))
+					xy2 = (int(xy2[0] * dpi_ratio),int(xy2[1] * dpi_ratio))
 
-        # Table area
-        table_area = (max(cols_) - min(cols_)) * (max(rows_) - min(rows_))
+					xy1 = (min(max(int(xy1[0]),0),int(first_page.width)),min(max(int(xy1[1]),0),int(first_page.height)))
+					xy2 = (min(max(int(xy2[0]),0),int(first_page.width)),min(max(int(xy2[1]),0),int(first_page.height)))
 
-        table_object = {
-            'table': table_,
-            'bbox': table_bbox,
-            'bbox_string': table_bbox_string,
-            'midpoint': table_midpoint,
-            'area': table_area
-        }
+					# Get page table crop
+					cropped_table = pdf_page.crop((xy1[0],xy1[1],xy2[0],xy2[1]), relative=False)
+					# Extract the text as lists of lists
+					table['text'] = cropped_table.extract_text()
 
-        return table_object
+
+	def setup_pages(self):
+
+		# Use detected tables to get an idea of infomation that might be present in pages
+		for page_tables in self.detected_tables:
+			page_data = {
+				'page_number': page_tables['page_number'],
+				'tables': page_tables['table_areas'],
+				# Note 'page_contexts' does nothing it is here for potential idea stuff
+				'page_contexts': {
+					'titles': None,
+					'entitiy_relationships': None
+				}
+			}
+			self.pages_data.append(page_data)
+		# --
+		return
+# --
+
+
+
+class DocumentDataExtractor:
+	pages_data = []
+
+	def __init__(self):
+		pass
+
+	def extract_table_data(self):
+		pass
+# --
+
+
+
+
 
 
 class TableDataExtractor:
 
-    tables = []
-    tables_dfs = []
-    similarity_data = {}
-    similarity_df_list = {}
+	tables = []
+	tables_dfs = []
+	similarity_data = {}
+	similarity_df_list = {}
 
-    compare_string_list = ['management fee','fees and expenses','estimated total management costs','buy/sell spread']
+	compare_string_list = ['management fee','fees and expenses','estimated total management costs','buy/sell spread']
 
-    compare_catargories = {
-        'management fee': 'Management Fee',
-        'fees and expenses': 'Management Fee',
-        'estimated total management costs': 'Management Fee',
-        'buy/sell spread': 'Buy/Sell spread',
-    }
+	compare_catargories = {
+		'management fee': 'Management Fee',
+		'fees and expenses': 'Management Fee',
+		'estimated total management costs': 'Management Fee',
+		'buy/sell spread': 'Buy/Sell spread',
+	}
 
-    def __init__(self):
-        self.tables = []
-        self.tables_dfs = []
-        self.similarity_data = {}
-        self.similarity_df_list = {}
+	def __init__(self):
+		self.tables = []
+		self.tables_dfs = []
+		self.similarity_data = {}
+		self.similarity_df_list = {}
 
-    def store_extracted_tables(self, extracted_tables_):
+	def store_extracted_tables(self, extracted_tables_):
 
-        tables = []
-        tables_dfs = []
+		tables = []
+		tables_dfs = []
 
-        for table_type in extracted_tables_:
-            tables_ = extracted_tables_[table_type]
-            for table_data in tables_:
-                table_ = table_data['table']
-                self.tables.append(table_data)
-                self.tables_dfs.append(table_.df)
+		for table_type in extracted_tables_:
+			tables_ = extracted_tables_[table_type]
+			for table_data in tables_:
+				table_ = table_data['table']
+				self.tables.append(table_data)
+				self.tables_dfs.append(table_.df)
 
-    def extract_similar_rows(self, init_threshold):
-        # Returns string_, compared_string, ratio
-        #find_most_similar(value, compare_string_list)
+	def extract_similar_rows(self, init_threshold):
+		# Returns string_, compared_string, ratio
+		#find_most_similar(value, compare_string_list)
 
-        for compare_value in self.compare_string_list:
-            self.similarity_data[compare_value] = []
+		for compare_value in self.compare_string_list:
+			self.similarity_data[compare_value] = []
 
-        for i in range(len(self.tables_dfs)):
-            table_df = self.tables_dfs[i]
-            for column_name in table_df.columns:
-                similarities_list = [(idx,i,find_most_similar(value, self.compare_string_list)) for (idx, value) in zip(table_df.index, table_df[column_name])]
-                for similarity_object in similarities_list:
-                    sim_val = similarity_object[2][2]
-                    # A more agressive threshold can be applied in data filter functions
-                    if sim_val > init_threshold:
-                        self.similarity_data[similarity_object[2][1]].append(similarity_object)
-        # --
+		for i in range(len(self.tables_dfs)):
+			table_df = self.tables_dfs[i]
+			for column_name in table_df.columns:
+				similarities_list = [(idx,i,find_most_similar(value, self.compare_string_list)) for (idx, value) in zip(table_df.index, table_df[column_name])]
+				for similarity_object in similarities_list:
+					sim_val = similarity_object[2][2]
+					# A more agressive threshold can be applied in data filter functions
+					if sim_val > init_threshold:
+						self.similarity_data[similarity_object[2][1]].append(similarity_object)
+		# --
 
-    def compile_similarity_data(self):
+	def compile_similarity_data(self):
 
-        self.similarity_df_list = {}
+		self.similarity_df_list = {}
 
-        for similarity_type in self.similarity_data:
-            sim_list = self.similarity_data[similarity_type]
-            sim_df_list = []
-            #count = 0
-            for sim_val in sim_list:
-                row = self.tables_dfs[sim_val[1]].iloc[[sim_val[0]]]
-                #row.index = count
-                sim_df_list.append(row)
-                #count += 1
-            sim_df = pd.concat(sim_df_list)
-            sim_df.set_index(pd.Index(range(len(sim_df))), inplace = True)
-            self.similarity_df_list[similarity_type] = sim_df
+		for similarity_type in self.similarity_data:
+			sim_list = self.similarity_data[similarity_type]
+			sim_df_list = []
+			#count = 0
+			for sim_val in sim_list:
+				row = self.tables_dfs[sim_val[1]].iloc[[sim_val[0]]]
+				#row.index = count
+				sim_df_list.append(row)
+				#count += 1
+			sim_df = pd.concat(sim_df_list)
+			sim_df.set_index(pd.Index(range(len(sim_df))), inplace = True)
+			self.similarity_df_list[similarity_type] = sim_df
 
-    def sort_as_most_similar(self, set_main_data=False, shrink=None):
+	def sort_as_most_similar(self, set_main_data=False, shrink=None):
 
-        shrinked_catagories = {}
+		shrinked_catagories = {}
 
-        for map_value in self.compare_catargories:
-            cat_value = self.compare_catargories[map_value]
-            shrinked_catagories[cat_value] = []
+		for map_value in self.compare_catargories:
+			cat_value = self.compare_catargories[map_value]
+			shrinked_catagories[cat_value] = []
 
-        for sim_cat in self.similarity_data:
-            sim_data = self.similarity_data[sim_cat]
-            shrinked_catagories[self.compare_catargories[sim_cat]].extend(sim_data)
+		for sim_cat in self.similarity_data:
+			sim_data = self.similarity_data[sim_cat]
+			shrinked_catagories[self.compare_catargories[sim_cat]].extend(sim_data)
 
-        # Sort values by similarity threshold
-        for cat_name in shrinked_catagories:
-            sim_values = shrinked_catagories[cat_name]
-            sim_values = sorted(sim_values, key=lambda tup: tup[2][2], reverse=True)
-            #if shrink != None:
-            #    if shrink > 0:
-            shrinked_catagories[cat_name] = sim_values
+		# Sort values by similarity threshold
+		for cat_name in shrinked_catagories:
+			sim_values = shrinked_catagories[cat_name]
+			sim_values = sorted(sim_values, key=lambda tup: tup[2][2], reverse=True)
+			#if shrink != None:
+			#    if shrink > 0:
+			shrinked_catagories[cat_name] = sim_values
 
-        #for cat_name in shrinked_catagories:
-        #    sim_values = shrinked_catagories[cat_name][:10]
-        #    for value in sim_values:
-        #        print(value)
+		#for cat_name in shrinked_catagories:
+		#    sim_values = shrinked_catagories[cat_name][:10]
+		#    for value in sim_values:
+		#        print(value)
 
-        if set_main_data:
-            self.similarity_data = shrinked_catagories
+		if set_main_data:
+			self.similarity_data = shrinked_catagories
 
-        return shrinked_catagories[cat_name]
-
-
-    def print_similarity_df(self):
-
-        for similarity_type in self.similarity_df_list:
-            print(f' ----- {similarity_type} ----- '.format())
-            sim_df = self.similarity_df_list[similarity_type]
-            print(sim_df)
+		return shrinked_catagories[cat_name]
 
 
+	def print_similarity_df(self):
+
+		for similarity_type in self.similarity_df_list:
+			print(f' ----- {similarity_type} ----- '.format())
+			sim_df = self.similarity_df_list[similarity_type]
+			print(sim_df)
+# --
 
 
 
+
+class TableExtraction:
+
+	url_string = ''
+	extracted_tables = {
+		'stream': [],
+		'lattice_b_t': [],
+		'lattice_b_f': [],
+	}
+
+	filtered_tables = {
+		'stream': [],
+		'lattice_b_t': [],
+		'lattice_b_f': [],
+	}
+
+	def __init__(self, url_string_):
+		self.url_string = url_string_
+
+	def extract_tables(self):
+		self.extracted_tables['stream'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=False)
+		self.extracted_tables['lattice_b_t'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'lattice',flag_size=False, process_background = True)
+		self.extracted_tables['lattice_b_f'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'lattice',flag_size=False, process_background = False)#pdfplumber
+		#page_detections = run_pdf_table_detection(self.url_string)
+		#self.extracted_tables = page_detections
+		
+	def filter_tables(self):
+		for table_type in self.extracted_tables:
+			tables_ = self.extracted_tables[table_type]
+			for table_ in tables_:
+				table_df = table_.df
+				drop_table = False
+				# If only one column or one row - drop
+				if table_.shape[0] <= 1 or table_.shape[1] <= 1:
+					drop_table = True
+
+				if not drop_table:
+					table_object = self.generate_table_stats(table_)
+					self.filtered_tables[table_type].append(table_object)
+		# --
+
+	def generate_table_stats(self, table_):
+
+		# Table bbox
+		cols_ = [item for t in table_.cols for item in t]
+		rows_ = [item for t in table_.rows for item in t]
+
+		table_bbox = ((min(cols_),max(rows_)), (max(cols_), min(rows_)))
+		table_bbox_string = str(min(cols_)) + ',' + str(max(rows_)) + ',' + str(max(cols_)) + ',' + str(min(rows_))
+
+		# Table midpoint
+		x_mid = (min(cols_)+max(cols_))/2
+		y_mid = (min(rows_)+max(rows_))/2
+
+		table_midpoint = (x_mid, y_mid)
+
+		# Table area
+		table_area = (max(cols_) - min(cols_)) * (max(rows_) - min(rows_))
+
+		table_object = {
+			'table': table_,
+			'bbox': table_bbox,
+			'bbox_string': table_bbox_string,
+			'midpoint': table_midpoint,
+			'area': table_area
+		}
+
+		return table_object
+# --
+
+
+
+
+
+
+
+
+
+'''
+class TableDataExtractor:
+
+	tables = []
+	tables_dfs = []
+	similarity_data = {}
+	similarity_df_list = {}
+
+	compare_string_list = ['management fee','fees and expenses','estimated total management costs','buy/sell spread']
+
+	compare_catargories = {
+		'management fee': 'Management Fee',
+		'fees and expenses': 'Management Fee',
+		'estimated total management costs': 'Management Fee',
+		'buy/sell spread': 'Buy/Sell spread',
+	}
+
+	def __init__(self):
+		self.tables = []
+		self.tables_dfs = []
+		self.similarity_data = {}
+		self.similarity_df_list = {}
+
+	def store_extracted_tables(self, extracted_tables_):
+
+		tables = []
+		tables_dfs = []
+
+		for table_type in extracted_tables_:
+			tables_ = extracted_tables_[table_type]
+			for table_data in tables_:
+				table_ = table_data['table']
+				self.tables.append(table_data)
+				self.tables_dfs.append(table_.df)
+
+	def extract_similar_rows(self, init_threshold):
+		# Returns string_, compared_string, ratio
+		#find_most_similar(value, compare_string_list)
+
+		for compare_value in self.compare_string_list:
+			self.similarity_data[compare_value] = []
+
+		for i in range(len(self.tables_dfs)):
+			table_df = self.tables_dfs[i]
+			for column_name in table_df.columns:
+				similarities_list = [(idx,i,find_most_similar(value, self.compare_string_list)) for (idx, value) in zip(table_df.index, table_df[column_name])]
+				for similarity_object in similarities_list:
+					sim_val = similarity_object[2][2]
+					# A more agressive threshold can be applied in data filter functions
+					if sim_val > init_threshold:
+						self.similarity_data[similarity_object[2][1]].append(similarity_object)
+		# --
+
+	def compile_similarity_data(self):
+
+		self.similarity_df_list = {}
+
+		for similarity_type in self.similarity_data:
+			sim_list = self.similarity_data[similarity_type]
+			sim_df_list = []
+			#count = 0
+			for sim_val in sim_list:
+				row = self.tables_dfs[sim_val[1]].iloc[[sim_val[0]]]
+				#row.index = count
+				sim_df_list.append(row)
+				#count += 1
+			sim_df = pd.concat(sim_df_list)
+			sim_df.set_index(pd.Index(range(len(sim_df))), inplace = True)
+			self.similarity_df_list[similarity_type] = sim_df
+
+	def sort_as_most_similar(self, set_main_data=False, shrink=None):
+
+		shrinked_catagories = {}
+
+		for map_value in self.compare_catargories:
+			cat_value = self.compare_catargories[map_value]
+			shrinked_catagories[cat_value] = []
+
+		for sim_cat in self.similarity_data:
+			sim_data = self.similarity_data[sim_cat]
+			shrinked_catagories[self.compare_catargories[sim_cat]].extend(sim_data)
+
+		# Sort values by similarity threshold
+		for cat_name in shrinked_catagories:
+			sim_values = shrinked_catagories[cat_name]
+			sim_values = sorted(sim_values, key=lambda tup: tup[2][2], reverse=True)
+			#if shrink != None:
+			#    if shrink > 0:
+			shrinked_catagories[cat_name] = sim_values
+
+		#for cat_name in shrinked_catagories:
+		#    sim_values = shrinked_catagories[cat_name][:10]
+		#    for value in sim_values:
+		#        print(value)
+
+		if set_main_data:
+			self.similarity_data = shrinked_catagories
+
+		return shrinked_catagories[cat_name]
+
+
+	def print_similarity_df(self):
+
+		for similarity_type in self.similarity_df_list:
+			print(f' ----- {similarity_type} ----- '.format())
+			sim_df = self.similarity_df_list[similarity_type]
+			print(sim_df)
+'''
 
 '''
 extraction = TableExtraction('https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund_PDS.pdf')
@@ -442,79 +659,79 @@ tables_list.append((tables_streams,tables_lattice_true,tables_lattice_false))
 # --
 
 if len(tables_list) > 0:
-    for tables_a in tables_list:
-        tables_streams_ = tables_a[0]
-        tables_lattice_true_ = tables_a[1]
-        tables_lattice_false_ = tables_a[2]
-        lentgth = max([len(tables_streams_),len(tables_lattice_true_),len(tables_lattice_false_)])
-        for i in range(lentgth):
-            if i < len(tables_streams_):
-                x = tables_[i]
-                #camelot.plot(x, kind='text').show()
-                #camelot.plot(x, kind='grid').show()
-                plt.title('stream')
-                camelot.plot(x, kind='contour').show()
-                print(x.df)
-                #print('Accuracy: ', x.accuracy)
-                #print('Page: ', x.page)
-                print('stream')
-                print(x.parsing_report)
-                #input(' - Press Enter to proceed')
-                #plt.close('all')
-            if i < len(tables_lattice_true_):
-                x = tables_1[i]
-                #camelot.plot(x, kind='text').show()
-                #camelot.plot(x, kind='grid').show()
-                plt.title('tables_lattice')
-                camelot.plot(x, kind='contour').show()
-                print(x.df)
-                #print('Accuracy: ', x.accuracy)
-                #print('Page: ', x.page)
-                print('process_background = False')
-                print(x.parsing_report)
-                #input(' - Press Enter to proceed')
-                #plt.close('all')
-            if i < len(tables_lattice_false_):
-                x = tables_1[i]
-                #camelot.plot(x, kind='text').show()
-                #camelot.plot(x, kind='grid').show()
-                plt.title('tables_lattice_false')
-                camelot.plot(x, kind='contour').show()
-                print(x.df)
-                #print('Accuracy: ', x.accuracy)
-                #print('Page: ', x.page)
-                print('process_background = False')
-                print(x.parsing_report)
-                #input(' - Press Enter to proceed')
-                #plt.close('all')
-            input(' - Press Enter to proceed')
-            plt.close('all')
+	for tables_a in tables_list:
+		tables_streams_ = tables_a[0]
+		tables_lattice_true_ = tables_a[1]
+		tables_lattice_false_ = tables_a[2]
+		lentgth = max([len(tables_streams_),len(tables_lattice_true_),len(tables_lattice_false_)])
+		for i in range(lentgth):
+			if i < len(tables_streams_):
+				x = tables_[i]
+				#camelot.plot(x, kind='text').show()
+				#camelot.plot(x, kind='grid').show()
+				plt.title('stream')
+				camelot.plot(x, kind='contour').show()
+				print(x.df)
+				#print('Accuracy: ', x.accuracy)
+				#print('Page: ', x.page)
+				print('stream')
+				print(x.parsing_report)
+				#input(' - Press Enter to proceed')
+				#plt.close('all')
+			if i < len(tables_lattice_true_):
+				x = tables_1[i]
+				#camelot.plot(x, kind='text').show()
+				#camelot.plot(x, kind='grid').show()
+				plt.title('tables_lattice')
+				camelot.plot(x, kind='contour').show()
+				print(x.df)
+				#print('Accuracy: ', x.accuracy)
+				#print('Page: ', x.page)
+				print('process_background = False')
+				print(x.parsing_report)
+				#input(' - Press Enter to proceed')
+				#plt.close('all')
+			if i < len(tables_lattice_false_):
+				x = tables_1[i]
+				#camelot.plot(x, kind='text').show()
+				#camelot.plot(x, kind='grid').show()
+				plt.title('tables_lattice_false')
+				camelot.plot(x, kind='contour').show()
+				print(x.df)
+				#print('Accuracy: ', x.accuracy)
+				#print('Page: ', x.page)
+				print('process_background = False')
+				print(x.parsing_report)
+				#input(' - Press Enter to proceed')
+				#plt.close('all')
+			input(' - Press Enter to proceed')
+			plt.close('all')
 
-        for x in tables_:7
-            #camelot.plot(x, kind='text').show()
-            #camelot.plot(x, kind='grid').show()
-            camelot.plot(x, kind='contour').show()
-            print(x.df)
-            #print('Accuracy: ', x.accuracy)
-            #print('Page: ', x.page)
-            print(x.parsing_report)
-            input(' - Press Enter to proceed')
-            plt.close('all')
-        # --
+		for x in tables_:7
+			#camelot.plot(x, kind='text').show()
+			#camelot.plot(x, kind='grid').show()
+			camelot.plot(x, kind='contour').show()
+			print(x.df)
+			#print('Accuracy: ', x.accuracy)
+			#print('Page: ', x.page)
+			print(x.parsing_report)
+			input(' - Press Enter to proceed')
+			plt.close('all')
+		# --
 
-        for x in tables_1:
-            #camelot.plot(x, kind='text').show()
-            #camelot.plot(x, kind='grid').show()
-            camelot.plot(x, kind='contour').show()
-            print(x.df)
-            #print('Accuracy: ', x.accuracy)
-            #print('Page: ', x.page)
-            print(x.parsing_report)
-            input(' - Press Enter to proceed')
-            plt.close('all')
+		for x in tables_1:
+			#camelot.plot(x, kind='text').show()
+			#camelot.plot(x, kind='grid').show()
+			camelot.plot(x, kind='contour').show()
+			print(x.df)
+			#print('Accuracy: ', x.accuracy)
+			#print('Page: ', x.page)
+			print(x.parsing_report)
+			input(' - Press Enter to proceed')
+			plt.close('all')
 '''
-        # --
-    # --
+		# --
+	# --
 # --
 
 
@@ -585,7 +802,81 @@ if len(tables_list) > 0:
 #                 return management_fee_list
 
 
+'''
 
+class TableExtraction:
+
+	url_string = ''
+	extracted_tables_ = {
+		'stream': [],
+		'lattice_b_t': [],
+		'lattice_b_f': [],
+	}
+
+	filtered_tables_ = {
+		'stream': [],
+		'lattice_b_t': [],
+		'lattice_b_f': [],
+	}
+
+	extracted_tables = []
+	filtered_tables = []
+
+	def __init__(self, url_string_):
+		self.url_string = url_string_
+
+	def extract_tables(self):
+		#self.extracted_tables['stream'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=False)
+		#self.extracted_tables['lattice_b_t'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'lattice',flag_size=False, process_background = True)
+		#self.extracted_tables['lattice_b_f'] = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'lattice',flag_size=False, process_background = False)#pdfplumber
+		page_detections = run_pdf_table_detection(self.url_string)
+		self.extracted_tables = page_detections
+		
+
+	def filter_tables(self):
+
+		for table_type in self.extracted_tables:
+			tables_ = self.extracted_tables[table_type]
+			for table_ in tables_:
+				table_df = table_.df
+				drop_table = False
+				# If only one column or one row - drop
+				if table_.shape[0] <= 1 or table_.shape[1] <= 1:
+					drop_table = True
+
+				if not drop_table:
+					table_object = self.generate_table_stats(table_)
+					self.filtered_tables[table_type].append(table_object)
+		# --
+
+	def generate_table_stats(self, table_):
+
+		# Table bbox
+		cols_ = [item for t in table_.cols for item in t]
+		rows_ = [item for t in table_.rows for item in t]
+
+		table_bbox = ((min(cols_),max(rows_)), (max(cols_), min(rows_)))
+		table_bbox_string = str(min(cols_)) + ',' + str(max(rows_)) + ',' + str(max(cols_)) + ',' + str(min(rows_))
+
+		# Table midpoint
+		x_mid = (min(cols_)+max(cols_))/2
+		y_mid = (min(rows_)+max(rows_))/2
+
+		table_midpoint = (x_mid, y_mid)
+
+		# Table area
+		table_area = (max(cols_) - min(cols_)) * (max(rows_) - min(rows_))
+
+		table_object = {
+			'table': table_,
+			'bbox': table_bbox,
+			'bbox_string': table_bbox_string,
+			'midpoint': table_midpoint,
+			'area': table_area
+		}
+
+		return table_object
+'''
 
 
 '''
@@ -594,78 +885,78 @@ if len(tables_list) > 0:
 #found_investment = []
 
 def camalot_test():
-    #this extracts the apir code
-    for table in tables:
-        table_df = table.df
-        table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
-        df_list = table_df.values.tolist()
-        #print(df_list)
-        for i in range(len(df_list)):
-            for j in df_list[i]:
-                x = j.find("APIR")
-                if x != -1:
-                    end = j.find("AU")
-                    APIR_code = j[x:(end+2)]
+	#this extracts the apir code
+	for table in tables:
+		table_df = table.df
+		table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+		df_list = table_df.values.tolist()
+		#print(df_list)
+		for i in range(len(df_list)):
+			for j in df_list[i]:
+				x = j.find("APIR")
+				if x != -1:
+					end = j.find("AU")
+					APIR_code = j[x:(end+2)]
 
 
-    print(APIR_code)
+	print(APIR_code)
 
-    #function to get highest similarity ratio based on defined strings
-    def similarity_thing(string_):
-        found = False
-        highest = 0
-        similarity_list = []
-        similarity_list.append(SequenceMatcher(None,'management fee',string_).ratio())
-        similarity_list.append(SequenceMatcher(None,'fees and expenses',string_).ratio())
-        similarity_list.append(SequenceMatcher(None,'estimated total management costs',string_).ratio())
-        for i in similarity_list:
-            if i > highest:
-                highest = i
-        return highest
-
-
-
-    #gets the specific tables(tables matching with type of fee or costs) and concatenates them in a dataframe
-    df_new_list =[]
-    for table in tables:
-        table_df = table.df
-        table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
-        df_list = table_df.values.tolist()
-        for i in range(len(df_list)):
-            for j in df_list[i]:
-                x = SequenceMatcher(None,'type of fee or costs',j).ratio()
-                if x > 0.6:
-                    df_new_list.append(table_df)
-                    #all_df = pd.concat(df_new_list)
+	#function to get highest similarity ratio based on defined strings
+	def similarity_thing(string_):
+		found = False
+		highest = 0
+		similarity_list = []
+		similarity_list.append(SequenceMatcher(None,'management fee',string_).ratio())
+		similarity_list.append(SequenceMatcher(None,'fees and expenses',string_).ratio())
+		similarity_list.append(SequenceMatcher(None,'estimated total management costs',string_).ratio())
+		for i in similarity_list:
+			if i > highest:
+				highest = i
+		return highest
 
 
-    all_df = pd.concat(df_new_list)
-    print(all_df)
+
+	#gets the specific tables(tables matching with type of fee or costs) and concatenates them in a dataframe
+	df_new_list =[]
+	for table in tables:
+		table_df = table.df
+		table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+		df_list = table_df.values.tolist()
+		for i in range(len(df_list)):
+			for j in df_list[i]:
+				x = SequenceMatcher(None,'type of fee or costs',j).ratio()
+				if x > 0.6:
+					df_new_list.append(table_df)
+					#all_df = pd.concat(df_new_list)
 
 
-    #finds and extracts the most relatable list to get the management fee
-    new_df_list = all_df.values.tolist()
-    found = []
-    highest = 0
-    for i in range(len(new_df_list)):
-        for j in new_df_list[i]:
-            similarity_value = similarity_thing(j.lower())
-            print(j)
-            print(similarity_value)
-            if similarity_value> highest:
-                highest = similarity_value
-                found = new_df_list[i]
+	all_df = pd.concat(df_new_list)
+	print(all_df)
 
-    print(found)
 
-    #extracting of management fee value into variable fee_value
-    fee_value = ""
-    for i in found:
-        x = i.find("0.")
-        if x != -1:
-            fee_value = i[x:(x+10)]
+	#finds and extracts the most relatable list to get the management fee
+	new_df_list = all_df.values.tolist()
+	found = []
+	highest = 0
+	for i in range(len(new_df_list)):
+		for j in new_df_list[i]:
+			similarity_value = similarity_thing(j.lower())
+			print(j)
+			print(similarity_value)
+			if similarity_value> highest:
+				highest = similarity_value
+				found = new_df_list[i]
 
-    print(fee_value)
+	print(found)
+
+	#extracting of management fee value into variable fee_value
+	fee_value = ""
+	for i in found:
+		x = i.find("0.")
+		if x != -1:
+			fee_value = i[x:(x+10)]
+
+	print(fee_value)
 
 
 
@@ -674,54 +965,54 @@ def camalot_test():
 
 def run_extraction(pdf_url):
 
-    tables = camelot.read_pdf(pdf_url,pages = 'all', flavor = 'stream',flag_size=True)
-    df_list = []
-    for table in tables:
-        # Turn into dataframe
-        table_df = table.df
-        table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
-        # Add to df_list
-        df_list.append(table_df)
-    # --
+	tables = camelot.read_pdf(pdf_url,pages = 'all', flavor = 'stream',flag_size=True)
+	df_list = []
+	for table in tables:
+		# Turn into dataframe
+		table_df = table.df
+		table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+		# Add to df_list
+		df_list.append(table_df)
+	# --
 
-    # Now we can combine all of them into a new dataframe
-    all_df = pd.concat(df_list)
+	# Now we can combine all of them into a new dataframe
+	all_df = pd.concat(df_list)
 
-    found = []
-    found_investment = []
-    for table in tables:
-        table_df = table.df
-        table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
-        df_list = table_df.values.tolist()
+	found = []
+	found_investment = []
+	for table in tables:
+		table_df = table.df
+		table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+		df_list = table_df.values.tolist()
 
-        for i in range(len(df_list)):
-            for j in df_list[i]:
-                similarity_ = SequenceMatcher(None,'Fees and expenses',j).ratio()
-                similarity_2 = SequenceMatcher(None,'initial investment',j).ratio()
-                if (similarity_ > 0.65):
-                    found = df_list[i]
-                if (similarity_2 > 0.65):
-                    found_investment = df_list[i]
+		for i in range(len(df_list)):
+			for j in df_list[i]:
+				similarity_ = SequenceMatcher(None,'Fees and expenses',j).ratio()
+				similarity_2 = SequenceMatcher(None,'initial investment',j).ratio()
+				if (similarity_ > 0.65):
+					found = df_list[i]
+				if (similarity_2 > 0.65):
+					found_investment = df_list[i]
 
 
-    fee_value = ""
-    for i in found:
-        x = i.find("0.")
-        if x != -1:
-            fee_value = i[x:len(i)]
-            print(x)
+	fee_value = ""
+	for i in found:
+		x = i.find("0.")
+		if x != -1:
+			fee_value = i[x:len(i)]
+			print(x)
 
-    investment_value = ""
-    for i in found_investment:
-        x = i.find("$")
-        if x != -1:
-            investment_value = i[x:len(i)]
-            print(x)
+	investment_value = ""
+	for i in found_investment:
+		x = i.find("$")
+		if x != -1:
+			investment_value = i[x:len(i)]
+			print(x)
 
-    #print('Fee & Investment values')
-    print(fee_value)
-    print(investment_value)
-    return fee_value, investment_value
+	#print('Fee & Investment values')
+	print(fee_value)
+	print(investment_value)
+	return fee_value, investment_value
 
 
 '''

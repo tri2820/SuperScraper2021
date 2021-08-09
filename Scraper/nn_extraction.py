@@ -263,25 +263,34 @@ def test_run_images():
 # --
 
 
-def test_run_pdf(pdf_url):
+def run_pdf_table_detection(pdf_url, save_images=False):
+    """{'table_areas': table_areas, 'page_number': idx},
+    table_areas: {'bbox': [int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])], 'conf': conf, 'class': names[c]}
+    """
     pdf_images = pdf_to_images(pdf_url)
 
     onnx_test = onnx_detection_handler()
     onnx_test.init_session()
 
-    image_number = 0
-    for pil_img in pdf_images:
-        image_path = 'data\\{}-img.jpg'.format(str(image_number))
-        image_number += 1
+    page_detections = []
+
+    for idx, pil_img in enumerate(pdf_images):
+        image_path = None
+        if save_images:
+            image_path = 'data\\{}-img.jpg'.format(str(idx))
         cv2_img = np.array(pil_img)
         inference_tensors = onnx_test.run_image_detection(cv2_img)
-        onnx_test.get_detection_boxes(cv2_img, inference_tensors, image_path)
-    return
+        table_areas, new_img = onnx_test.get_detection_boxes(cv2_img, inference_tensors, image_path)
+        if len(table_areas) > 0:
+            page_det = {'table_areas': table_areas, 'page_number': idx}
+            page_detections.append(page_det)
+    # --
+
+    return page_detections
 # --
 
-test_url = "https://www.pendalgroup.com/wp-content/uploads/docs/factsheets/PDS/Pendal%20Australian%20Share%20Fund%20-%20PDS.pdf?v=2021-08-091628536541"
-
-test_run_pdf(test_url)
+#test_url = "https://www.pendalgroup.com/wp-content/uploads/docs/factsheets/PDS/Pendal%20Australian%20Share%20Fund%20-%20PDS.pdf?v=2021-08-091628536541"
+#run_pdf_table_detection(test_url, True)
 
 
 
