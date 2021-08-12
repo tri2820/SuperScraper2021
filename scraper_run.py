@@ -77,6 +77,10 @@ class DatabaseHandler:
             self.db[collection_name_].update_one(query, {"$set": data_object})
         # --
         return document
+    
+    def get_collection_ids(self, collection_name_):
+        ids_list = [str(x) for x in self.db[collection_name_].find().distinct('_id')]
+        return ids_list
 
 
 # data-csv-url
@@ -113,41 +117,92 @@ class SpiderHandler:
         print("Crawl Completed")
 # --
 
-#spider = SpiderHandler()
-#print(spider.fund_data_list)
-#spider.run_scraper()
 
 
-# #run_scraper()
-# #def run_scraper():
-#     #'''
+"""
+example_traversal_document = {
+    '_id': 'hyperion_site_traversal',
+    'file_extraction_rules': {
+        # Only allows certain file types
+        'deny_extensions': DENY_EXTENSIONS,
+        # Regex that the url must match during extraction
+        'allow': [
+            #'.+\.pdf.+',
+            #'.+\.pdf'
+        ],
+        # Page content types that must apply for file type urls
+        'content_types': [
+            "application/pdf"
+        ],
+        # The following are now pipeline filters (after extraction)
+        # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+        'restrict_text': [
+            '.+product.disclosure.statement.+',
+            '.+pds.+',
+            '.+PDS.+',
+        ],
+        # Filters applied to urls after extraction and before entering into DB
+        'filters': [
+            '.+product.disclosure.statement.+',
+            '.+pds.+',
+            '.+PDS.+',
+        ]
+    },
+    'domain': {
+        'domain_file': 'hyperion',
+        'domain_name': 'www.hyperion.com.au',
+        'start_url': 'https://www.hyperion.com.au',
+        'parse_select':'traverse',
+        # All of the strings in the list of each item must be found for this to be added as filtered page
+        'page_filters': {
+            'BNT0003AU': ['BNT0003AU'],
+        },
+    },
+}
+"""
 
-#     db_connection = DatabaseHandler(MONGO_URI, MONGO_DB)
-#     db_connection.open_connection()
-#     hesta_fund_data = db_connection.retrieve_fund_data("hesta")
-#     telstra_fund_data = db_connection.retrieve_fund_data("telstra")
-#     future_fund_data = db_connection.retrieve_fund_data("future")
-#     aware_fund_data = db_connection.retrieve_fund_data("aware")
-#     db_connection.close_connection()
 
-
-#     configure_logging()
-
-#     #process = CrawlerProcess(get_project_settings())#get_project_settings()#{'SPIDER_MODULES': 'Scraper.Scraper.spiders'}
-#     runner = CrawlerRunner(get_project_settings())
-
-#     @defer.inlineCallbacks
-#     def crawl():
-
-#         yield runner.crawl('Aware', fund_data = aware_fund_data)
-
-#         yield runner.crawl('Hesta', fund_data = hesta_fund_data)
-
-#         yield runner.crawl('Telstra', fund_data = telstra_fund_data)
-
-#         yield runner.crawl('Future', fund_data = future_fund_data)
-
-#         reactor.stop()a
+#"""
+example_traversal_document2 = {
+    '_id': 'hyperion_site_traversal',
+    'file_extraction_rules': {
+        # Only allows certain file types
+        'deny_extensions': DENY_EXTENSIONS,
+        # Regex that the url must match during extraction
+        'allow': [
+            #'.+\.pdf.+',
+            #'.+\.pdf'
+        ],
+        # Page content types that must apply for file type urls
+        'content_types': [
+            "application/pdf"
+        ],
+        # The following are now pipeline filters (after extraction)
+        # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+        'restrict_text': [
+            '.+product.disclosure.statement.+',
+            '.+pds.+',
+            '.+PDS.+',
+        ],
+        # Filters applied to urls after extraction and before entering into DB
+        'filters': [
+            '.+product.disclosure.statement.+',
+            '.+pds.+',
+            '.+PDS.+',
+        ]
+    },
+    'domain': {
+        'domain_file': 'hyperion',
+        'domain_name': 'www.hyperion.com.au',
+        'start_url': 'https://www.hyperion.com.au',
+        'parse_select':'traverse',
+        # All of the strings in the list of each item must be found for this to be added as filtered page
+        'page_filters': {
+            'BNT0003AU': ['BNT0003AU'],
+        },
+    },
+}
+#"""
 
 
 
@@ -159,123 +214,35 @@ def run_scraper_traversal():
 
     test_handler = DatabaseHandler(MONGO_URI, MONGO_DB)
 
-    test_handler.open_connection()# dimensionalfundadvisors_site_traversal # pimco_site_traversal
-    traverse_data_4 = test_handler.find_or_create_document('site_traverse_data', {'_id': 'pimco_site_traversal'}, False)
+    test_handler.open_connection()
+    traversal_ids = test_handler.get_collection_ids('site_traverse_data')
+
+    traversal_documents = []
+
+    for trav_id in traversal_ids:
+        traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
+        # Handle traversal_data
+        if not "schedule_data" in traversal_document:
+            traversal_document["schedule_data"] = {
+                "last_traversed": 0,
+                "should_traverse": False,
+            }
+            # Overwite
+            test_handler.find_or_create_document('site_traverse_data',traversal_document, True)
+        # --
+        traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
+        traversal_documents.append(traversal_document)
+    # --
     test_handler.close_connection()
 
 
     @defer.inlineCallbacks
     def crawl():
 
-        traverse_data_1 = {
-            '_id': 'pendal_site_traversal',
-            'file_extraction_rules': {
-                'deny_extensions': DENY_EXTENSIONS,
-                'allow': [
-                    #'.+\.pdf.+',
-                    #'.+\.pdf',
-                ],
-                'filters': [
-                    '.+product.disclosure.statement.+',
-                    '.+pds.+',
-                    '.+PDS.+',
-                ]
-            },
-            'domain': {
-                'domain_file': 'pendal',
-                'domain_name': 'www.pendalgroup.com',
-                'start_url': 'https://www.pendalgroup.com/',
-                'parse_select':'traverse',
-                'page_filters': {
-                    'RFA0059AU': ['RFA0059AU'],
-                    #'BTA0061AU': ['BTA0061AU'],
-                    #'WFS0377AU': ['WFS0377AU'],
-                },
-            },
-        }
-
-        #yield runner.crawl('Traversal', traverse_data = traverse_data_1)
-        '''
-        "file_urls": [],
-        "filtered_file_urls": [],
-        "filtered_traverse_urls": {},
-        "traverse_urls": []
-        '''
-
-        traverse_data_2 = {
-            '_id': 'hyperion_site_traversal',
-            'file_extraction_rules': {
-                # Only allows certain file types
-                'deny_extensions': DENY_EXTENSIONS,
-                # Regex that the url must match during extraction
-                'allow': [
-                    #'.+\.pdf.+',
-                    #'.+\.pdf'
-                ],
-                # Page content types that must apply for file type urls
-                'content_types': [
-                    "application/pdf"
-                ],
-                # The following are now pipeline filters (after extraction)
-                # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
-                'restrict_text': [
-                    '.+product.disclosure.statement.+',
-                    '.+pds.+',
-                    '.+PDS.+',
-                ],
-                # Filters applied to urls after extraction and before entering into DB
-                'filters': [
-                    '.+product.disclosure.statement.+',
-                    '.+pds.+',
-                    '.+PDS.+',
-                ]
-            },
-            'domain': {
-                'domain_file': 'hyperion',
-                'domain_name': 'www.hyperion.com.au',
-                'start_url': 'https://www.hyperion.com.au',
-                'parse_select':'traverse',
-                'page_filters': {
-                    'BNT0003AU': ['BNT0003AU'],
-                },
-            },
-        }
-
-        traverse_data_3 = {
-            '_id': 'vanguard_site_traversal',
-            'file_extraction_rules': {
-                'deny_extensions': DENY_EXTENSIONS,
-                'allow': [
-                ],
-                'content_types': [
-                    "application/pdf"
-                ],
-                'restrict_text': [
-                    '.+disclosure.statement.+',
-                    '.+product.disclosure.statement.+',
-                    '.+pds.+',
-                    '.+PDS.+',
-                ],
-                'filters': [
-                    '.+product.disclosure.statement.+',
-                    '.+pds.+',
-                    '.+PDS.+',
-                ]# https://www.vanguard.com.au/personal/products/en/detail/8100/resources
-            },# scrapy shell "https://www.vanguard.com.au/personal/products/en/detail/8100/resources"
-            # view(response)
-            'domain': {
-                'domain_file': 'vanguard',# https://www.vanguard.com.au/personal/products/documents/22444/AU
-                'domain_name': 'www.vanguard.com.au',# https://www.vanguard.com.au/ # https://www.vanguard.com.au/personal/products/en/detail/8100/resources
-                'start_url': 'https://www.vanguard.com.au/personal/products/en/detail/8100/resources',
-                'parse_select':'traverse',
-                'page_filters': {
-                    'VAN0002AU': ['VAN0002AU'],
-                    'BNT0003AU': ['BNT0003AU'],
-                },
-            },
-        }
-
-        yield runner.crawl('Traversal', traverse_data = traverse_data_4)
+        for document in traversal_documents:
+            if document['schedule_data']['should_traverse']:
+                print('CRAWLING - ',document['_id'])
+                yield runner.crawl('Traversal', traverse_data = document)
 
         reactor.stop()
 
@@ -288,16 +255,16 @@ def run_scraper_traversal():
 
 #print(DENY_EXTENSIONS)
 
-#run_scraper_traversal()
+run_scraper_traversal()
 
 #run_scraper()
 
 #     print("Crawl Completed")
 
 
-from Scraper.get_fund_managers import run_test
+#from Scraper.get_fund_managers import run_test
 
-run_test()
+#run_test()
 
 '''
 fund_test_obj = {
@@ -311,7 +278,120 @@ fund_test_obj = {
 }
 '''
 
+'''
+"file_urls": [],
+"filtered_file_urls": [],
+"filtered_traverse_urls": {},
+"traverse_urls": []
+'''
 
+'''
+traverse_data_1 = {
+    '_id': 'pendal_site_traversal',
+    'file_extraction_rules': {
+        'deny_extensions': DENY_EXTENSIONS,
+        'allow': [
+            #'.+\.pdf.+',
+            #'.+\.pdf',
+        ],
+        'filters': [
+            '.+product.disclosure.statement.+',
+            '.+pds.+',
+            '.+PDS.+',
+        ]
+    },
+    'domain': {
+        'domain_file': 'pendal',
+        'domain_name': 'www.pendalgroup.com',
+        'start_url': 'https://www.pendalgroup.com/',
+        'parse_select':'traverse',
+        'page_filters': {
+            'RFA0059AU': ['RFA0059AU'],
+            #'BTA0061AU': ['BTA0061AU'],
+            #'WFS0377AU': ['WFS0377AU'],
+        },
+    },
+}
+
+#yield runner.crawl('Traversal', traverse_data = traverse_data_1)
+'''
+
+
+'''
+
+traverse_data_2 = {
+    '_id': 'hyperion_site_traversal',
+    'file_extraction_rules': {
+        # Only allows certain file types
+        'deny_extensions': DENY_EXTENSIONS,
+        # Regex that the url must match during extraction
+        'allow': [
+            #'.+\.pdf.+',
+            #'.+\.pdf'
+        ],
+        # Page content types that must apply for file type urls
+        'content_types': [
+            "application/pdf"
+        ],
+        # The following are now pipeline filters (after extraction)
+        # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+        'restrict_text': [
+            '.+product.disclosure.statement.+',
+            '.+pds.+',
+            '.+PDS.+',
+        ],
+        # Filters applied to urls after extraction and before entering into DB
+        'filters': [
+            '.+product.disclosure.statement.+',
+            '.+pds.+',
+            '.+PDS.+',
+        ]
+    },
+    'domain': {
+        'domain_file': 'hyperion',
+        'domain_name': 'www.hyperion.com.au',
+        'start_url': 'https://www.hyperion.com.au',
+        'parse_select':'traverse',
+        'page_filters': {
+            'BNT0003AU': ['BNT0003AU'],
+        },
+    },
+}
+
+traverse_data_3 = {
+    '_id': 'vanguard_site_traversal',
+    'file_extraction_rules': {
+        'deny_extensions': DENY_EXTENSIONS,
+        'allow': [
+        ],
+        'content_types': [
+            "application/pdf"
+        ],
+        'restrict_text': [
+            '.+disclosure.statement.+',
+            '.+product.disclosure.statement.+',
+            '.+pds.+',
+            '.+PDS.+',
+        ],
+        'filters': [
+            '.+product.disclosure.statement.+',
+            '.+pds.+',
+            '.+PDS.+',
+        ]# https://www.vanguard.com.au/personal/products/en/detail/8100/resources
+    },# scrapy shell "https://www.vanguard.com.au/personal/products/en/detail/8100/resources"
+    # view(response)
+    'domain': {
+        'domain_file': 'vanguard',# https://www.vanguard.com.au/personal/products/documents/22444/AU
+        'domain_name': 'www.vanguard.com.au',# https://www.vanguard.com.au/ # https://www.vanguard.com.au/personal/products/en/detail/8100/resources
+        'start_url': 'https://www.vanguard.com.au/personal/products/en/detail/8100/resources',
+        'parse_select':'traverse',
+        'page_filters': {
+            'VAN0002AU': ['VAN0002AU'],
+            'BNT0003AU': ['BNT0003AU'],
+        },
+    },
+}
+'''
 
 '''
 traverse_data = {

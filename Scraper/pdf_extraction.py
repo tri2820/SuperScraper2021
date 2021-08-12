@@ -40,8 +40,8 @@ https://www.vanguard.com.au/adviser/products/en/detail/wholesale/8100/equity : h
 
 def cosine_similarity(string_1, string_2, ommit=[]):
 
-	remove_symbols_1 = re.sub('[^\w_]+|[0-9]+',' ',string_1)
-	remove_symbols_2 = re.sub('[^\w_]+|[0-9]+',' ',string_2)
+	remove_symbols_1 = re.sub('[^\w ]+|[_]+',' ',string_1 + '')
+	remove_symbols_2 = re.sub('[^\w ]+|[_]+',' ',string_2 + '')
 
 	token_1 = word_tokenize(remove_symbols_1)
 	token_2 = word_tokenize(remove_symbols_2)
@@ -72,9 +72,13 @@ def cosine_similarity(string_1, string_2, ommit=[]):
 	
 	# Cosine
 	for i in range(len(rvector)):
-			c+= l1[i]*l2[i]
-	cosine = c / float((sum(l1)*sum(l2))**0.5)
+		c+= l1[i]*l2[i]
+	divisor = float((sum(l1)*sum(l2))**0.5)
+	cosine = 0
+	if divisor != 0:
+		cosine = c / float((sum(l1)*sum(l2))**0.5)
 	return cosine
+# --
 
 
 
@@ -111,7 +115,12 @@ class StringTest:
 		r = requests.get(self.url_string)
 		f = io.BytesIO(r.content)
 
-		pdfReader = PyPDF2.PdfFileReader(f)
+		pdfReader = None
+		try:
+			pdfReader = PyPDF2.PdfFileReader(f)
+		except:
+			print('Failed String Test')
+			return
 		#print(pdfReader.numPages)
 		self.text = ""
 
@@ -130,17 +139,42 @@ class StringTest:
 # --
 
 
+# NOTE: This numerics/symbols regex weight function will allow stuff like 23, %, /, ^3, @#421-3, +, - to be given increased or decrease wieghts
 
-def find_most_similar(string_, compare_string_list_, use_cosine=False):
+def pattern_weights(in_string, regex_list):
+	weight = 0
+	for pattern in regex_list:
+		if re.search(pattern[0], in_string) != None:
+			weight += pattern[1]
+	# --
+	return weight
+
+
+
+
+def find_most_similar(string_, compare_string_list_, use_cosine=True, use_weights=True):
 	"""
-	returns: ('string that was being tested', 'stringe that matched highest', ratio of similarity)
+	returns: ('string that was being tested', 'catagory string that matched highest', ratio of similarity)
 	"""
 	highest_match = ("","",0)
 	similarity_list = []
 	for item in compare_string_list_:
-		ratio_ = SequenceMatcher(None,item,string_.lower()).ratio()
+
+		ratio_sequence = SequenceMatcher(None,item.lower(),string_.lower()).ratio()
+		ratio_cosine = cosine_similarity(item.lower(), string_.lower())
+
+		ratio_ = ratio_sequence
 		if use_cosine:
-			ratio_ = cosine_similarity(item.lower(), string_.lower())
+			ratio_ = (ratio_sequence * 0.6) + ratio_cosine
+		# --
+
+		if use_weights:
+			regex_list = [['[+\\$\-\%]',0.75],['\d',0.9]]
+			symbols_weight = pattern_weights(string_.lower(), regex_list)
+			ratio_ += ratio_ * symbols_weight
+		# --
+
+
 		match_info = (string_, item, ratio_)
 		similarity_list.append(match_info)
 
@@ -149,91 +183,6 @@ def find_most_similar(string_, compare_string_list_, use_cosine=False):
 			highest_match = match_info
 	return highest_match
 
-
-class ExtractTableHandler:
-	# -Remmbe self.url_string
-	url_string = "https://www.vanguard.com.au/adviser/products/documents/8189/AU"
-	compare_string_list = ['management fee','fees and expenses','estimated total management costs']
-
-	tables = []
-
-	# The function that runs upon creation
-	def __init__(self, url_string_, compare_string_list_ = ['management fee','fees and expenses','estimated total management costs']):
-		# Set the input url given on class creation ie: ExtractTable("https://www.vanguard.com.au/adviser/products/documents/8189/AU")
-		self.url_string = url_string_
-		self.compare_string_list = compare_string_list_
-
-	def get_tables(self):
-		self.tables = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=True)
-
-	def find_most_similar(self, string_, compare_string_list_):
-		highest_match = ("","",0)
-		similarity_list = []
-		for item in compare_string_list_:
-			ratio_ = SequenceMatcher(None,item,string_).ratio()
-			match_info = (string_, item, ratio_)
-			similarity_list.append(match_info)
-
-		for match_info in similarity_list:
-			if match_info[2] > highest_match[2]:
-				highest_match = match_info
-		return highest_match
-
-	def extract_match_tables(self):
-		df_list = []
-		matched_dfs = pd.DataFrame()
-		for table in self.tables:
-			table_df = table.df
-			table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
-			# Convert to list and extract lists that are similar
-			# TODO: Do this using a dataframe at some point (not priority)
-			values_list = table_df.values.tolist()
-			#print(table_df, values_list)
-			for i in range(len(values_list)):
-				for j in values_list[i]:
-					# TODO: We should unhard code stuff like this
-					x = SequenceMatcher(None,'type of fee or costs',j).ratio()
-					if x > 0.6:
-						df_list.append(table_df)
-						print(table_df)
-						#matched_dfs = pd.concat(df_list)
-		if len(df_list) > 0:
-			matched_dfs = pd.concat(df_list)
-		return matched_dfs
-
-
-	def get_similar_row(self, matched_dfs):
-		df_list = matched_dfs.values.tolist()
-		#print(df_list)
-		found = []
-		highest = 0
-		for i in range(len(df_list)):
-			for j in df_list[i]:
-				similarity_info = self.find_most_similar(str(j).lower(),self.compare_string_list)#j.lower()
-				similarity_value = similarity_info[2]
-				if similarity_value > highest:
-					highest = similarity_value
-					found = df_list[i]
-		return found
-
-	def extract_table(self):
-		matched_dfs = self.extract_match_tables()
-		found = self.get_similar_row(matched_dfs)
-
-		# TODO: Mabye move these cleaning operations to a different class or functions,
-		# reason being because this data cleaning operation is specifically for fund managers (not prio)
-		# NOTE: Look into regex
-		fee_value = ""
-		for i in found:
-			x = i.find("0.")
-			if x != -1:
-				fee_value = i[x:(x+10)]
-
-		management_fee_list = []
-		management_fee_list.append(fee_value)
-		return management_fee_list
-
-# --
 
 
 class DocumentExtraction:
@@ -258,8 +207,6 @@ class DocumentExtraction:
 		r = requests.get(self.url_string)
 		f = io.BytesIO(r.content)
 
-		#page_numbers = [x['page_number'] for x in self.pages_data]
-
 		# This is the pixel resolution, pdfplumber uses 72
 		local_dpi = 72
 		# If you change this, go look at the nn_extraction and change the dpi there as well
@@ -275,14 +222,16 @@ class DocumentExtraction:
 				# Get the pdf page
 				pdf_page = pdf.pages[page_data['page_number']]
 
+				page_data['all_text'] = pdf_page.extract_text(x_tolerance=1, y_tolerance=1)
+
 				tables = page_data['tables']
 				for table in tables:
 					table['page_number'] = page_data['page_number']
 					bbox = table['bbox']
 
-					pad_amount = 0
-					xy1 = (int(bbox[0] - pad_amount),int(bbox[1]) - pad_amount)
-					xy2 = (int(bbox[2] + pad_amount),int(bbox[3]) + pad_amount)
+					padding_table = 0
+					xy1 = (int(bbox[0] - padding_table),int(bbox[1]) - padding_table)
+					xy2 = (int(bbox[2] + padding_table),int(bbox[3]) + padding_table)
 
 					dpi_ratio = local_dpi / global_dpi
 
@@ -295,7 +244,80 @@ class DocumentExtraction:
 					# Get page table crop
 					cropped_table = pdf_page.crop((xy1[0],xy1[1],xy2[0],xy2[1]), relative=False)
 					# Extract the text as lists of lists
-					table['text'] = cropped_table.extract_text(x_tolerance=3, y_tolerance=3)
+					table['text'] = cropped_table.extract_text(x_tolerance=1, y_tolerance=1)
+
+					#ex_words = cropped_table.extract_words(x_tolerance=1, y_tolerance=1, use_text_flow=True, keep_blank_chars=True)
+					#print(ex_words)
+					#ex_words_ = [x['text'] for x in ex_words]
+
+					#print(ex_words_)
+					#text_list = []
+					'''
+					for text_section in ex_words_:
+						#print('\n text section {} \n'.format(text_section))
+						text_string = ''
+						for x_txt in text_section:
+							text_string += x_txt
+						print('\n-Text section: {} \n--\n'.format(text_string))
+						text_list.append(text_string)
+					'''
+					# --
+					#print('\n\n-- Text List --\n\n',text_list,'\n\n')
+					#table['text'] = text_list
+
+
+					#text_string = ''
+					#for x_txt in ex_words_:
+					#	text_string += ' ' + x_txt
+					# --
+
+					'''
+					print("\n-- NORMAL TEST --")
+					print(table['text'])
+
+					print("\n-- ex_words_ TEST --")
+					print(ex_words_)
+
+					print("\n-- text_string TEST --")
+					print(text_string)
+					'''
+
+
+					
+					
+					
+
+					#print(0/2)
+
+
+					# Get text around the table
+					#padding_horizontal = 4
+					#padding_vertical = 20
+
+					table_size = (xy2[0] - xy1[0], xy2[1] - xy1[1])
+					table['size'] = table_size
+
+					padding_horizontal = int(table_size[0] * 0.25)
+					padding_vertical = int(table_size[1] * 0.75)
+
+					around_top = (xy1[0] - padding_horizontal, xy1[1] - padding_vertical, xy2[0] + padding_horizontal, xy1[1])
+					around_bottom = (xy1[0] - padding_horizontal, xy2[1], xy2[0] + padding_horizontal, xy2[1] + padding_vertical)
+
+					around_top = (min(max(around_top[0],0),first_page.width), min(max(around_top[1],0),first_page.height), min(max(around_top[2],0),first_page.width), min(max(around_top[3],0),first_page.height))
+					around_bottom = (min(max(around_bottom[0],0),first_page.width), min(max(around_bottom[1],0),first_page.height), min(max(around_bottom[2],0),first_page.width), min(max(around_bottom[3],0),first_page.height))
+
+					table['text_top'] = ''
+					table['text_bottom'] = ''
+
+					if around_top[0] - around_top[2] > 1 and around_top[1] - around_top[3] > 1:
+						table_top = pdf_page.crop((around_top[0],around_top[1],around_top[2],around_top[3]), relative=False)
+						table['text_top'] = table_top.extract_text(x_tolerance=1, y_tolerance=1)
+					if around_bottom[0] - around_bottom[2] > 1 and around_bottom[1] - around_bottom[3] > 1:
+						table_bottom = pdf_page.crop((around_bottom[0],around_bottom[1],around_bottom[2],around_bottom[3]), relative=False)
+						table['text_bottom'] = table_bottom.extract_text(x_tolerance=1, y_tolerance=1)
+
+					#table_top.to_image(resolution=200).save("table_top.png", format="PNG")
+					#table_bottom.to_image(resolution=200).save("table_bottom.png", format="PNG")
 
 
 	def setup_pages(self):
@@ -318,17 +340,36 @@ class DocumentExtraction:
 
 
 
+# TODO: add datatype biasing to 'compare_catargories' eg: prefers % preferes + - / ()
+
 class DocumentDataExtractor:
 	documents = []
 
-	compare_string_list = ['management fee','fees and expenses','estimated total management costs','buy/sell spread']
+	compare_string_list = [
+		#'management fee',
+		#'estimated total management costs',
+		#'buy/sell spread',
+		#'buy-sell spread',
+		'fees expenses cost',
+		'buy sell',
+		'transaction costs allowance',
+		'asset allocation',
+	]
 
 	compare_catargories = {
-		'management fee': 'Management Fee',
-		'fees and expenses': 'Management Fee',
-		'estimated total management costs': 'Management Fee',
-		'buy/sell spread': 'Buy/Sell spread',
+		#'management fee': 'Management Fee',
+		#'fees and expenses': 'Management Fee',
+		#'estimated total management costs': 'Management Fee',
+		#'buy/sell spread': 'Buy/Sell spread',
+		#'buy-sell spread': 'Buy/Sell spread',
+		#'fee cost': 'Management Fee',
+		'fees expenses cost': 'Management Fee',
+		'buy sell': 'Buy/Sell spread',
+		'transaction costs allowance': 'Buy/Sell spread',
+		'asset allocation': 'Asset Allocation',
 	}
+
+	discard_indicators = ['example']
 
 	similarity_data = {}
 
@@ -348,7 +389,7 @@ class DocumentDataExtractor:
 		self.documents.append(document_obj)
 		return len(self.documents) - 1
 	
-	def extract_similar_rows(self, doc_idx, init_threshold):
+	def extract_similar_rows(self, init_threshold, doc_idx=0):
 
 		for compare_value in self.compare_string_list:
 			self.similarity_data[compare_value] = []
@@ -358,15 +399,30 @@ class DocumentDataExtractor:
 			for table in page['tables']:
 				#table['bbox']
 				text = table['text']
-				texts = text.split('\n')
-				#print(texts)
-				#print(text)
+
+				#\.\\n|\. [A-Z0-9] #\.\\n|\. [A-Z0-9]|\\n[\w\d]\\n #'\u00b2'
+				texts = re.split('\.\\n|\. [A-Z0-9]|\\n[\w\d]\\n|\\n\\n',text)
+				texts = [re.sub('\\n[\w\d]\\n|\\n',' ',x) for x in texts]
+
+				
+
+				# Look for discard indicaters
+				discard_table = False
+				for indicator in self.discard_indicators:
+					if table['text'].lower().find(indicator) != -1 or table['text_top'].lower().find(indicator) != -1 or table['text_bottom'].lower().find(indicator) != -1:
+						discard_table = True
+						break
+				
+				if discard_table:
+					continue
+
+				#[print(repr(x)) for x in texts]
+
 				for text_part in texts:
-					item = find_most_similar(text_part, self.compare_string_list, True)
+					item = find_most_similar(text_part, self.compare_string_list, True, True)
 					sim_val = item[2]
 					if sim_val > init_threshold:
 						self.similarity_data[item[1]].append(item)
-		#print(self.similarity_data)
 		return
 	
 	def sort_as_most_similar(self):
@@ -374,12 +430,46 @@ class DocumentDataExtractor:
 		for sim_type in self.similarity_data:
 			sim_values = self.similarity_data[sim_type]
 			self.similarity_data[sim_type] = sorted(sim_values, key=lambda tup: tup[2], reverse=True)
+		
+		shrinked_catagories = {}
+
+		for map_value in self.compare_catargories:
+			cat_value = self.compare_catargories[map_value]
+			shrinked_catagories[cat_value] = []
+
+		for sim_cat in self.similarity_data:
+			sim_data = self.similarity_data[sim_cat]
+			shrinked_catagories[self.compare_catargories[sim_cat]].extend(sim_data)
+
+		# Sort values by similarity threshold
+		for cat_name in shrinked_catagories:
+			sim_values = shrinked_catagories[cat_name]
+			sim_values = sorted(sim_values, key=lambda tup: tup[2], reverse=True)
+			#if shrink != None:
+			#    if shrink > 0:
+			shrinked_catagories[cat_name] = sim_values
+
+		for cat_name in shrinked_catagories:
+		    sim_values = shrinked_catagories[cat_name][:10]
+		    for value in sim_values:
+		        print(value)
+
+		#print(self.similarity_data)
+		#print(shrinked_catagories)
+
+		self.similarity_data = shrinked_catagories
 
 		return self.similarity_data
 
 # --
 
 
+
+
+
+# ----------------------------------------------------------------------- #
+
+'''
 
 class TableDataExtractor:
 
@@ -566,8 +656,91 @@ class TableExtraction:
 
 
 
+class ExtractTableHandler:
+	# -Remmbe self.url_string
+	url_string = "https://www.vanguard.com.au/adviser/products/documents/8189/AU"
+	compare_string_list = ['management fee','fees and expenses','estimated total management costs']
+
+	tables = []
+
+	# The function that runs upon creation
+	def __init__(self, url_string_, compare_string_list_ = ['management fee','fees and expenses','estimated total management costs']):
+		# Set the input url given on class creation ie: ExtractTable("https://www.vanguard.com.au/adviser/products/documents/8189/AU")
+		self.url_string = url_string_
+		self.compare_string_list = compare_string_list_
+
+	def get_tables(self):
+		self.tables = camelot.read_pdf(self.url_string, pages = 'all', flavor = 'stream',flag_size=True)
+
+	def find_most_similar(self, string_, compare_string_list_):
+		highest_match = ("","",0)
+		similarity_list = []
+		for item in compare_string_list_:
+			ratio_ = SequenceMatcher(None,item,string_).ratio()
+			match_info = (string_, item, ratio_)
+			similarity_list.append(match_info)
+
+		for match_info in similarity_list:
+			if match_info[2] > highest_match[2]:
+				highest_match = match_info
+		return highest_match
+
+	def extract_match_tables(self):
+		df_list = []
+		matched_dfs = pd.DataFrame()
+		for table in self.tables:
+			table_df = table.df
+			table_df.rename(columns=table_df.iloc[0]).drop(table_df.index[0])
+			# Convert to list and extract lists that are similar
+			# TODO: Do this using a dataframe at some point (not priority)
+			values_list = table_df.values.tolist()
+			#print(table_df, values_list)
+			for i in range(len(values_list)):
+				for j in values_list[i]:
+					# TODO: We should unhard code stuff like this
+					x = SequenceMatcher(None,'type of fee or costs',j).ratio()
+					if x > 0.6:
+						df_list.append(table_df)
+						print(table_df)
+						#matched_dfs = pd.concat(df_list)
+		if len(df_list) > 0:
+			matched_dfs = pd.concat(df_list)
+		return matched_dfs
 
 
+	def get_similar_row(self, matched_dfs):
+		df_list = matched_dfs.values.tolist()
+		#print(df_list)
+		found = []
+		highest = 0
+		for i in range(len(df_list)):
+			for j in df_list[i]:
+				similarity_info = self.find_most_similar(str(j).lower(),self.compare_string_list)#j.lower()
+				similarity_value = similarity_info[2]
+				if similarity_value > highest:
+					highest = similarity_value
+					found = df_list[i]
+		return found
+
+	def extract_table(self):
+		matched_dfs = self.extract_match_tables()
+		found = self.get_similar_row(matched_dfs)
+
+		# TODO: Mabye move these cleaning operations to a different class or functions,
+		# reason being because this data cleaning operation is specifically for fund managers (not prio)
+		# NOTE: Look into regex
+		fee_value = ""
+		for i in found:
+			x = i.find("0.")
+			if x != -1:
+				fee_value = i[x:(x+10)]
+
+		management_fee_list = []
+		management_fee_list.append(fee_value)
+		return management_fee_list
+
+# --
+'''
 
 '''
 class TableDataExtractor:

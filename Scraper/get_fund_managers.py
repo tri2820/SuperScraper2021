@@ -34,6 +34,11 @@ class DBHandler:
         self.client.close()
 
 
+    def get_collection_ids(self, collection_name_):
+        ids_list = [str(x) for x in self.db[collection_name_].find().distinct('_id')]
+        return ids_list
+
+
     def find_or_create_document(self, collection_name_, data_object, overwrite=False):
         query = {'_id' : data_object['_id']}
         print(type(collection_name_))
@@ -55,6 +60,7 @@ class FundManagerHandler:
     name_collection = 'fund_managers'
     traversal_collection = 'site_traverse_data'
 
+    '''
     fund_test_obj = {
         '_id': 'RFA0059AU',
         'name': 'Pendal Focus Australian Share Fund',
@@ -64,6 +70,7 @@ class FundManagerHandler:
             #'pdf_url': 'uehfaouefu.pdf',
         },
     }
+    '''
 
     def open_connection(self):
         self.dbHandler = DBHandler(MONGO_URI, MONGO_DB)
@@ -76,7 +83,7 @@ class FundManagerHandler:
 
     def find_pdf_urls(self, insert_document):
 
-        fund_document = self.dbHandler.find_or_create_document(self.name_collection, insert_document, True)#True
+        fund_document = self.dbHandler.find_or_create_document(self.name_collection, insert_document, False)#True
 
         fund_id = fund_document['_id']
 
@@ -100,16 +107,21 @@ class FundManagerHandler:
             string_tester.extract_text()
             found = string_tester.test_for_string(fund_document['APIR_code'])
             if found:
-                self.set_pdf_url(file_url, fund_document)
+                fund_document = self.set_pdf_url(file_url, fund_document)
                 print('-FOUND-', found)
-                break
+                #break
             # --
         # --
+        return fund_document
     # --
 
     def set_pdf_url(self, file_url, fund_document):
         fund_document['metadata']['pdf_url'] = file_url
+        if not "pdf_url_list" in fund_document['metadata']:
+            fund_document['metadata']['pdf_url_list'] = []
+        fund_document['metadata']['pdf_url_list'].append(file_url)
         fund_document = self.dbHandler.find_or_create_document(self.name_collection, fund_document, True)
+        return fund_document
     # --
 
     def get_document_pdf_data(self,insert_document):
@@ -124,7 +136,7 @@ class FundManagerHandler:
         fund_id = fund_document['_id']
         site_traversal_id = fund_document['metadata']['site_traversal_id']
 
-        #'''
+        '''
         extraction = TableExtraction(fund_document['metadata']['pdf_url'])
         extraction.extract_tables()
         extraction.filter_tables()
@@ -142,7 +154,12 @@ class FundManagerHandler:
 
         fund_document['Management Fee'] = sim_df_list['Management Fee'][1][0]
         fund_document['Buy/Sell spread'] = sim_df_list['Buy/Sell spread'][1][0]
-        #'''
+
+        "file_urls": [],
+        "filtered_file_urls": [],
+        "filtered_traverse_urls": {},
+        "traverse_urls": []
+        '''
 
 
 
@@ -151,6 +168,12 @@ class FundManagerHandler:
 
         print('\n\n ---- DOCUMENT TESTING ---- \n\n')
 
+        # IF no pdf_url : giveup
+
+        if not 'pdf_url' in fund_document['metadata']:
+            print('No url found for {}'.format(fund_id))
+            return
+
         extraction = DocumentExtraction(fund_document['metadata']['pdf_url'])
         extraction.extract_tables()
         
@@ -158,16 +181,28 @@ class FundManagerHandler:
         extract_data = DocumentDataExtractor()
 
         extract_data.add_document(extraction)
-        extract_data.extract_similar_rows(0,0.2)
-        shrinked_catagories = extract_data.sort_as_most_similar()
-        [print('\n', x, ' - ', shrinked_catagories[x], '\n') for x in shrinked_catagories]
+        extract_data.extract_similar_rows(0.2,0)
+        sim_values = extract_data.sort_as_most_similar()
+        #[print('\n', x, ' - ', sim_values[x], '\n') for x in sim_values]
 
+        try:
+            fund_document['Management Fee'] = sim_values['Management Fee'][0][0]
+        except:
+            print('Reee')
+        try:
+            fund_document['Buy/Sell spread'] = sim_values['Buy/Sell spread'][0][0]
+        except:
+            print('Reee')
+        try:
+            fund_document['Asset Allocation'] = sim_values['Asset Allocation'][0][0]
+        except:
+            print('Reee')
 
 
 
         #print(fund_document)
 
-        #fund_document = self.dbHandler.find_or_create_document(self.name_collection, fund_document, True)
+        fund_document = self.dbHandler.find_or_create_document(self.name_collection, fund_document, True)
 
         #table_handler = ExtractTableHandler(fund_document['metadata']['pdf_url'])
         #table_handler.get_tables()
@@ -238,21 +273,44 @@ def run_test():
 
     test_obj_list = [
         {
-            '_id': 'VAN0002AU',
-            'name': 'Vanguard Australian Share Index',
-            'APIR_code': 'VAN0002AU',
+            '_id': 'DFA0002AU',
+            'name': 'Dimensional Fund Advisors',
+            'APIR_code': 'DFA0002AU',
             'metadata': {
-                'site_traversal_id': 'vanguard_site_traversal',
-                'pdf_url': 'https://www.hyperion.com.au/app/uploads/2021/06/Hyperion-Australian-Growth-Companies-Fund-PDS-1.pdf',
+                'site_traversal_id': 'dimensionalfundadvisors_site_traversal'
             },
         },
     ]
+    
+
+    
 
     fund_manager_handler = FundManagerHandler()
     fund_manager_handler.open_connection()
-    for test_obj in [test_obj_list[0]]:
-        fund_manager_handler.find_pdf_urls(test_obj)
-        fund_manager_handler.get_document_pdf_data(test_obj)
+
+    site_traverse_data_ids = fund_manager_handler.dbHandler.get_collection_ids('site_traverse_data')
+
+    for site_id in site_traverse_data_ids:
+        traversal_obj = fund_manager_handler.dbHandler.find_or_create_document('site_traverse_data', {'_id': site_id}, False)
+        if not traversal_obj:
+            continue
+        page_filters = traversal_obj['domain']['page_filters']
+        for page_filter in page_filters:
+            new_manager = {
+                '_id': page_filter,
+                'name': 'N/A',
+                'APIR_code': page_filter,
+                'metadata': {
+                    'site_traversal_id': traversal_obj['_id']
+                },
+            }
+            new_manager = fund_manager_handler.find_pdf_urls(new_manager)
+            fund_manager_handler.get_document_pdf_data(new_manager)
+    # --
+
+    #for test_obj in test_obj_list:
+    #    fund_manager_handler.find_pdf_urls(test_obj)
+    #    fund_manager_handler.get_document_pdf_data(test_obj)
     # --
     fund_manager_handler.close_connection()
 # --
@@ -271,6 +329,15 @@ def run_test():
 
 
 '''
+{
+    '_id': 'VAN0002AU',
+    'name': 'Vanguard Australian Share Index',
+    'APIR_code': 'VAN0002AU',
+    'metadata': {
+        'site_traversal_id': 'vanguard_site_traversal',
+        'pdf_url': 'https://www.hyperion.com.au/app/uploads/2021/06/Hyperion-Australian-Growth-Companies-Fund-PDS-1.pdf',
+    },
+},
 {
     '_id': 'RFA0059AU',
     'name': 'Pendal Focus Australian Share Fund',

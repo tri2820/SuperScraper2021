@@ -219,7 +219,7 @@ class SiteTraversal(scrapy.Spider):
         # --
 
         # Run iterative traversal operations
-        if depth < 3:
+        if depth < 2:
             for link in page_urls_:
                 # Consider logging
                 self.log_progress()
