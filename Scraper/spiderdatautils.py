@@ -101,7 +101,7 @@ class requests_session_handler:
 
     def check_content_type(self, url):
         try:
-            response = self.session.get(url, timeout=7)#, stream=False
+            response = self.session.get(url, timeout=12)#, stream=False
             if response.status_code == '404' or response.status_code == '403':
                 return None
             content_type = response.headers.get('content-type')

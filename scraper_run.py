@@ -159,8 +159,8 @@ def run_scraper_traversal():
 
     test_handler = DatabaseHandler(MONGO_URI, MONGO_DB)
 
-    test_handler.open_connection()
-    traverse_data_4 = test_handler.find_or_create_document('site_traverse_data', {'_id': 'pendal_site_traversal'}, False)
+    test_handler.open_connection()# dimensionalfundadvisors_site_traversal # pimco_site_traversal
+    traverse_data_4 = test_handler.find_or_create_document('site_traverse_data', {'_id': 'pimco_site_traversal'}, False)
     test_handler.close_connection()
 
 
@@ -195,6 +195,12 @@ def run_scraper_traversal():
         }
 
         #yield runner.crawl('Traversal', traverse_data = traverse_data_1)
+        '''
+        "file_urls": [],
+        "filtered_file_urls": [],
+        "filtered_traverse_urls": {},
+        "traverse_urls": []
+        '''
 
         traverse_data_2 = {
             '_id': 'hyperion_site_traversal',
@@ -269,7 +275,7 @@ def run_scraper_traversal():
             },
         }
 
-        yield runner.crawl('Traversal', traverse_data = traverse_data_3)
+        yield runner.crawl('Traversal', traverse_data = traverse_data_4)
 
         reactor.stop()
 
@@ -282,16 +288,16 @@ def run_scraper_traversal():
 
 #print(DENY_EXTENSIONS)
 
-run_scraper_traversal()
+#run_scraper_traversal()
 
 #run_scraper()
 
 #     print("Crawl Completed")
 
 
+from Scraper.get_fund_managers import run_test
 
-
-
+run_test()
 
 '''
 fund_test_obj = {

@@ -10,6 +10,12 @@ import camelot
 # NOTE: https://github.com/python/cpython/blob/main/Lib/difflib.py
 from difflib import SequenceMatcher
 # ---
+#pip install nltk
+# TODO: nltk will need the dwnload things, me do later
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+
+# ---
 
 import PyPDF2
 
@@ -27,46 +33,57 @@ https://www.fidelity.com.au/funds/fidelity-australian-equities-fund/ : https://w
 https://www.vanguard.com.au/adviser/products/en/detail/wholesale/8100/equity : https://www.vanguard.com.au/adviser/products/documents/8189/AU
 '''
 
-'''
 
-To use the liabaries here you only need to install 1 new library: camelot-py
-Can be done with this command: conda install -c conda-forge camelot-py
+# NOTE: Tutorial from: https://www.geeksforgeeks.org/python-measure-similarity-between-two-sentences-using-cosine-similarity/
+# NOTE: Natural Language Processing tool kit is a great rescource for looking for stuff like this: https://www.nltk.org/
+# NOTE: This should be a bit better than the basic sequence matcher
 
-# TODO: Extract tables from pdf (this can be all of them, we can always choose which ones we want after extraction)
-# TODO: Extract text from pdf: https://www.geeksforgeeks.org/working-with-pdf-files-in-python/ look at first point in this tutorial
-		for a simple starting setup.
+def cosine_similarity(string_1, string_2, ommit=[]):
 
-# TODO: Function that can find a specific sting in the pdf. This can then be used to find the sting of the APIR code eg: 'RFA0059AU'
-		additionally we should also extract the 'ARSN' which is a different identification code in documents
-# TODO: Classes and/or functions that extract tables from pdfs in pandas dataframe form.
+	remove_symbols_1 = re.sub('[^\w_]+|[0-9]+',' ',string_1)
+	remove_symbols_2 = re.sub('[^\w_]+|[0-9]+',' ',string_2)
+
+	token_1 = word_tokenize(remove_symbols_1)
+	token_2 = word_tokenize(remove_symbols_2)
+
+	# If invalide
+	if len(token_1) == 0 or len(token_2) == 0:
+		return 0.0
+
+	# Ommits common words that are not useful
+	sw = stopwords.words('english')
+	l1 =[];l2 =[]
+	# Remove stop words from the string
+	set_1 = {w for w in token_1 if not w in sw}
+	set_2 = {w for w in token_2 if not w in sw}
+
+	# Form a set containing keywords of both strings
+	rvector = set_1.union(set_2)
+	for w in rvector:
+		if w in set_1:
+			l1.append(1)
+		else:
+			l1.append(0)
+		if w in set_2:
+			l2.append(1)
+		else:
+			l2.append(0)
+	c = 0
+	
+	# Cosine
+	for i in range(len(rvector)):
+			c+= l1[i]*l2[i]
+	cosine = c / float((sum(l1)*sum(l2))**0.5)
+	return cosine
 
 
-# -- Current specific client data --
-# TODO: We want to try and get:
-
-1st Fees and expenses (eg: 'Management fee')
-
-2nd Then stuff like 'Distribution frequency', 'Minimum investment', ect...
-
-3rd(everything else) Then try 'sector allocation', 'holdings', ect..
-
-'''
 
 
-'''
-Initially hardcoding for testing is good.
-Later on try to use as little hardcoding as possible, try to make things have options so they are dynamic.
-'''
-#randomedit
-
-'''
-# TODO:
-'''
 
 
-from nn_extraction import run_pdf_table_detection
+from Scraper.nn_extraction import run_pdf_table_detection, pdf_to_images
 
-
+#from nn_extraction import run_pdf_table_detection
 
 
 
@@ -114,11 +131,16 @@ class StringTest:
 
 
 
-def find_most_similar(string_, compare_string_list_):
+def find_most_similar(string_, compare_string_list_, use_cosine=False):
+	"""
+	returns: ('string that was being tested', 'stringe that matched highest', ratio of similarity)
+	"""
 	highest_match = ("","",0)
 	similarity_list = []
 	for item in compare_string_list_:
 		ratio_ = SequenceMatcher(None,item,string_.lower()).ratio()
+		if use_cosine:
+			ratio_ = cosine_similarity(item.lower(), string_.lower())
 		match_info = (string_, item, ratio_)
 		similarity_list.append(match_info)
 
@@ -226,7 +248,7 @@ class DocumentExtraction:
 		self.url_string = url_string_
 
 	def detect_tables(self):
-		page_table_detections = run_pdf_table_detection(self.url_string)
+		page_table_detections = run_pdf_table_detection(self.url_string,False)
 		self.detected_tables = page_table_detections
 
 	def extract_tables(self):
@@ -243,7 +265,7 @@ class DocumentExtraction:
 		# If you change this, go look at the nn_extraction and change the dpi there as well
 		global_dpi = 200
 
-		with pdfplumber.open(f.read()) as pdf:
+		with pdfplumber.open(f) as pdf:
 			# Get pdf initial page size
 			first_page = pdf.pages[0]
 			print('PDF Size: ', (first_page.width,first_page.height))
@@ -273,7 +295,7 @@ class DocumentExtraction:
 					# Get page table crop
 					cropped_table = pdf_page.crop((xy1[0],xy1[1],xy2[0],xy2[1]), relative=False)
 					# Extract the text as lists of lists
-					table['text'] = cropped_table.extract_text()
+					table['text'] = cropped_table.extract_text(x_tolerance=3, y_tolerance=3)
 
 
 	def setup_pages(self):
@@ -297,17 +319,65 @@ class DocumentExtraction:
 
 
 class DocumentDataExtractor:
-	pages_data = []
+	documents = []
+
+	compare_string_list = ['management fee','fees and expenses','estimated total management costs','buy/sell spread']
+
+	compare_catargories = {
+		'management fee': 'Management Fee',
+		'fees and expenses': 'Management Fee',
+		'estimated total management costs': 'Management Fee',
+		'buy/sell spread': 'Buy/Sell spread',
+	}
+
+	similarity_data = {}
 
 	def __init__(self):
 		pass
 
-	def extract_table_data(self):
+	def process_document_data(self):
 		pass
+
+	def add_document(self, document):
+		#document.url_string
+		#document.pages_data
+		document_obj = {
+			'url': document.url_string,
+			'pages_data': document.pages_data,
+		}
+		self.documents.append(document_obj)
+		return len(self.documents) - 1
+	
+	def extract_similar_rows(self, doc_idx, init_threshold):
+
+		for compare_value in self.compare_string_list:
+			self.similarity_data[compare_value] = []
+
+		document = self.documents[doc_idx]
+		for page in document['pages_data']:
+			for table in page['tables']:
+				#table['bbox']
+				text = table['text']
+				texts = text.split('\n')
+				#print(texts)
+				#print(text)
+				for text_part in texts:
+					item = find_most_similar(text_part, self.compare_string_list, True)
+					sim_val = item[2]
+					if sim_val > init_threshold:
+						self.similarity_data[item[1]].append(item)
+		#print(self.similarity_data)
+		return
+	
+	def sort_as_most_similar(self):
+
+		for sim_type in self.similarity_data:
+			sim_values = self.similarity_data[sim_type]
+			self.similarity_data[sim_type] = sorted(sim_values, key=lambda tup: tup[2], reverse=True)
+
+		return self.similarity_data
+
 # --
-
-
-
 
 
 

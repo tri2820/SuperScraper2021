@@ -218,7 +218,7 @@ class onnx_detection_handler:
         img_in /= 255.0
         input_name = self.session.get_inputs()[0].name
         outputs = self.session.run(None, {input_name: img_in})
-        filterd_predictions = self.non_max_suppression(torch.tensor(outputs[0]), conf_thres = 0.3, iou_thres = 0.45)
+        filterd_predictions = self.non_max_suppression(torch.tensor(outputs[0]), conf_thres = 0.25, iou_thres = 0.45)
         return filterd_predictions
 
     def get_detection_boxes(self, img, predictions, image_path=None):
@@ -289,7 +289,7 @@ def run_pdf_table_detection(pdf_url, save_images=False):
     return page_detections
 # --
 
-#test_url = "https://www.pendalgroup.com/wp-content/uploads/docs/factsheets/PDS/Pendal%20Australian%20Share%20Fund%20-%20PDS.pdf?v=2021-08-091628536541"
+#test_url = "https://www.fidelity.com.au/funds/fidelity-australian-equities-fund/related-documents/product-disclosure-statement/"
 #run_pdf_table_detection(test_url, True)
 
 

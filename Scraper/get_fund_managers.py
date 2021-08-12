@@ -2,7 +2,7 @@ import pandas as pd
 from itemadapter import ItemAdapter
 import pymongo
 import logging
-from Scraper.pdf_extraction import StringTest, ExtractTableHandler, TableExtraction, TableDataExtractor
+from Scraper.pdf_extraction import StringTest, ExtractTableHandler, TableExtraction, TableDataExtractor, DocumentExtraction, DocumentDataExtractor
 
 
 MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
@@ -76,7 +76,7 @@ class FundManagerHandler:
 
     def find_pdf_urls(self, insert_document):
 
-        fund_document = self.dbHandler.find_or_create_document(self.name_collection, insert_document, True)
+        fund_document = self.dbHandler.find_or_create_document(self.name_collection, insert_document, True)#True
 
         fund_id = fund_document['_id']
 
@@ -124,6 +124,7 @@ class FundManagerHandler:
         fund_id = fund_document['_id']
         site_traversal_id = fund_document['metadata']['site_traversal_id']
 
+        #'''
         extraction = TableExtraction(fund_document['metadata']['pdf_url'])
         extraction.extract_tables()
         extraction.filter_tables()
@@ -137,10 +138,36 @@ class FundManagerHandler:
 
         sim_df_list = extract_data.similarity_df_list
 
+        #print(sim_df_list)
+
         fund_document['Management Fee'] = sim_df_list['Management Fee'][1][0]
         fund_document['Buy/Sell spread'] = sim_df_list['Buy/Sell spread'][1][0]
+        #'''
 
-        fund_document = self.dbHandler.find_or_create_document(self.name_collection, fund_document, True)
+
+
+
+        # DOCUMENT TESTING
+
+        print('\n\n ---- DOCUMENT TESTING ---- \n\n')
+
+        extraction = DocumentExtraction(fund_document['metadata']['pdf_url'])
+        extraction.extract_tables()
+        
+        
+        extract_data = DocumentDataExtractor()
+
+        extract_data.add_document(extraction)
+        extract_data.extract_similar_rows(0,0.2)
+        shrinked_catagories = extract_data.sort_as_most_similar()
+        [print('\n', x, ' - ', shrinked_catagories[x], '\n') for x in shrinked_catagories]
+
+
+
+
+        #print(fund_document)
+
+        #fund_document = self.dbHandler.find_or_create_document(self.name_collection, fund_document, True)
 
         #table_handler = ExtractTableHandler(fund_document['metadata']['pdf_url'])
         #table_handler.get_tables()
@@ -211,46 +238,19 @@ def run_test():
 
     test_obj_list = [
         {
-            '_id': 'RFA0059AU',
-            'name': 'Pendal Focus Australian Share Fund',
-            'APIR_code': 'RFA0059AU',
-            'metadata': {
-                'site_traversal_id': 'pendal_site_traversal',
-                #'pdf_url': 'uehfaouefu.pdf',
-            },
-        },
-        {
-            '_id': 'BNT0003AU',
-            'name': 'Hyperion Australian Growth Companies Fund',
-            'APIR_code': 'BNT0003AU',
-            'metadata': {
-                'site_traversal_id': 'hyperion_site_traversal',
-                #'pdf_url': 'uehfaouefu.pdf',
-            },
-        },
-        {
-            '_id': 'FID0008AU',
-            'name': 'Fidelity Australian Equities',
-            'APIR_code': 'FID0008AU',
-            'metadata': {
-                'site_traversal_id': 'fidelity_site_traversal',
-                #'pdf_url': 'uehfaouefu.pdf',
-            },
-        },
-        {
             '_id': 'VAN0002AU',
             'name': 'Vanguard Australian Share Index',
             'APIR_code': 'VAN0002AU',
             'metadata': {
                 'site_traversal_id': 'vanguard_site_traversal',
-                #'pdf_url': 'uehfaouefu.pdf',
+                'pdf_url': 'https://www.hyperion.com.au/app/uploads/2021/06/Hyperion-Australian-Growth-Companies-Fund-PDS-1.pdf',
             },
         },
     ]
 
     fund_manager_handler = FundManagerHandler()
     fund_manager_handler.open_connection()
-    for test_obj in [test_obj_list[1]]:
+    for test_obj in [test_obj_list[0]]:
         fund_manager_handler.find_pdf_urls(test_obj)
         fund_manager_handler.get_document_pdf_data(test_obj)
     # --
@@ -270,7 +270,35 @@ def run_test():
 
 
 
-
+'''
+{
+    '_id': 'RFA0059AU',
+    'name': 'Pendal Focus Australian Share Fund',
+    'APIR_code': 'RFA0059AU',
+    'metadata': {
+        'site_traversal_id': 'pendal_site_traversal',
+        #'pdf_url': 'uehfaouefu.pdf',
+    },
+},
+{
+    '_id': 'BNT0003AU',
+    'name': 'Hyperion Australian Growth Companies Fund',
+    'APIR_code': 'BNT0003AU',
+    'metadata': {
+        'site_traversal_id': 'hyperion_site_traversal',
+        #'pdf_url': 'uehfaouefu.pdf',
+    },
+},
+{
+    '_id': 'FID0008AU',
+    'name': 'Fidelity Australian Equities',
+    'APIR_code': 'FID0008AU',
+    'metadata': {
+        'site_traversal_id': 'fidelity_site_traversal',
+        #'pdf_url': 'uehfaouefu.pdf',
+    },
+},
+'''
 
 
 
