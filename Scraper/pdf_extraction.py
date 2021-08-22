@@ -132,8 +132,17 @@ class StringTest:
 		text_file.close()
 
 
-	def test_for_string(self, test_string):
-		found = self.text.find(test_string) != -1
+	def test_for_string(self, test_string, regex_ = False, amount = None):
+		found = False
+		text = self.text
+		if not amount:
+			text = self.text
+		else:
+			text = self.text[:amount]
+		if regex_:
+			found = re.search(test_string, text)
+		else:
+			found = text.find(test_string) != -1
 		return found
 
 # --
@@ -156,7 +165,7 @@ def find_most_similar(string_, compare_string_list_, use_cosine=True, use_weight
 	"""
 	returns: ('string that was being tested', 'catagory string that matched highest', ratio of similarity)
 	"""
-	highest_match = ("","",0)
+	highest_match = ["","",0]
 	similarity_list = []
 	for item in compare_string_list_:
 
@@ -175,7 +184,7 @@ def find_most_similar(string_, compare_string_list_, use_cosine=True, use_weight
 		# --
 
 
-		match_info = (string_, item, ratio_)
+		match_info = [string_, item, ratio_]
 		similarity_list.append(match_info)
 
 	for match_info in similarity_list:
@@ -219,10 +228,17 @@ class DocumentExtraction:
 
 			# Iterate over the pages detected
 			for page_data in self.pages_data:
+
+				if len(pdf.pages) - 1 < page_data['page_number']:
+					print('\n\n\n --- PAGE NUMBER NOT RETRIVED! --- \n\n\n')
+					continue
+
 				# Get the pdf page
 				pdf_page = pdf.pages[page_data['page_number']]
 
 				page_data['all_text'] = pdf_page.extract_text(x_tolerance=1, y_tolerance=1)
+				#print('\nNumber: ', page_data['page_number'])
+				#print('\nAll text: ', page_data['all_text'])
 
 				tables = page_data['tables']
 				for table in tables:
@@ -245,6 +261,9 @@ class DocumentExtraction:
 					cropped_table = pdf_page.crop((xy1[0],xy1[1],xy2[0],xy2[1]), relative=False)
 					# Extract the text as lists of lists
 					table['text'] = cropped_table.extract_text(x_tolerance=1, y_tolerance=1)
+					if not table['text']:
+						table['text'] = ''
+
 
 					#ex_words = cropped_table.extract_words(x_tolerance=1, y_tolerance=1, use_text_flow=True, keep_blank_chars=True)
 					#print(ex_words)
@@ -325,7 +344,7 @@ class DocumentExtraction:
 		# Use detected tables to get an idea of infomation that might be present in pages
 		for page_tables in self.detected_tables:
 			page_data = {
-				'page_number': page_tables['page_number'],
+				'page_number': page_tables['page_number'],#-0
 				'tables': page_tables['table_areas'],
 				# Note 'page_contexts' does nothing it is here for potential idea stuff
 				'page_contexts': {
@@ -395,14 +414,15 @@ class DocumentDataExtractor:
 			self.similarity_data[compare_value] = []
 
 		document = self.documents[doc_idx]
-		for page in document['pages_data']:
-			for table in page['tables']:
+		for page_idx, page in enumerate(document['pages_data']):
+			for table_idx, table in enumerate(page['tables']):
 				#table['bbox']
 				text = table['text']
 
 				#\.\\n|\. [A-Z0-9] #\.\\n|\. [A-Z0-9]|\\n[\w\d]\\n #'\u00b2'
-				texts = re.split('\.\\n|\. [A-Z0-9]|\\n[\w\d]\\n|\\n\\n',text)
-				texts = [re.sub('\\n[\w\d]\\n|\\n',' ',x) for x in texts]
+				#print('Text type: ', type(text))
+				texts = re.split("\.\\n|\. [A-Z0-9]|\\n[\w\d]\\n|\\n\\n",text)#"\.\\n|\. [A-Z0-9]|\\n[\w\d]\\n|\\n\\n"
+				texts = [re.sub("\\n[\w\d]\\n|\\n",' ',x) for x in texts]#'\\n[\w\d]\\n|\\n
 
 				
 
@@ -420,6 +440,8 @@ class DocumentDataExtractor:
 
 				for text_part in texts:
 					item = find_most_similar(text_part, self.compare_string_list, True, True)
+					# Add document->page->tables index to item
+					item.append([0, page_idx, table_idx])
 					sim_val = item[2]
 					if sim_val > init_threshold:
 						self.similarity_data[item[1]].append(item)
@@ -451,8 +473,8 @@ class DocumentDataExtractor:
 
 		for cat_name in shrinked_catagories:
 		    sim_values = shrinked_catagories[cat_name][:10]
-		    for value in sim_values:
-		        print(value)
+		    #for value in sim_values:
+		    #    print(value)
 
 		#print(self.similarity_data)
 		#print(shrinked_catagories)

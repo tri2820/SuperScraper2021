@@ -16,6 +16,8 @@ from scrapy.utils.response import response_status_message
 # TODO: Make year value a settings option thingy so that this can handle different stuff
 
 
+# This gets year date:
+# \d* ([jJ]an|[fF]eb|[mM]ar|[aA][ip][lr]|[mM]ay|[jJ]un|[jJ]ul|[aA]ug|[sS]ep|[oO]ct|[nN]ov|[dD]ec])\w+ \d+
 
 
 '''

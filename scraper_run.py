@@ -119,6 +119,341 @@ class SpiderHandler:
 
 
 
+
+
+
+"""
+example_traversal_document = {
+    '_id': 'hyperion_site_traversal',
+    'file_extraction_rules': {
+        # Only allows certain file types
+        'deny_extensions': DENY_EXTENSIONS,
+        # Regex that the url must match during extraction
+        'allow': [
+            #'.+\.pdf.+',
+            #'.+\.pdf'
+        ],
+        # Page content types that must apply for file type urls
+        'content_types': [
+            "application/pdf"
+        ],
+    },
+    "file_filters": {
+        "PDS": {
+            # The following are now pipeline filters (after extraction)
+            # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+            'restrict_text': [
+            '.+product.disclosure.statement.+',
+            '.+pds.+',
+            '.+PDS.+',
+            ],
+            # Filters applied to urls after extraction and before entering into DB
+            'filters': [
+                '.+product.disclosure.statement.+',
+                '.+pds.+',
+                '.+PDS.+',
+            ]
+        }
+    },
+    "traversal_filters": {
+    },
+    'domain': {
+        'domain_file': 'hyperion',
+        'domain_name': 'www.hyperion.com.au',
+        'start_url': 'https://www.hyperion.com.au',
+        'parse_select':'traverse',
+        # All of the strings in the list of each item must be found for this to be added as filtered page
+        'page_filters': {
+            'BNT0003AU': ['BNT0003AU'],
+        },
+    },
+    "filtered_file_urls": {
+
+    },
+    "schedule_data" = {
+        "last_traversed": 0,
+        "should_traverse": False,
+    }
+}
+#"""
+
+
+"""
+# EXAMPLE OF filtered_traverse_urls:
+"filtered_traverse_urls": {
+    "VAN0002AU": {
+        "name": "VAN0002AU",
+        "url": "https://www.vanguard.com.au/personal/home/en",
+        "page_filter": [
+        "VAN0002AU"
+        ],
+        "file_urls": [
+        "https://www.vanguard.com.au/personal/en/open-an-account",
+        "https://www.vanguard.com.au/personal/vanguardonline"
+        ]
+    }
+},
+
+"""
+
+#novaport_site_traversal
+
+
+
+def run_scraper_traversal():
+
+    configure_logging()
+
+    runner = CrawlerRunner(get_project_settings())
+
+    test_handler = DatabaseHandler(MONGO_URI, MONGO_DB)
+
+    test_handler.open_connection()
+    traversal_ids = test_handler.get_collection_ids('site_traverse_data')
+
+    traversal_documents = []
+
+    """
+    nava_test = test_handler.find_or_create_document('site_traverse_data', {'_id': "novaport_site_traversal"}, False)
+
+    #traversal_filters
+    nava_test["file_filters"] = {
+        "PDS": {
+            # The following are now pipeline filters (after extraction)
+            # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+            'restrict_text': [
+            '.+product.disclosure.statement.+',
+            '.+pds.+',
+            '.+PDS.+',
+            ],
+            # Filters applied to urls after extraction and before entering into DB
+            'filters': [
+                '.+product.disclosure.statement.+',
+                '.+pds.+',
+                '.+PDS.+',
+            ]
+        }
+    }
+
+    nava_test["file_extraction_rules"] = {
+        # Only allows certain file types
+        'deny_extensions': DENY_EXTENSIONS,
+        # Regex that the url must match during extraction
+        'allow': [
+            #'.+\.pdf.+',
+            #'.+\.pdf'
+        ],
+        # Page content types that must apply for file type urls
+        'content_types': [
+            "application/pdf"
+        ],
+    }
+
+    nava_test["traversal_filters"] = {}
+
+    temp = nava_test["filtered_file_urls"].copy()
+
+    nava_test["filtered_file_urls"] = {
+        "PDS": temp
+    }
+
+    test_handler.find_or_create_document('site_traverse_data', nava_test, True)
+    """
+
+    #return
+
+    #@defer.inlineCallbacks
+    #def crawl():
+    #    yield runner.crawl('Traversal', traverse_data = nava_test)
+    #    reactor.stop()
+
+
+
+    #return
+
+
+    for trav_id in traversal_ids:
+        traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
+        # Handle traversal_data
+        #if not "schedule_data" in traversal_document:#False:#
+        #    traversal_document["schedule_data"] = {
+        #        "last_traversed": 0,
+        #        "should_traverse": False,
+        #    }
+        #    # Overwite
+        #    test_handler.find_or_create_document('site_traverse_data',traversal_document, True)
+        # --
+        #"""
+        traversal_document["file_filters"] = {
+            "PDS": {
+                # The following are now pipeline filters (after extraction)
+                # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+                'restrict_text': [
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ],
+                # Filters applied to urls after extraction and before entering into DB
+                'filters': [
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ]
+            },
+            "Investment": {
+                # The following are now pipeline filters (after extraction)
+                # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+                'restrict_text': [
+                    '.+Investment.+',
+                    '.+investment.+',
+                ],
+                # Filters applied to urls after extraction and before entering into DB
+                'filters': [
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ]
+            },
+            "Fees&Costs": {
+                # The following are now pipeline filters (after extraction)
+                # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+                'restrict_text': [
+                    '.+fees.costs.+',
+                    '.+Fees.Costs.+',
+                ],
+                # Filters applied to urls after extraction and before entering into DB
+                'filters': [
+                    '.+fees.costs.+',
+                    '.+Fees.Costs.+',
+                ]
+            },
+            "Performance": {
+                # The following are now pipeline filters (after extraction)
+                # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+                'restrict_text': [
+                    '.+performance.+',
+                    '.+Performance.+',
+                ],
+                # Filters applied to urls after extraction and before entering into DB
+                'filters': [
+                    '.+performance.+',
+                    '.+Performance.+',
+                ]
+            },
+            "FactSheet": {
+                # The following are now pipeline filters (after extraction)
+                # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+                'restrict_text': [
+                    '.+FactSheet.+',
+                    '.+Fact Sheet.+',
+                    '.+fact.sheet.+',
+                ],
+                # Filters applied to urls after extraction and before entering into DB
+                'filters': [
+                    '.+FactSheet.+',
+                    '.+Fact Sheet.+',
+                    '.+fact.sheet.+',
+                ]
+            },
+            "FactSheet": {
+                # The following are now pipeline filters (after extraction)
+                # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+                'restrict_text': [
+                    '.+Report.+',
+                ],
+                # Filters applied to urls after extraction and before entering into DB
+                'filters': [
+                    '.+Report.+',
+                ]
+            },
+        }
+        #traversal_document["filtered_file_urls"] = {"PDS":[]}
+        #"""
+        test_handler.find_or_create_document('site_traverse_data',traversal_document, True)
+        #traversal_document = test_handler.find_or_create_document('site_traverse_data',traversal_document, False)
+        '''
+        if False:#"filtered_file_urls" in traversal_document:
+            temp = traversal_document["filtered_file_urls"].copy()
+
+            traversal_document["filtered_file_urls"] = {
+                "PDS": temp
+            }
+
+            test_handler.find_or_create_document('site_traverse_data', traversal_document, True)
+            traversal_document["file_filters"] = {
+                "PDS": {
+                    # The following are now pipeline filters (after extraction)
+                    # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
+                    'restrict_text': [
+                        '.+product.disclosure.statement.+',
+                        '.+pds.+',
+                        '.+PDS.+',
+                    ],
+                    # Filters applied to urls after extraction and before entering into DB
+                    'filters': [
+                        '.+product.disclosure.statement.+',
+                        '.+pds.+',
+                        '.+PDS.+',
+                    ]
+                }
+            }
+
+            traversal_document["file_extraction_rules"] = {
+                # Only allows certain file types
+                'deny_extensions': DENY_EXTENSIONS,
+                # Regex that the url must match during extraction
+                'allow': [
+                    #'.+\.pdf.+',
+                    #'.+\.pdf'
+                ],
+                # Page content types that must apply for file type urls
+                'content_types': [
+                    "application/pdf"
+                ],
+            }
+            traversal_document["traversal_filters"] = {}
+            test_handler.find_or_create_document('site_traverse_data',traversal_document, True)
+        # --
+        #'''
+
+        traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
+        traversal_documents.append(traversal_document)
+    # --
+    test_handler.close_connection()
+
+
+    @defer.inlineCallbacks
+    def crawl():
+
+        #document = test_handler.find_or_create_document('site_traverse_data', {'_id': "novaport_site_traversal"}, False)
+        #yield runner.crawl('Traversal', traverse_data = document)
+        for document in traversal_documents:
+            if document['schedule_data']['should_traverse']:
+                print('CRAWLING - ',document['_id'])
+                yield runner.crawl('Traversal', traverse_data = document)
+
+        reactor.stop()
+
+    crawl()
+
+    reactor.run()
+
+    print("Crawl Completed")
+# --
+
+#print(DENY_EXTENSIONS)
+
+run_scraper_traversal()
+
+#run_scraper()
+
+#     print("Crawl Completed")
+
+
+#from Scraper.get_fund_managers import run_test
+
+#run_test()
+
 """
 example_traversal_document = {
     '_id': 'hyperion_site_traversal',
@@ -160,111 +495,6 @@ example_traversal_document = {
     },
 }
 """
-
-
-#"""
-example_traversal_document2 = {
-    '_id': 'hyperion_site_traversal',
-    'file_extraction_rules': {
-        # Only allows certain file types
-        'deny_extensions': DENY_EXTENSIONS,
-        # Regex that the url must match during extraction
-        'allow': [
-            #'.+\.pdf.+',
-            #'.+\.pdf'
-        ],
-        # Page content types that must apply for file type urls
-        'content_types': [
-            "application/pdf"
-        ],
-        # The following are now pipeline filters (after extraction)
-        # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
-        'restrict_text': [
-            '.+product.disclosure.statement.+',
-            '.+pds.+',
-            '.+PDS.+',
-        ],
-        # Filters applied to urls after extraction and before entering into DB
-        'filters': [
-            '.+product.disclosure.statement.+',
-            '.+pds.+',
-            '.+PDS.+',
-        ]
-    },
-    'domain': {
-        'domain_file': 'hyperion',
-        'domain_name': 'www.hyperion.com.au',
-        'start_url': 'https://www.hyperion.com.au',
-        'parse_select':'traverse',
-        # All of the strings in the list of each item must be found for this to be added as filtered page
-        'page_filters': {
-            'BNT0003AU': ['BNT0003AU'],
-        },
-    },
-}
-#"""
-
-
-
-def run_scraper_traversal():
-
-    configure_logging()
-
-    runner = CrawlerRunner(get_project_settings())
-
-    test_handler = DatabaseHandler(MONGO_URI, MONGO_DB)
-
-    test_handler.open_connection()
-    traversal_ids = test_handler.get_collection_ids('site_traverse_data')
-
-    traversal_documents = []
-
-    for trav_id in traversal_ids:
-        traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
-        # Handle traversal_data
-        if not "schedule_data" in traversal_document:
-            traversal_document["schedule_data"] = {
-                "last_traversed": 0,
-                "should_traverse": False,
-            }
-            # Overwite
-            test_handler.find_or_create_document('site_traverse_data',traversal_document, True)
-        # --
-        traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
-        traversal_documents.append(traversal_document)
-    # --
-    test_handler.close_connection()
-
-
-    @defer.inlineCallbacks
-    def crawl():
-
-        for document in traversal_documents:
-            if document['schedule_data']['should_traverse']:
-                print('CRAWLING - ',document['_id'])
-                yield runner.crawl('Traversal', traverse_data = document)
-
-        reactor.stop()
-
-    crawl()
-
-    reactor.run()
-
-    print("Crawl Completed")
-# --
-
-#print(DENY_EXTENSIONS)
-
-run_scraper_traversal()
-
-#run_scraper()
-
-#     print("Crawl Completed")
-
-
-#from Scraper.get_fund_managers import run_test
-
-#run_test()
 
 '''
 fund_test_obj = {

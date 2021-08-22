@@ -389,28 +389,39 @@ class SiteTraversalDB:
 
         for key in spider.file_urls:
             obj = spider.file_urls[key]
-            content_type = session_handler.check_content_type(obj.url)
+            content_type = session_handler.check_content_type(obj[0].url)
             for re_content_match in spider.file_extraction['content_types']:
                 if content_type:
                     if re.match(content_type,re_content_match):
-                        file_urls[obj.url] = obj
+                        file_urls[obj[0].url] = obj
                         break
         # --
         filtered_file_urls = {}
+
+        for filtered_type_name in spider.file_filters:
+            filtered_file_urls[filtered_type_name] = {}
+
         for key in file_urls:
             obj = file_urls[key]
-            for filter in spider.file_extraction['filters']:
-                match = re.match(filter.lower(), obj.url.lower())
-                if match != None:
-                    filtered_file_urls[obj.url] = obj.url
-                    break
-            for restrict_text in spider.file_extraction['restrict_text']:
-                if obj.text and len(obj.text) > 0:
-                    match = re.match(restrict_text.lower(), obj.text.lower())
+            for filtered_type_name in spider.file_filters:
+                filtered_type = spider.file_filters[filtered_type_name]
+                for filter in filtered_type['filters']:
+                    match = re.match(filter.lower(), obj[0].url.lower())
                     if match != None:
-                        filtered_file_urls[obj.url] = obj.url
+                        filtered_file_urls[filtered_type_name][obj[0].url] = obj[0].url
                         break
+                for restrict_text in filtered_type['restrict_text']:
+                    if obj[0].text and len(obj[0].text) > 0:
+                        match = re.match(restrict_text.lower(), obj[0].text.lower())
+                        if match == None:
+                            match = re.match(restrict_text.lower(), obj[1].lower())
+                            #print('YAYAYA: ', match == None)
+                        if match != None:
+                            filtered_file_urls[filtered_type_name][obj[0].url] = obj[0].url
+                            break
         # --
+        for filtered_type_name in spider.file_filters:
+            filtered_file_urls[filtered_type_name] = list(filtered_file_urls[filtered_type_name].values())
 
         session_handler.close_session()
 
@@ -419,8 +430,8 @@ class SiteTraversalDB:
         #new_document['filtered_traverse_urls'] = list(spider.filtered_pages.values())
         new_document['filtered_traverse_urls'] = spider.filtered_pages#list(spider.filtered_pages.keys())
         #new_document['file_urls'] = [x.url for x in list(spider.file_urls.values())]
-        new_document['file_urls'] = [x.url for x in list(file_urls.values())]
-        new_document['filtered_file_urls'] = list(filtered_file_urls.values())
+        new_document['file_urls'] = [x[0].url for x in list(file_urls.values())]
+        new_document['filtered_file_urls'] = filtered_file_urls#list(filtered_file_urls.values())
 
         document = self.find_or_create_document(new_document, True)
         traversal_urls = spider.traversed_urls.values()

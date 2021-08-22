@@ -27,7 +27,7 @@ from difflib import SequenceMatcher
 class SiteTraversal(scrapy.Spider):
     name = "Traversal"
 
-
+    # NOTE: Mabye just constructor init, i think?
     crawl_selections = []
 
     traverse_data = None
@@ -80,6 +80,7 @@ class SiteTraversal(scrapy.Spider):
         # --
 
         # Logging
+        self.logger.log(1,"Total time: {}".format(self.log_info['time']['current']))
         self.logger.info("Total time: {}".format(self.log_info['time']['current']))
         self.logger.info("Total traversed: {}".format(self.log_info['total_traversed']))
         self.logger.info("Total considered: {}".format(self.log_info['total_files_considered']))
@@ -102,6 +103,7 @@ class SiteTraversal(scrapy.Spider):
     def init_crawler_urls(self):
         self.domain = self.traverse_data['domain']
         self.file_extraction = self.traverse_data['file_extraction_rules']
+        self.file_filters = self.traverse_data["file_filters"]
         deny_extensions_ = []
         if 'deny_extensions' in self.file_extraction:
             deny_extensions_ = self.file_extraction['deny_extensions']
@@ -131,6 +133,7 @@ class SiteTraversal(scrapy.Spider):
 
         self.domain = None
         self.file_extraction = None
+        self.file_filters = None
 
         self.file_extractor = None
         self.link_extractor = None
@@ -157,6 +160,9 @@ class SiteTraversal(scrapy.Spider):
         }
     # --
 
+    #print(response.xpath('//*[@id="images"]//text()').getall())
+    #https://docs.scrapy.org/en/latest/_static/selectors-sample1.html
+
 
 
     def traverse(self, response, depth = 0):
@@ -179,7 +185,8 @@ class SiteTraversal(scrapy.Spider):
 
         # TRAVERSAL LINK EXTRACTION
         # Extract connected urls links
-        for link in self.link_extractor.extract_links(response):
+        links_extracted = self.link_extractor.extract_links(response)
+        for link in links_extracted:
             if not link.url in self.traversed_urls:
                 page_urls_.append(link)
         # --
@@ -190,9 +197,26 @@ class SiteTraversal(scrapy.Spider):
         for link in file_extractions:
             file_urls_.append(link.url)
             if not link.url in self.file_urls:
+                # Get area/href text
+                element = response.xpath("//*[@*='{}']".format(link.url))
+                child_text = ''
+                if element:
+                    child_texts = element.xpath(".//text()").getall()
+                    for text_ in child_texts:
+                        child_text += text_
                 self.log_info['total_files_considered'] += 1
-                self.file_urls[link.url] = link
+                #print('\nlink.url.text: ',link.text)
+                #print('\nchild_text: ',child_text)
+                self.file_urls[link.url] = [link, child_text]
         # --
+
+        #xpath_extractions = response.xpath("//a/[@href]").getall()#//a/@href
+        #xpath_extractions += response.xpath("//area/[@href]").getall()
+        #print("links_extracted: ",len(links_extracted))
+        #print("file_extractions: ",len(file_extractions))
+        #print("xpath_extractions: ",len(xpath_extractions))
+
+        #print(xpath_extractions[0])
 
         # PAGES
         # Test for stings and codes requered to identify certain pages
