@@ -443,16 +443,16 @@ def run_scraper_traversal():
 
 #print(DENY_EXTENSIONS)
 
-run_scraper_traversal()
+#run_scraper_traversal()
 
 #run_scraper()
 
 #     print("Crawl Completed")
 
 
-#from Scraper.get_fund_managers import run_test
+from Scraper.get_fund_managers import run_test
 
-#run_test()
+run_test()
 
 """
 example_traversal_document = {
