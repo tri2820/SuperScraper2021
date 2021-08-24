@@ -32,17 +32,13 @@ import io
 import requests
 
 
-
-#POPPLER_DIR = r"C:\Program Files\poppler-21.03.0\Library\bin"
-POPPLER_DIR = r".\poppler\Library\bin"
-
 def pdf_to_images(pdf_url,dpi=200):
     r = requests.get(pdf_url)
     f = io.BytesIO(r.content)
 
     # https://github.com/Belval/pdf2image
     # use_pdftocairo = True (peformance improvement - look into if no crash?)
-    pdf_images = convert_from_bytes(f.read(), dpi=dpi, poppler_path = POPPLER_DIR, thread_count=2)
+    pdf_images = convert_from_bytes(f.read(), dpi=dpi, poppler_path = r"C:\Program Files\poppler-21.03.0\Library\bin", thread_count=2)
     return pdf_images
 
 
