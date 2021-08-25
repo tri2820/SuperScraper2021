@@ -353,6 +353,7 @@ class DocumentHandler:
         extract_data.extract_similar_rows(0.2,0)
         sim_values = extract_data.sort_as_most_similar()
 
+
         try:
             fund_document['Management Fee'] = sim_values['Management Fee'][0][0]
         except:

@@ -12,9 +12,15 @@ cd ..
 
 call conda deactivate
 
-call conda create --name ScrapperTest --file requirements.txt --channel default --channel conda-forge --channel anaconda -y
+call conda create --name ScrapperTest -y
 
 call conda activate ScrapperTest
+
+call conda install pip -y
+
+echo /wait Installing pip
+
+call pip install -r requirements.txt
 
 pause
 

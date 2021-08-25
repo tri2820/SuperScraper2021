@@ -12,6 +12,11 @@ from difflib import SequenceMatcher
 # ---
 #pip install nltk
 # TODO: nltk will need the dwnload things, me do later
+
+import nltk.data as nltk_data
+#nltk.data.path.append('./test_nltk')
+nltk_data.path.append('./install/nltk_data')
+
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 

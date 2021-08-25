@@ -18,7 +18,7 @@ from pdf2image import convert_from_path, convert_from_bytes
 
 
 #pip install pdf2image
-#pip3 install torch torchvision torchaudio
+#pip install torch torchvision torchaudio
 #pip install onnx
 #pip install pdfplumber
 #pip install onnxruntime
@@ -293,8 +293,8 @@ def run_pdf_table_detection(pdf_url, save_images=False):
     return page_detections
 # --
 
-#test_url = "https://www.fidelity.com.au/funds/fidelity-australian-equities-fund/related-documents/product-disclosure-statement/"
-#run_pdf_table_detection(test_url, True)
+test_url = "https://www.fidelity.com.au/funds/fidelity-australian-equities-fund/related-documents/product-disclosure-statement/"
+run_pdf_table_detection(test_url, True)
 
 
 
