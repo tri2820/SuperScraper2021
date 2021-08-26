@@ -247,7 +247,7 @@ class onnx_detection_handler:
             path_prefix = image_path.split('\\')[0]
             print('{}/det-{}'.format(path_prefix, img_name))
             cv2.imwrite('{}/det-{}'.format(path_prefix, img_name), new_img)
-            #print('Saved: data/det-{}'.format(img_name))
+            #print('Saved: nn_data/det-{}'.format(img_name))
         # --
         return table_areas, new_img
     # --
@@ -258,8 +258,8 @@ def test_run_images():
     onnx_test = onnx_detection_handler()
     onnx_test.init_session()
 
-    for image_name in os.listdir('data'):
-        image_path = os.path.join('data', image_name)
+    for image_name in os.listdir('nn_data'):
+        image_path = os.path.join('nn_data', image_name)
         img = cv2.imread(image_path)
         inference_tensors = onnx_test.run_image_detection(img)
         onnx_test.get_detection_boxes(img, inference_tensors, image_path)
@@ -281,7 +281,7 @@ def run_pdf_table_detection(pdf_url, save_images=False):
     for idx, pil_img in enumerate(pdf_images):
         image_path = None
         if save_images:
-            image_path = 'data\\{}-img.jpg'.format(str(idx))
+            image_path = 'nn_data\\{}-img.jpg'.format(str(idx))
         cv2_img = np.array(pil_img)
         inference_tensors = onnx_test.run_image_detection(cv2_img)
         table_areas, new_img = onnx_test.get_detection_boxes(cv2_img, inference_tensors, image_path)
@@ -293,8 +293,8 @@ def run_pdf_table_detection(pdf_url, save_images=False):
     return page_detections
 # --
 
-test_url = "https://www.fidelity.com.au/funds/fidelity-australian-equities-fund/related-documents/product-disclosure-statement/"
-run_pdf_table_detection(test_url, True)
+#test_url = "https://www.fidelity.com.au/funds/fidelity-australian-equities-fund/related-documents/product-disclosure-statement/"
+#run_pdf_table_detection(test_url, True)
 
 
 

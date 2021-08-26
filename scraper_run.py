@@ -213,8 +213,15 @@ def run_scraper_traversal():
 
     traversal_documents = []
 
+    prog_count = 0
+
     for trav_id in traversal_ids:
+        print(prog_count)
+        prog_count += 1
         traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
+        if traversal_document['schedule_data']['should_traverse'] == "False" or traversal_document['schedule_data']['should_traverse'] == False:
+            continue
+        traversal_document['schedule_data']['should_traverse'] = False
         traversal_document["file_filters"] = {
             "PDS": {
                 # The following are now pipeline filters (after extraction)
@@ -306,6 +313,8 @@ def run_scraper_traversal():
     # --
     test_handler.close_connection()
 
+    print("Start Crawl")
+
 
     @defer.inlineCallbacks
     def crawl():
@@ -328,20 +337,113 @@ def run_scraper_traversal():
 
 #print(DENY_EXTENSIONS)
 
-#run_scraper_traversal()
+run_scraper_traversal()
 
 #run_scraper()
 
 #     print("Crawl Completed")
 
 
-from Scraper.get_fund_managers import run_test
 
-run_test()
+from Scraper.DocHanding import DocumentHandler
+
+def doc_handling_test():
+
+    doctest = DocumentHandler()
+
+    doctest.open_connection()
+
+    file_list = doctest.filter_file_urls('novaport_site_traversal', 'PDS', ["HOW0027AU"])
+
+    # Found pdfs
+    print("-\nFound pdfs")
+    [print(x) for x in file_list]
 
 
 
+    doc_data_list = [doctest.extract_document_data(x['url']) for x in file_list]
 
+    # Extracted Data
+    print("-\nExtracted Data")
+    for matches_cats in doc_data_list:
+        for cat in matches_cats:
+            matches = matches_cats[cat]
+            print(cat, matches[0])
+    # --
+
+
+    doctest.close_connection()
+    return
+# --
+
+def doc_handling_run():
+
+
+    test_handler = DatabaseHandler(MONGO_URI, MONGO_DB)
+
+    test_handler.open_connection()
+    fund_ids = test_handler.get_collection_ids('fund_managers')
+
+    #traversal_ids = test_handler.get_collection_ids('site_traverse_data')
+
+    fund_querys = [[x, test_handler.find_or_create_document('fund_managers', {'_id': x}, False)['metadata']['site_traversal_id']] for x in fund_ids]
+
+    test_handler.close_connection()
+
+
+    for fund_query in fund_querys:
+
+        fund_id = fund_query[0]
+
+        traversal_id = fund_query[1]
+
+        doctest = DocumentHandler()
+
+        doctest.open_connection()
+
+        file_list = doctest.filter_file_urls(traversal_id, 'PDS', [fund_id])
+
+        # Found pdfs
+        print("-\nFound pdfs")
+        [print(x) for x in file_list]
+
+
+
+        doc_data_list = [doctest.extract_document_data(x['url']) for x in file_list]
+
+        doctest.close_connection()
+
+        # Extracted Data
+        print("-\nExtracted Data")
+        for matches_cats in doc_data_list:
+            for cat in matches_cats:
+                matches = matches_cats[cat]
+                print(cat, matches[0])
+        # --
+
+
+        # Shove in
+        test_handler.open_connection()
+        fund = test_handler.find_or_create_document('fund_managers', {'_id': fund_id}, False)
+        
+        for matches_cats in doc_data_list:
+            for cat in matches_cats:
+                matches = matches_cats[cat]
+                fund[cat] = matches[0]['str']
+        # --
+
+        fund['metadata']['pdf_url_list'] = [x['url'] for x in file_list]
+
+        test_handler.find_or_create_document('fund_managers', fund, True)
+
+        test_handler.close_connection()
+    # --
+
+    return
+# --
+
+
+#doc_handling_run()
 
 
 

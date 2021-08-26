@@ -116,33 +116,38 @@ class StringTest:
 		self.url_string = url_string_
 
 
-	def extract_text(self):
+	def extract_text(self, lower = False):
 		r = requests.get(self.url_string)
 		f = io.BytesIO(r.content)
 
 		pdfReader = None
 		try:
-			pdfReader = PyPDF2.PdfFileReader(f)
+			#pdfReader = PyPDF2.PdfFileReader(f)#,strict=False
+			pdfReader = pdfplumber.open(f)
 		except:
 			print('Failed String Test')
 			return
 		#print(pdfReader.numPages)
 		self.text = ""
 
-		for page in pdfReader.pages:
-			self.text += page.extractText()
+		#for page in pdfReader.pages:
+		#	self.text += page.extractText()
 		# --
-		text_file = open("pdf_texts.txt", "w")
-		text_file.write(self.url_string)
-		text_file.close()
+		for page in pdfReader.pages:
+			more_text = page.extract_text(x_tolerance=1, y_tolerance=1)
+			if more_text:
+				self.text += more_text
+		if lower:
+			self.text = self.text.lower()
+		#text_file = open("pdf_texts.txt", "w")
+		#text_file.write(self.url_string)
+		#text_file.close()
 
 
 	def test_for_string(self, test_string, regex_ = False, amount = None):
 		found = False
 		text = self.text
-		if not amount:
-			text = self.text
-		else:
+		if amount:
 			text = self.text[:amount]
 		if regex_:
 			found = re.search(test_string, text)
@@ -166,34 +171,50 @@ def pattern_weights(in_string, regex_list):
 
 
 
-def find_most_similar(string_, compare_string_list_, use_cosine=True, use_weights=True):
+def find_most_similar(string_, compare_values_, use_cosine=True, use_weights=True):
 	"""
 	returns: ('string that was being tested', 'catagory string that matched highest', ratio of similarity)
 	"""
-	highest_match = ["","",0]
+	#highest_match = ["","",0]
+	highest_match = {
+		"str": "",
+		"cat": "",
+		"match": "",
+		"ratio": 0,
+	}
 	similarity_list = []
-	for item in compare_string_list_:
+	for cat_name in compare_values_:#compare_string_list_
+		catagory = compare_values_[cat_name]
+		for compare_name in catagory:
+			item = catagory[compare_name]
 
-		ratio_sequence = SequenceMatcher(None,item.lower(),string_.lower()).ratio()
-		ratio_cosine = cosine_similarity(item.lower(), string_.lower())
+			ratio_sequence = SequenceMatcher(None,compare_name.lower(),string_.lower()).ratio()
+			ratio_cosine = cosine_similarity(compare_name.lower(), string_.lower())
 
-		ratio_ = ratio_sequence
-		if use_cosine:
-			ratio_ = (ratio_sequence * 0.6) + ratio_cosine
-		# --
+			ratio_ = ratio_sequence
+			if use_cosine:
+				ratio_ = (ratio_sequence * 0.6) + ratio_cosine
+			# --
 
-		if use_weights:
-			regex_list = [['[+\\$\-\%]',0.75],['\d',0.9]]
-			symbols_weight = pattern_weights(string_.lower(), regex_list)
-			ratio_ += ratio_ * symbols_weight
-		# --
+			if use_weights:
+				regex_list = item["weights"]
+				symbols_weight = pattern_weights(string_.lower(), regex_list)
+				ratio_ += ratio_ * symbols_weight
+				ratio_ += ratio_ * item["bias"]
+			# --
 
 
-		match_info = [string_, item, ratio_]
-		similarity_list.append(match_info)
+			#match_info = [string_, compare_name, ratio_]
+			match_info = {
+				"str": string_,
+				"cat": cat_name,
+				"match": compare_name,
+				"ratio": ratio_,
+			}
+			similarity_list.append(match_info)
 
 	for match_info in similarity_list:
-		if match_info[2] > highest_match[2]:
+		if match_info["ratio"] > highest_match["ratio"]:
 			highest_match = match_info
 	return highest_match
 
@@ -306,14 +327,6 @@ class DocumentExtraction:
 					print(text_string)
 					'''
 
-
-					
-					
-					
-
-					#print(0/2)
-
-
 					# Get text around the table
 					#padding_horizontal = 4
 					#padding_vertical = 20
@@ -369,28 +382,34 @@ class DocumentExtraction:
 class DocumentDataExtractor:
 	documents = []
 
-	compare_string_list = [
-		#'management fee',
-		#'estimated total management costs',
-		#'buy/sell spread',
-		#'buy-sell spread',
-		'fees expenses cost',
-		'buy sell',
-		'transaction costs allowance',
-		'asset allocation',
-	]
-
-	compare_catargories = {
-		#'management fee': 'Management Fee',
-		#'fees and expenses': 'Management Fee',
-		#'estimated total management costs': 'Management Fee',
-		#'buy/sell spread': 'Buy/Sell spread',
-		#'buy-sell spread': 'Buy/Sell spread',
-		#'fee cost': 'Management Fee',
-		'fees expenses cost': 'Management Fee',
-		'buy sell': 'Buy/Sell spread',
-		'transaction costs allowance': 'Buy/Sell spread',
-		'asset allocation': 'Asset Allocation',
+	compare_values = {
+		#[['[+\\$\-\%]',0.75],['\d',0.9]]
+		"Management Fee": {
+			"fees cost expenses management": {
+				"weights": [['[+\\$\-\%]',0.75],['\d',0.9],['p.a',1.6]],
+				"bias": 0
+			},
+			"management fee": {
+				"weights": [['[+\\$\-\%]',0.75],['\d',0.9],['p.a',1.6]],
+				"bias": 0.2
+			},
+		},
+		"Buy/Sell spread": {
+			"buy sell spread": {
+				"weights": [['[+\\$\-\%]',0.75],['\d',0.9],['\+.+%.+\/.+\-.+%',2]],
+				"bias": 0.2
+			},
+			"transaction costs allowance": {
+				"weights": [['[+\\$\-\%]',0.75],['\d',0.9],['\+.+%.+\/.+\-.+%',2]],
+				"bias": 0
+			},
+		},
+		"Asset Allocation": {
+			"asset allocation": {
+				"weights": [['[+\\$\-\%]',0.75],['\d',0.9]],
+				"bias": 0
+			}
+		}
 	}
 
 	discard_indicators = ['example']
@@ -398,7 +417,12 @@ class DocumentDataExtractor:
 	similarity_data = {}
 
 	def __init__(self):
-		pass
+
+		for cat_name in self.compare_values:
+			self.similarity_data[cat_name] = []
+
+
+		return
 
 	def process_document_data(self):
 		pass
@@ -407,19 +431,27 @@ class DocumentDataExtractor:
 		#document.url_string
 		#document.pages_data
 		document_obj = {
-			'url': document.url_string,
-			'pages_data': document.pages_data,
+			#'url': document.url_string,
+			#'pages_data': document.pages_data,
+			'doc': document,
+			'sim_data': {}
 		}
 		self.documents.append(document_obj)
 		return len(self.documents) - 1
 	
 	def extract_similar_rows(self, init_threshold, doc_idx=0):
 
-		for compare_value in self.compare_string_list:
-			self.similarity_data[compare_value] = []
+		#for compare_value in self.compare_string_list:
+		#	self.similarity_data[compare_value] = []
 
-		document = self.documents[doc_idx]
-		for page_idx, page in enumerate(document['pages_data']):
+		document_data = self.documents[doc_idx]
+
+		for cat_name in self.compare_values:
+			if not cat_name in document_data['sim_data']:
+				document_data['sim_data'][cat_name] = []
+
+		document = document_data['doc']
+		for page_idx, page in enumerate(document.pages_data):
 			for table_idx, table in enumerate(page['tables']):
 				#table['bbox']
 				text = table['text']
@@ -444,16 +476,20 @@ class DocumentDataExtractor:
 				#[print(repr(x)) for x in texts]
 
 				for text_part in texts:
-					item = find_most_similar(text_part, self.compare_string_list, True, True)
+					item = find_most_similar(text_part, self.compare_values, True, True)# self.compare_string_list # , regex_list = [['[+\\$\-\%]',0.75],['\d',0.9]]
 					# Add document->page->tables index to item
-					item.append([0, page_idx, table_idx])
-					sim_val = item[2]
+					#item.append([0, page_idx, table_idx])
+					
+					sim_val = item["ratio"]
 					if sim_val > init_threshold:
-						self.similarity_data[item[1]].append(item)
+						document_data['sim_data'][item["cat"]].append(item)
 		return
 	
-	def sort_as_most_similar(self):
+	def sort_as_most_similar(self, doc_idx):
 
+		similarity_data = self.documents[doc_idx]['sim_data']
+
+		'''
 		for sim_type in self.similarity_data:
 			sim_values = self.similarity_data[sim_type]
 			self.similarity_data[sim_type] = sorted(sim_values, key=lambda tup: tup[2], reverse=True)
@@ -484,9 +520,14 @@ class DocumentDataExtractor:
 		#print(self.similarity_data)
 		#print(shrinked_catagories)
 
-		self.similarity_data = shrinked_catagories
+		#self.similarity_data = shrinked_catagories
+		'''
+		
+		for sim_type in similarity_data:
+			sim_values = similarity_data[sim_type]
+			similarity_data[sim_type] = sorted(sim_values, key=lambda item: item["ratio"], reverse=True)
 
-		return self.similarity_data
+		return similarity_data
 
 # --
 
