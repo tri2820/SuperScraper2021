@@ -22,7 +22,7 @@ echo /wait Installing pip
 
 call pip install -r requirements.txt
 
-pause
+
 
 
 
