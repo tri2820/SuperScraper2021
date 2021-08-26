@@ -1,6 +1,9 @@
 @echo on
 
+cd ..
+
 call %UserProfile%\Anaconda3\Scripts\activate.bat
+
 
 call conda deactivate
 
@@ -13,3 +16,10 @@ echo /wait Recreating Env
 call conda activate ScrapperTest
 
 echo /wait Activating
+
+
+call pip install -r requirements.txt
+
+echo /wait Installing libs
+
+

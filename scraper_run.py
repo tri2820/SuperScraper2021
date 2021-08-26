@@ -221,7 +221,7 @@ def run_scraper_traversal():
         traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
         if traversal_document['schedule_data']['should_traverse'] == "False" or traversal_document['schedule_data']['should_traverse'] == False:
             continue
-        traversal_document['schedule_data']['should_traverse'] = False
+        #traversal_document['schedule_data']['should_traverse'] = True
         traversal_document["file_filters"] = {
             "PDS": {
                 # The following are now pipeline filters (after extraction)
@@ -314,10 +314,13 @@ def run_scraper_traversal():
     test_handler.close_connection()
 
     print("Start Crawl")
+    print('tav no. ', len(traversal_documents))
 
 
     @defer.inlineCallbacks
     def crawl():
+
+        print("---")
 
         #document = test_handler.find_or_create_document('site_traverse_data', {'_id': "novaport_site_traversal"}, False)
         #yield runner.crawl('Traversal', traverse_data = document)
