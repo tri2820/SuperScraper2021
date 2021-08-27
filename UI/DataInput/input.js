@@ -403,6 +403,13 @@ function getMongoData(manager, csvApir, link){
                 `${csvApir}`
                 ]
             }
+        },
+        filtered_file_urls: {
+     
+        },
+        schedule_data: {
+            last_traversed: 0,
+            should_traverse: "True",
         }
     };
     console.log(info.domain.domain_file)
@@ -436,107 +443,120 @@ function mong(){
     var apir = document.getElementById("apir").value.toUpperCase();
     console.log("inserting into database ...");
     var newObj = {
-                    _id: `${site}_site_traversal`,
-                    file_extraction_rules: {
-                        deny_extensions: [
-                            "7z",
-                            "7zip",
-                            "bz2",
-                            "rar",
-                            "tar",
-                            "tar.gz",
-                            "xz",
-                            "zip",
-                            "mng",
-                            "pct",
-                            "bmp",
-                            "gif",
-                            "jpg",
-                            "jpeg",
-                            "png",
-                            "pst",
-                            "psp",
-                            "tif",
-                            "tiff",
-                            "ai",
-                            "drw",
-                            "dxf",
-                            "eps",
-                            "ps",
-                            "svg",
-                            "cdr",
-                            "ico",
-                            "mp3",
-                            "wma",
-                            "ogg",
-                            "wav",
-                            "ra",
-                            "aac",
-                            "mid",
-                            "au",
-                            "aiff",
-                            "3gp",
-                            "asf",
-                            "asx",
-                            "avi",
-                            "mov",
-                            "mp4",
-                            "mpg",
-                            "qt",
-                            "rm",
-                            "swf",
-                            "wmv",
-                            "m4a",
-                            "m4v",
-                            "flv",
-                            "webm",
-                            "xls",
-                            "xlsx",
-                            "ppt",
-                            "pptx",
-                            "pps",
-                            "doc",
-                            "docx",
-                            "odt",
-                            "ods",
-                            "odg",
-                            "odp",
-                            "css",
-                            "exe",
-                            "bin",
-                            "rss",
-                            "dmg",
-                            "iso",
-                            "apk"
-                        ],
-                        allow: [],
-                        content_types: [
-                            "application/pdf"
-                          ],
-                        restrict_text: [
-                            ".+disclosure.statement.+",
-                            ".+product.disclosure.statement.+",
-                            ".+pds.+",
-                            ".+PDS.+"
-                        ],
-                        filters: [
-                            ".+product.disclosure.statement.+",
-                            ".+pds.+",
-                            ".+PDS.+"
-                        ]
-                    },
-                    domain: {
-                        domain_file: `${site}`,
-                        domain_name: `${domain}`,
-                        start_url: `https://${domain}`,
-                        parse_select: "traverse",
-                        page_filters: {
-                            [apir]: [
-                            `${apir}`
-                            ]
-                        }
-                    }
-                };
+        _id: `${site}_site_traversal`,
+        file_extraction_rules: {
+            deny_extensions: [
+                "7z",
+                "7zip",
+                "bz2",
+                "rar",
+                "tar",
+                "tar.gz",
+                "xz",
+                "zip",
+                "mng",
+                "pct",
+                "bmp",
+                "gif",
+                "jpg",
+                "jpeg",
+                "png",
+                "pst",
+                "psp",
+                "tif",
+                "tiff",
+                "ai",
+                "drw",
+                "dxf",
+                "eps",
+                "ps",
+                "svg",
+                "cdr",
+                "ico",
+                "mp3",
+                "wma",
+                "ogg",
+                "wav",
+                "ra",
+                "aac",
+                "mid",
+                "au",
+                "aiff",
+                "3gp",
+                "asf",
+                "asx",
+                "avi",
+                "mov",
+                "mp4",
+                "mpg",
+                "qt",
+                "rm",
+                "swf",
+                "wmv",
+                "m4a",
+                "m4v",
+                "flv",
+                "webm",
+                "xls",
+                "xlsx",
+                "ppt",
+                "pptx",
+                "pps",
+                "doc",
+                "docx",
+                "odt",
+                "ods",
+                "odg",
+                "odp",
+                "css",
+                "exe",
+                "bin",
+                "rss",
+                "dmg",
+                "iso",
+                "apk"
+            ],
+            allow: [
+            ],
+            content_types: [
+                "application/pdf"
+            ],
+        },
+        file_filters: {
+            PDS: {
+                restrict_text: [
+                '.+product.disclosure.statement.+',
+                '.+pds.+',
+                '.+PDS.+',
+                ],
+                filters: [
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ]
+            }
+        },
+        "traversal_filters": {
+        },
+        domain: {
+            domain_file: `${site}`,
+            domain_name: `${domain}`,
+            start_url: `https://${domain}`,
+            parse_select: "traverse",
+            page_filters: {
+                [apir]: [
+                `${apir}`
+                ]
+            }
+        },
+        filtered_file_urls: {
+     
+        },
+        schedule_data: {
+            last_traversed: 0,
+            should_traverse: "True",
+        }
+    };
 
     console.log(newObj);
     MongoClient.connect(url, function(err, db) {
