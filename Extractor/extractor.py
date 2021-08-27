@@ -94,3 +94,7 @@ def extract():
         perf_pivot_writer = csv.writer(perf_pivot)
         for row in newPerf:
             perf_pivot_writer.writerow(row)
+
+
+if __name__ == '__main__':
+    extract()

@@ -201,6 +201,65 @@ function buildMongo(name, data){
                 ".+PDS.+"
             ]
         },
+        file_filters: {
+            PDS: {
+                restrict_text: [
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ],
+                filters: [
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ]
+            },
+            Investment: {
+                restrict_text: [
+                    '.+Investment.+',
+                    '.+investment.+',
+                ],
+                filters: [
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ]
+            },
+            FeesCosts: {
+                restrict_text: [
+                    '.+fees.costs.+',
+                    '.+Fees.Costs.+',
+                ],
+                filters: [
+                    '.+fees.costs.+',
+                    '.+Fees.Costs.+',
+                ]
+            },
+            Performance: {
+                restrict_text: [
+                    '.+performance.+',
+                    '.+Performance.+',
+                ],
+                filters: [
+                    '.+performance.+',
+                    '.+Performance.+',
+                ]
+            },
+            FactSheet: {
+                restrict_text: [
+                    '.+FactSheet.+',
+                    '.+Fact Sheet.+',
+                    '.+fact.sheet.+',
+                ],
+                'filters': [
+                    '.+FactSheet.+',
+                    '.+Fact Sheet.+',
+                    '.+fact.sheet.+',
+                ]
+            },
+        },
+        traversal_filters: {
+        },
         domain: {
             domain_file: `${name}`,
             domain_name: `${data[0]}`,
@@ -208,6 +267,10 @@ function buildMongo(name, data){
             parse_select: "traverse",
             page_filters: {
             }
+        },
+        schedule_data: {
+            last_traversed: 0,
+            should_traverse: "True",
         }
     };
 
@@ -525,18 +588,61 @@ function mong(){
         file_filters: {
             PDS: {
                 restrict_text: [
-                '.+product.disclosure.statement.+',
-                '.+pds.+',
-                '.+PDS.+',
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
                 ],
                 filters: [
                     '.+product.disclosure.statement.+',
                     '.+pds.+',
                     '.+PDS.+',
                 ]
-            }
+            },
+            Investment: {
+                restrict_text: [
+                    '.+Investment.+',
+                    '.+investment.+',
+                ],
+                filters: [
+                    '.+product.disclosure.statement.+',
+                    '.+pds.+',
+                    '.+PDS.+',
+                ]
+            },
+            FeesCosts: {
+                restrict_text: [
+                    '.+fees.costs.+',
+                    '.+Fees.Costs.+',
+                ],
+                filters: [
+                    '.+fees.costs.+',
+                    '.+Fees.Costs.+',
+                ]
+            },
+            Performance: {
+                restrict_text: [
+                    '.+performance.+',
+                    '.+Performance.+',
+                ],
+                filters: [
+                    '.+performance.+',
+                    '.+Performance.+',
+                ]
+            },
+            FactSheet: {
+                restrict_text: [
+                    '.+FactSheet.+',
+                    '.+Fact Sheet.+',
+                    '.+fact.sheet.+',
+                ],
+                'filters': [
+                    '.+FactSheet.+',
+                    '.+Fact Sheet.+',
+                    '.+fact.sheet.+',
+                ]
+            },
         },
-        "traversal_filters": {
+        traversal_filters: {
         },
         domain: {
             domain_file: `${site}`,
