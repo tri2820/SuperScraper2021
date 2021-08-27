@@ -22,3 +22,5 @@ echo /wait Activating
 call pip install -r requirements.txt
 
 echo /wait Installing libs
+
+pause

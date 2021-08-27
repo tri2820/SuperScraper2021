@@ -7,7 +7,16 @@ import re
 import requests
 from scrapy.utils.response import response_status_message
 
+#'''
+import socket
+import requests.packages.urllib3.util.connection as urllib3_cn
 
+
+def allowed_gai_family():
+    return socket.AF_INET
+
+urllib3_cn.allowed_gai_family = allowed_gai_family
+#'''
 
 
 # TODO: Make date format with zero at front '07-2017' instead of '7-2017'
@@ -103,11 +112,11 @@ class requests_session_handler:
 
     def check_content_type(self, url):
         try:
-            response = self.session.get(url, timeout=12)#, stream=False
+            response = self.session.head(url, timeout=12, stream=True)#, stream=False #get
             if response.status_code == '404' or response.status_code == '403':
                 return None
             content_type = response.headers.get('content-type')
-            response.close()
+            #response.close()
             return content_type
         except:
             return None

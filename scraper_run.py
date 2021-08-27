@@ -222,6 +222,10 @@ def run_scraper_traversal():
         if traversal_document['schedule_data']['should_traverse'] == "False" or traversal_document['schedule_data']['should_traverse'] == False:
             continue
         #traversal_document['schedule_data']['should_traverse'] = True
+        # Fix domain slash issue
+        domain_string = traversal_document['domain']['domain_name']
+        if domain_string[-1] == "/":
+            traversal_document['domain']['domain_name'] = domain_string[:-1]
         traversal_document["file_filters"] = {
             "PDS": {
                 # The following are now pipeline filters (after extraction)
@@ -316,7 +320,7 @@ def run_scraper_traversal():
     print("Start Crawl")
     print('tav no. ', len(traversal_documents))
 
-
+    # Sequential
     @defer.inlineCallbacks
     def crawl():
 
@@ -330,8 +334,19 @@ def run_scraper_traversal():
                 yield runner.crawl('Traversal', traverse_data = document)
 
         reactor.stop()
+    # --
 
-    crawl()
+    # Parrallal
+    for document in traversal_documents:
+        if document['schedule_data']['should_traverse']:
+            print('CRAWLING - ',document['_id'])
+            runner.crawl('Traversal', traverse_data = document)
+    # --
+
+    d = runner.join()
+    d.addBoth(lambda _: reactor.stop())
+
+    #crawl()
 
     reactor.run()
 

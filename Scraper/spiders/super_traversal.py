@@ -28,6 +28,8 @@ class SiteTraversal(scrapy.Spider):
     name = "Traversal"
 
     # NOTE: Mabye just constructor init, i think?
+    # NOTE: Yeah yeah ^ ok
+    """
     crawl_selections = []
 
     traverse_data = None
@@ -58,6 +60,7 @@ class SiteTraversal(scrapy.Spider):
             'last_min': 0
         }
     }
+    """
 
     # TODO: May need some tweeking
     def log_progress(self):
