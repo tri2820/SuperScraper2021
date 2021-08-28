@@ -85,6 +85,16 @@ function createWindow() {
         parent2.append(...nodes2);`
         win.webContents.executeJavaScript(code2);
 
+        //telsta
+        let code3 = `var parent3 = document.getElementById("dropdownID3");
+        var dropdowns4 = `+JSON.stringify(dropdowns['telstra'])+`
+        let nodes3 = dropdowns4.map(dropdown => {
+        let a = document.createElement('A');
+        a.textContent = dropdown;
+        return a;
+        });
+        parent3.append(...nodes3);`
+        win.webContents.executeJavaScript(code3);
 
       // var iframe = document.createElement('iframe');
       // iframe.addAtributes("class", ".drpbns");
