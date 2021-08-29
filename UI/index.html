@@ -229,7 +229,7 @@
     <div class="topnav">
       <a class="active" href="index.html">Home</a>
       <a href="#about">Contact</a>
-      <a href="#contact">Extract</a>
+      <a href="#contact" onclick="extract()">Extract</a>
       <a href="#contact">Scrape</a>
       <a href="index.html">Refresh</a>
       <div class="search-container">
@@ -278,6 +278,22 @@
 
       <script>
       //Call dropdown menu
+        function extract(){
+        console.log("Extracting...")
+        var python = require('child_process').spawn('python', ['../Extractor/extractor.py'])
+        python.stdout.on('data', function (data) {
+        console.log("Python response: ", data.toString('utf8'));
+        });
+ 
+        python.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+        });
+ 
+        python.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+        alert("Extraction complete!")
+        });
+}
       function myFunction() {
         document.getElementById("myDropdown").classList.toggle("show");
       }
