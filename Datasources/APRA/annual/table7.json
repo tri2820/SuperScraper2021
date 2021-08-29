@@ -1,0 +1,2378 @@
+[
+  {
+    "Fund name": "Alcoa of Australia Retirement Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 944,
+    "Description of activity fee": "Contribution Split Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 1,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 80928800255,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Corporate",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "Alcoa of Australia Retirement Plan Pty Ltd",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Alcoa of Australia Retirement Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 944,
+    "Description of activity fee": "FAMILY LAW SPLITTING FEE",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 1,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 80928800255,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Corporate",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "Alcoa of Australia Retirement Plan Pty Ltd",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "AMG Super",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 13711,
+    "Description of activity fee": "Adviser fees",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 5161,
+    "Activity fees paid as a proportion of total fees paid": 0.38,
+    "Group 2": {
+      "ABN": 30099320583,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Equity Trustees Superannuation Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "ANZ Australian Staff Superannuation Scheme",
+    "RSE Balance date": 1577750400000,
+    "Total fees paid": 23041,
+    "Description of activity fee": "Financial planning",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 19,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 83810127567,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Corporate",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "ANZ Staff Superannuation (Australia) Pty. Limited",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "AON Master Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 51127,
+    "Description of activity fee": "Adviser Fees",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 2096,
+    "Activity fees paid as a proportion of total fees paid": 0.04,
+    "Group 2": {
+      "ABN": 68964712340,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Equity Trustees Superannuation Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "AON Master Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 51127,
+    "Description of activity fee": "Family Law Split",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 5,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 68964712340,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Equity Trustees Superannuation Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Australia Post Superannuation Scheme",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 3076,
+    "Description of activity fee": "Other fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 2,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 42045077895,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Government base",
+      "Fund's RSE licensee": "PostSuper Pty Ltd",
+      "RSE licensee ownership type": "Other ownership type",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Australian Defence Force Superannuation Scheme",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 1467,
+    "Description of activity fee": "Switching fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 2,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 90302247344,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Government base",
+      "Fund's RSE licensee": "Commonwealth Superannuation Corporation",
+      "RSE licensee ownership type": "Public sector organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Australian Eligible Rollover Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 3541,
+    "Description of activity fee": "Other fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 69,
+    "Activity fees paid as a proportion of total fees paid": 0.02,
+    "Group 2": {
+      "ABN": 81932639940,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail - ERF",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Perpetual Superannuation Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Australian Meat Industry Superannuation Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 5675,
+    "Description of activity fee": "Family law fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 3,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 28342064803,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Australian Meat Industry Superannuation Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "AustralianSuper",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 804638,
+    "Description of activity fee": "Contribution Splitting Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 56,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 65714394898,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "AustralianSuper Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "AustralianSuper",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 804638,
+    "Description of activity fee": "Family Law Splitting Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 85,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 65714394898,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "AustralianSuper Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Avanteos Superannuation Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 91598,
+    "Description of activity fee": "Activity fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 59397,
+    "Activity fees paid as a proportion of total fees paid": 0.65,
+    "Group 2": {
+      "ABN": 38876896681,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Avanteos Investments Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "AvSuper Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 386,
+    "Description of activity fee": "Family law fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 6,
+    "Activity fees paid as a proportion of total fees paid": 0.02,
+    "Group 2": {
+      "ABN": 84421446069,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "AvSuper Pty Ltd",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Aware Super",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 528271,
+    "Description of activity fee": "Advice fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 8282,
+    "Activity fees paid as a proportion of total fees paid": 0.02,
+    "Group 2": {
+      "ABN": 53226460365,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Government base",
+      "Fund's RSE licensee": "Aware Super Pty Ltd",
+      "RSE licensee ownership type": "Other ownership type",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Aware Super",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 528271,
+    "Description of activity fee": "Family law",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 32,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 53226460365,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Government base",
+      "Fund's RSE licensee": "Aware Super Pty Ltd",
+      "RSE licensee ownership type": "Other ownership type",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Aware Super",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 528271,
+    "Description of activity fee": "No-TFN tax recovery fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 0,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 53226460365,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Government base",
+      "Fund's RSE licensee": "Aware Super Pty Ltd",
+      "RSE licensee ownership type": "Other ownership type",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Boc Gases Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 806,
+    "Description of activity fee": "Family Law Split Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 3,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 49620344668,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Corporate",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "BOC Superannuation Pty Ltd",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Building Unions Superannuation Scheme (Queensland)",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 8454,
+    "Description of activity fee": "Other Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 11,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 85571332201,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "BUSS (Queensland) Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "ClearView Retirement Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 13447,
+    "Description of activity fee": "Activity fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 5523,
+    "Activity fees paid as a proportion of total fees paid": 0.41,
+    "Group 2": {
+      "ABN": 45828721007,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "ClearView Life Nominees Pty Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Club Plus Superannuation Scheme",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 12206,
+    "Description of activity fee": "Other fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 2,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 95275115088,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Club Plus Superannuation Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "CONSTRUCTION AND BUILDING UNIONS SUPERANNUATION FUND",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 97511,
+    "Description of activity fee": "Contribution Splitting fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 2,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 75493363262,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "United Super Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "CONSTRUCTION AND BUILDING UNIONS SUPERANNUATION FUND",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 97511,
+    "Description of activity fee": "Family Law account split fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 30,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 75493363262,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "United Super Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "DPM Retirement Service",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 937,
+    "Description of activity fee": "Advisor service fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 312,
+    "Activity fees paid as a proportion of total fees paid": 0.33,
+    "Group 2": {
+      "ABN": 40725722496,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Nulis Nominees (Australia) Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Encircle Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 27128,
+    "Description of activity fee": "Activity Fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 21867,
+    "Activity fees paid as a proportion of total fees paid": 0.81,
+    "Group 2": {
+      "ABN": 68486630403,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Avanteos Investments Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Energy Industries Superannuation Scheme-Pool A",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 1039,
+    "Description of activity fee": "Advice fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 1039,
+    "Activity fees paid as a proportion of total fees paid": 1,
+    "Group 2": {
+      "ABN": 22277243559,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Energy Industries Superannuation Scheme Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Energy Industries Superannuation Scheme-Pool B",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 118,
+    "Description of activity fee": "Advice fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 53,
+    "Activity fees paid as a proportion of total fees paid": 0.45,
+    "Group 2": {
+      "ABN": 64322090181,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Energy Industries Superannuation Scheme Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Energy Super",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 4330,
+    "Description of activity fee": "Family Law Fees",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 8,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 33761363685,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Electricity Supply Industry Superannuation (QLD) Ltd",
+      "RSE licensee ownership type": "Public company ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Grow Super SMA",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 7,
+    "Description of activity fee": "Rollin Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 2,
+    "Activity fees paid as a proportion of total fees paid": 0.29,
+    "Group 2": {
+      "ABN": 20543903424,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Diversa Trustees Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Health Employees Superannuation Trust Australia",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 99772,
+    "Description of activity fee": "Contribution Splitting Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 5,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 64971749321,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "H.E.S.T. Australia Ltd.",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Health Employees Superannuation Trust Australia",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 99772,
+    "Description of activity fee": "Family Law Account Split Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 16,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 64971749321,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "H.E.S.T. Australia Ltd.",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "HOSTPLUS Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 78096,
+    "Description of activity fee": "Contribution splitting fees",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 6,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 68657495890,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Host-Plus Pty. Limited",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "HOSTPLUS Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 78096,
+    "Description of activity fee": "Family law fees",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 8,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 68657495890,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Host-Plus Pty. Limited",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "HOSTPLUS Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 78096,
+    "Description of activity fee": "Family law splitting fees",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 25,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 68657495890,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Host-Plus Pty. Limited",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "HUB24 Super Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 100434,
+    "Description of activity fee": "Transaction fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 1599,
+    "Activity fees paid as a proportion of total fees paid": 0.02,
+    "Group 2": {
+      "ABN": 60910190523,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Diversa Trustees Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "IAG & NRMA Superannuation Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 2024,
+    "Description of activity fee": "Family law split fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 5,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 58244115920,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Corporate",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "IAG & NRMA Superannuation Pty Ltd",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Incitec Pivot Employees Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 68,
+    "Description of activity fee": "Family law fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 1,
+    "Activity fees paid as a proportion of total fees paid": 0.01,
+    "Group 2": {
+      "ABN": 68569795856,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "Towers Watson Superannuation Pty Ltd",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "ING Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 38280,
+    "Description of activity fee": "Financial adviser fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 1619,
+    "Activity fees paid as a proportion of total fees paid": 0.04,
+    "Group 2": {
+      "ABN": 13355603448,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Diversa Trustees Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "legalsuper",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 14847,
+    "Description of activity fee": "Direct Investment Option Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 1,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 60346078879,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Legal Super Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "LGIAsuper",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 90321,
+    "Description of activity fee": "Advice fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 409,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 23053121564,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Government base",
+      "Fund's RSE licensee": "LGIAsuper Trustee",
+      "RSE licensee ownership type": "Public sector organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Local Authorities Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 17885,
+    "Description of activity fee": "Advice",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 144,
+    "Activity fees paid as a proportion of total fees paid": 0.01,
+    "Group 2": {
+      "ABN": 24496637884,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Government base",
+      "Fund's RSE licensee": "Vision Super Pty Ltd",
+      "RSE licensee ownership type": "Other ownership type",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Local Government Super",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 6835,
+    "Description of activity fee": "Family law fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 4,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 28901371321,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Government base",
+      "Fund's RSE licensee": "LGSS Pty Limited",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Lutheran Super",
+    "RSE Balance date": 1577750400000,
+    "Total fees paid": 669,
+    "Description of activity fee": "Family law fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 2,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 93371348387,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Corporate",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "LCA NOMINEES PTY. LTD.",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Macquarie Superannuation Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 227857,
+    "Description of activity fee": "Dealer service fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 939,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 65508799106,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Macquarie Investment Management Ltd",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Macquarie Superannuation Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 227857,
+    "Description of activity fee": "Failed trade fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 27,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 65508799106,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Macquarie Investment Management Ltd",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Media Super",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 17589,
+    "Description of activity fee": "Family law fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 1,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 42574421650,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Media Super Limited",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Mercer Portfolio Service Superannuation Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 16345,
+    "Description of activity fee": "Activity fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 6574,
+    "Activity fees paid as a proportion of total fees paid": 0.4,
+    "Group 2": {
+      "ABN": 92181844838,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Mercer Superannuation (Australia) Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Mercer Super Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 17342,
+    "Description of activity fee": "Family Law Split Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 49,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 19905422981,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "Mercer Superannuation (Australia) Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Mercer Super Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 17342,
+    "Description of activity fee": "Financial Advice",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 518,
+    "Activity fees paid as a proportion of total fees paid": 0.03,
+    "Group 2": {
+      "ABN": 19905422981,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "Mercer Superannuation (Australia) Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Mine Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 86284,
+    "Description of activity fee": "Advice fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 361,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 16457520308,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "AUSCOAL Superannuation Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "MLC Super Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 586113,
+    "Description of activity fee": "Adviser Service Fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 97914,
+    "Activity fees paid as a proportion of total fees paid": 0.17,
+    "Group 2": {
+      "ABN": 70732426024,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Nulis Nominees (Australia) Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "MLC Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 135563,
+    "Description of activity fee": "Advisor service fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 121195,
+    "Activity fees paid as a proportion of total fees paid": 0.89,
+    "Group 2": {
+      "ABN": 40022701955,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Nulis Nominees (Australia) Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "MTAA Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 31499,
+    "Description of activity fee": "Family law account split fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 19,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 74559365913,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Motor Trades Association of Australia Superannuation Fund Pty. Limited",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "MTAA Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 31499,
+    "Description of activity fee": "Financial planning fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 17,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 74559365913,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Motor Trades Association of Australia Superannuation Fund Pty. Limited",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "NESS Super",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 2004,
+    "Description of activity fee": "Family law split fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 1,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 72229227691,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "NESS Super Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Netwealth Superannuation Master Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 153153,
+    "Description of activity fee": "Ancillary Fees/Brokerage fees",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 7225,
+    "Activity fees paid as a proportion of total fees paid": 0.05,
+    "Group 2": {
+      "ABN": 94573747704,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Netwealth Investments Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "NGS Super",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 8317,
+    "Description of activity fee": "Faily law splitting fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 4,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 73549180515,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "NGS Super Pty Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Oasis Superannuation Master Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 49907,
+    "Description of activity fee": "Failed trade fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 1,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 81154851339,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Oasis Fund Management Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Premiumchoice Retirement Service",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 6196,
+    "Description of activity fee": "Advisor service fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 3409,
+    "Activity fees paid as a proportion of total fees paid": 0.55,
+    "Group 2": {
+      "ABN": 70479285132,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Nulis Nominees (Australia) Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Public Sector Superannuation Accumulation Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 13063,
+    "Description of activity fee": "Family Law - request for information fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 4,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 65127917725,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Government base",
+      "Fund's RSE licensee": "Commonwealth Superannuation Corporation",
+      "RSE licensee ownership type": "Public sector organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Public Sector Superannuation Accumulation Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 13063,
+    "Description of activity fee": "Family Law - splitting fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 12,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 65127917725,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Government base",
+      "Fund's RSE licensee": "Commonwealth Superannuation Corporation",
+      "RSE licensee ownership type": "Public sector organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Public Sector Superannuation Accumulation Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 13063,
+    "Description of activity fee": "Switching Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 26,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 65127917725,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Government base",
+      "Fund's RSE licensee": "Commonwealth Superannuation Corporation",
+      "RSE licensee ownership type": "Public sector organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Qantas Superannuation Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 9091,
+    "Description of activity fee": "Family law split fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 1,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 41272198829,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Corporate",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "Qantas Superannuation Limited",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Rei Super",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 8397,
+    "Description of activity fee": "Family law split fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 4,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 76641658449,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Rei Superannuation Fund Pty Limited",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Retail Employees Superannuation Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 155064,
+    "Description of activity fee": "Contribution splitting fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 6,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 62653671394,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Retail Employees Superannuation Pty. Limited",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Retail Employees Superannuation Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 155064,
+    "Description of activity fee": "Family law fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 15,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 62653671394,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Retail Employees Superannuation Pty. Limited",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Retirement Portfolio Service",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 100642,
+    "Description of activity fee": "Contribution Activity fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 254,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 61808189263,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "OnePath Custodians Pty Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Retirement Portfolio Service",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 100642,
+    "Description of activity fee": "Direct Debit Activity fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 15,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 61808189263,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "OnePath Custodians Pty Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Retirement Portfolio Service",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 100642,
+    "Description of activity fee": "Direct Debit Dishonour fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 3,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 61808189263,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "OnePath Custodians Pty Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Retirement Portfolio Service",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 100642,
+    "Description of activity fee": "Internal Transfer In Activity fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 7,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 61808189263,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "OnePath Custodians Pty Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Retirement Portfolio Service",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 100642,
+    "Description of activity fee": "Regular Income Payment fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 101,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 61808189263,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "OnePath Custodians Pty Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Retirement Portfolio Service",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 100642,
+    "Description of activity fee": "Sale Activity fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 41,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 61808189263,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "OnePath Custodians Pty Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Retirement Wrap",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 492940,
+    "Description of activity fee": "Advice fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 1194,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 39827542991,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "BT Funds Management Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Russell Investments Master Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 24999,
+    "Description of activity fee": "Family Law Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 3,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 89384753567,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "Total Risk Management Pty Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Smartsave 'Member's Choice' Superannuation Master Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 1459,
+    "Description of activity fee": "Adviser Service Fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 611,
+    "Activity fees paid as a proportion of total fees paid": 0.42,
+    "Group 2": {
+      "ABN": 43905581638,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Diversa Trustees Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Star Portfolio Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 5076,
+    "Description of activity fee": "Activity fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 2708,
+    "Activity fees paid as a proportion of total fees paid": 0.53,
+    "Group 2": {
+      "ABN": 24276733959,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Avanteos Investments Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Statewide Superannuation Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 24150,
+    "Description of activity fee": "Family law request for info by non-member",
+    "Financial product advice?": "No",
+    "Source of payment": "Other",
+    "Activity fees paid": 2,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 54145196298,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Statewide Superannuation Pty Ltd",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Statewide Superannuation Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 24150,
+    "Description of activity fee": "Family law splitting a benefit",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 24,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 54145196298,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Statewide Superannuation Pty Ltd",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Statewide Superannuation Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 24150,
+    "Description of activity fee": "Partial Withdrawal Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 12,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 54145196298,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Statewide Superannuation Pty Ltd",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Statewide Superannuation Trust",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 24150,
+    "Description of activity fee": "Switching fees, first switch free each year",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 42,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 54145196298,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Statewide Superannuation Pty Ltd",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Sunsuper Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 347348,
+    "Description of activity fee": "Family Law Legislation Fee - splitting fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 57,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 98503137921,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Sunsuper Pty. Ltd.",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Super Directions Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 22149,
+    "Description of activity fee": "Planner Advice Fees paid by Member",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 1122,
+    "Activity fees paid as a proportion of total fees paid": 0.05,
+    "Group 2": {
+      "ABN": 78421957449,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "N. M. Superannuation Proprietary Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Super Directions Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 22149,
+    "Description of activity fee": "Planner Ongoing Advice Fees paid by Member",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 9282,
+    "Activity fees paid as a proportion of total fees paid": 0.42,
+    "Group 2": {
+      "ABN": 78421957449,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "N. M. Superannuation Proprietary Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Symetry Personal Retirement Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 26094,
+    "Description of activity fee": "Activity fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 13053,
+    "Activity fees paid as a proportion of total fees paid": 0.5,
+    "Group 2": {
+      "ABN": 24685968122,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Avanteos Investments Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Tasplan Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 24774,
+    "Description of activity fee": "Family law information request",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 0,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 14602032302,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Tasplan Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Telstra Superannuation Scheme",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 73818,
+    "Description of activity fee": "Brokerage - Direct Access Option",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 268,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 85502108833,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Corporate",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "Telstra Super Pty Ltd",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Telstra Superannuation Scheme",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 73818,
+    "Description of activity fee": "Buy/Sell Spread",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 296,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 85502108833,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Corporate",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "Telstra Super Pty Ltd",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Telstra Superannuation Scheme",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 73818,
+    "Description of activity fee": "Non Intra Fund Advice",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 3337,
+    "Activity fees paid as a proportion of total fees paid": 0.05,
+    "Group 2": {
+      "ABN": 85502108833,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Corporate",
+      "RSE Membership base": "Corporate base",
+      "Fund's RSE licensee": "Telstra Super Pty Ltd",
+      "RSE licensee ownership type": "Employer sponsor (non-public sector) ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "The Victorian Independent Schools Superannuation Fund",
+    "RSE Balance date": 1580428800000,
+    "Total fees paid": 584,
+    "Description of activity fee": "Fee for financial planning",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 5,
+    "Activity fees paid as a proportion of total fees paid": 0.01,
+    "Group 2": {
+      "ABN": 37024873660,
+      "RSE Regulatory classification": "Non public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "V.I.S. Nominees Pty. Limited",
+      "RSE licensee ownership type": "Other ownership type",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "TWU Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 22182,
+    "Description of activity fee": "Family Law Split Fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 4,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 77343563307,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "T W U Nominees Pty Ltd",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Ultimate Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 4406,
+    "Description of activity fee": "Activity fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 2854,
+    "Activity fees paid as a proportion of total fees paid": 0.65,
+    "Group 2": {
+      "ABN": 97900294767,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Avanteos Investments Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Unisuper",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 77131,
+    "Description of activity fee": "Advice fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 8415,
+    "Activity fees paid as a proportion of total fees paid": 0.11,
+    "Group 2": {
+      "ABN": 91385943850,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Unisuper Limited",
+      "RSE licensee ownership type": "Public company ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Unisuper",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 77131,
+    "Description of activity fee": "Switching fee",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 310,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 91385943850,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Industry",
+      "RSE Membership base": "Industry base",
+      "Fund's RSE licensee": "Unisuper Limited",
+      "RSE licensee ownership type": "Public company ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by legislation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "WA Local Government Superannuation Plan",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 7611,
+    "Description of activity fee": "Advice Fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 1000,
+    "Activity fees paid as a proportion of total fees paid": 0.13,
+    "Group 2": {
+      "ABN": 18159499614,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Public Sector",
+      "RSE Membership base": "Government base",
+      "Fund's RSE licensee": "WA Local Government Superannuation Plan Pty Ltd",
+      "RSE licensee ownership type": "Nominating organisation ownership",
+      "RSE licensee profit status": "Not for profit status",
+      "RSE licensee board structure": "Equal representation required by governing rules"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Wealth Personal Superannuation and Pension Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 483370,
+    "Description of activity fee": "Advice Fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 283608,
+    "Activity fees paid as a proportion of total fees paid": 0.59,
+    "Group 2": {
+      "ABN": 92381911598,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "N. M. Superannuation Proprietary Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Wealth Personal Superannuation and Pension Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 483370,
+    "Description of activity fee": "Adviser Review Fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 12592,
+    "Activity fees paid as a proportion of total fees paid": 0.03,
+    "Group 2": {
+      "ABN": 92381911598,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "N. M. Superannuation Proprietary Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Wealth Personal Superannuation and Pension Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 483370,
+    "Description of activity fee": "Commission",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 7923,
+    "Activity fees paid as a proportion of total fees paid": 0.02,
+    "Group 2": {
+      "ABN": 92381911598,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "N. M. Superannuation Proprietary Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Westpac Mastertrust - Superannuation Division",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 6470,
+    "Description of activity fee": "Member advice fee",
+    "Financial product advice?": "Yes",
+    "Source of payment": "Member",
+    "Activity fees paid": 5,
+    "Activity fees paid as a proportion of total fees paid": 0,
+    "Group 2": {
+      "ABN": 81236903448,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Westpac Securities Administration Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  },
+  {
+    "Fund name": "Zurich Master Superannuation Fund",
+    "RSE Balance date": 1593475200000,
+    "Total fees paid": 14784,
+    "Description of activity fee": "Contribution charge",
+    "Financial product advice?": "No",
+    "Source of payment": "Member",
+    "Activity fees paid": 734,
+    "Activity fees paid as a proportion of total fees paid": 0.05,
+    "Group 2": {
+      "ABN": 33632838393,
+      "RSE Regulatory classification": "Public offer",
+      "Fund type": "Retail",
+      "RSE Membership base": "General base",
+      "Fund's RSE licensee": "Equity Trustees Superannuation Limited",
+      "RSE licensee ownership type": "Financial services corporation ownership",
+      "RSE licensee profit status": "For profit status",
+      "RSE licensee board structure": "Non equal representation"
+    },
+    "Group 11": {
+      "Duration": 12,
+      "RSE Wind up date": null
+    }
+  }
+]
