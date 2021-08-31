@@ -85,6 +85,7 @@ def loadGroupInfos(bookname: str, sheetname: str):
     return groups
 
 from itertools import chain
+import sys
 import json
 def jsonify(t: Table):
     groups = list(map(lambda v: v.group, t.views))
@@ -98,23 +99,37 @@ def jsonify(t: Table):
     # Check unique
     # If not, use the one above as extra key
 
+    try:
+        J = table.to_json(orient='records')
+    except Exception as e:
+        counts = table.columns.value_counts()
+        print(f'Cannot convert table to json', file=sys.stderr)
+        print(e)
+        # Some may due to group inside group
+        print(table.columns)
+        return None
 
-    J = table.to_json(orient='records')
     J = json.loads(J)
 
     for (i,v) in enumerate(t.views):
-        records = json.loads(subdatas[i].to_json(orient='records'))
-        view_jsons = list(map(lambda r: {v.name : r}, records))
-        for (j,_) in enumerate(J): J[j].update(view_jsons[j])
-
+        try:
+            records = json.loads(subdatas[i].to_json(orient='records'))
+            view_jsons = list(map(lambda r: {v.name : r}, records))
+            for (j,_) in enumerate(J): J[j].update(view_jsons[j])
+        except Exception as e:
+            counts = subdatas[i].columns.value_counts()
+            print(f'Cannot convert {v.name} to json, skip', file=sys.stderr)
+            print(e)
+            print(counts)
+        
     return J
     
 # ----------------------------
 
-bookname = 'Annual fund-level superannuation statistics June 2020.xlsx'
+# bookname = 'Annual fund-level superannuation statistics June 2020.xlsx'
 
 # Working
-S = SheetReader(Format(3, 0, [1,2,4,5]), 'Table 1')
+# S = SheetReader(Format(3, 0, [1,2,4,5]), 'Table 1')
 # S = SheetReader(Format(3, 0, [1,2,4,5]), 'Table 2')
 # S = SheetReader(Format(3, 0, [1,2,4,5]), 'Table 3')
 # S = SheetReader(Format(4, 0, [1,2,3,5,6]), 'Table 7')
@@ -131,15 +146,23 @@ S = SheetReader(Format(3, 0, [1,2,4,5]), 'Table 1')
 # S = SheetReader(Format(4, 0, [1,2,3,5,6]), 'Table 13')
 
 
+# -----------------------------
+bookname = 'Quarterly MySuper statistics backseries September 2013 - June 2019.xlsx'
+# Not working - Group inside group, multiple nan columns
+S = SheetReader(Format(3, 0, [0,1,2,4,5]), 'Table 2a')
+S = SheetReader(Format(3, 0, [0,1,2,4,5]), 'Table 2b')
+
+# Working
+S = SheetReader(Format(2, 0, [0,1,3,4]), 'Table 1b')
+S = SheetReader(Format(2, 0, [0,1,3,4]), 'Table 1a')
+S = SheetReader(Format(3, 0, [0,1,2,4,5]), 'Table 3')
+S = SheetReader(Format(1, 0, [0,2,3]), 'Table 4')
+S = SheetReader(Format(2, 0, [0,1,3,4]), 'Table 5')
+S = SheetReader(Format(2, 0, [0,1,3,4]), 'Table 6')
+S = SheetReader(Format(3, 0, [0,1,2,4,5]), 'Table 7')
+
+
 table : Table = loadWorkSheet(bookname, S)
-# 3 is okay, even if repeated
-# for c in table.data.columns:
-#     counts = table.data.columns.value_counts()
-#     if True in list(map(lambda c: c>=2, counts)):
-#         print('Repeated column name')
-#         print(counts)
-#         print(table.data.columns)
-#         exit()
 
 J = jsonify(table)
 print(json.dumps(J))
