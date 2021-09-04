@@ -14,6 +14,8 @@ import pymongo
 import logging
 import pandas as pd
 
+import re
+
 
 
 MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
@@ -219,8 +221,23 @@ def run_scraper_traversal():
         print(prog_count)
         prog_count += 1
         traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
+        if not 'schedule_data' in traversal_document:
+            traversal_document['schedule_data'] = {
+                "last_traversed": 0,
+                "should_traverse": False
+            }
+        #traversal_document['filtered_file_urls']['FeesCosts'] = {}
+        #if 'filtered_file_urls' in traversal_document:
+            #if 'Fees&Costs' in traversal_document['filtered_file_urls']:
+            #    traversal_document['filtered_file_urls']['FeesCosts'] = traversal_document['filtered_file_urls'].pop('Fees&Costs', [])
+            #if not 'Report' in traversal_document['filtered_file_urls']:
+            #    traversal_document['filtered_file_urls']['Report'] = []
+        # traversal_document['schedule_data']['should_traverse'] = True
+        #traversal_document['schedule_data']['should_traverse'] = True
+
         if traversal_document['schedule_data']['should_traverse'] == "False" or traversal_document['schedule_data']['should_traverse'] == False:
             continue
+
         #traversal_document['schedule_data']['should_traverse'] = True
         # Fix domain slash issue
         domain_string = traversal_document['domain']['domain_name']
@@ -256,7 +273,7 @@ def run_scraper_traversal():
                     '.+PDS.+',
                 ]
             },
-            "Fees&Costs": {
+            "FeesCosts": {
                 # The following are now pipeline filters (after extraction)
                 # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
                 'restrict_text': [
@@ -297,15 +314,21 @@ def run_scraper_traversal():
                     '.+fact.sheet.+',
                 ]
             },
-            "FactSheet": {
+            "Report": {
                 # The following are now pipeline filters (after extraction)
                 # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
                 'restrict_text': [
                     '.+Report.+',
+                    '.+report.+',
+                    '.+FR.+',
+                    '.+fr.+',
                 ],
                 # Filters applied to urls after extraction and before entering into DB
                 'filters': [
                     '.+Report.+',
+                    '.+report.+',
+                    '.+FR.+',
+                    '.+fr.+',
                 ]
             },
         }
@@ -319,6 +342,8 @@ def run_scraper_traversal():
 
     print("Start Crawl")
     print('tav no. ', len(traversal_documents))
+
+    #return
 
     # Sequential
     @defer.inlineCallbacks
@@ -336,6 +361,7 @@ def run_scraper_traversal():
         reactor.stop()
     # --
 
+    '''
     # Parrallal
     for document in traversal_documents:
         if document['schedule_data']['should_traverse']:
@@ -345,8 +371,9 @@ def run_scraper_traversal():
 
     d = runner.join()
     d.addBoth(lambda _: reactor.stop())
+    '''
 
-    #crawl()
+    crawl()
 
     reactor.run()
 
@@ -355,114 +382,23 @@ def run_scraper_traversal():
 
 #print(DENY_EXTENSIONS)
 
-run_scraper_traversal()
+#run_scraper_traversal()
 
 #run_scraper()
 
 #     print("Crawl Completed")
 
 
+from Scraper.DocHanding import Something
 
-from Scraper.DocHanding import DocumentHandler
+new_something = Something()
 
-def doc_handling_test():
+new_something.extract_data_from_documents()
 
-    doctest = DocumentHandler()
+#new_something.find_item_file_urls()
 
-    doctest.open_connection()
-
-    file_list = doctest.filter_file_urls('novaport_site_traversal', 'PDS', ["HOW0027AU"])
-
-    # Found pdfs
-    print("-\nFound pdfs")
-    [print(x) for x in file_list]
-
-
-
-    doc_data_list = [doctest.extract_document_data(x['url']) for x in file_list]
-
-    # Extracted Data
-    print("-\nExtracted Data")
-    for matches_cats in doc_data_list:
-        for cat in matches_cats:
-            matches = matches_cats[cat]
-            print(cat, matches[0])
-    # --
-
-
-    doctest.close_connection()
-    return
-# --
-
-def doc_handling_run():
-
-
-    test_handler = DatabaseHandler(MONGO_URI, MONGO_DB)
-
-    test_handler.open_connection()
-    fund_ids = test_handler.get_collection_ids('fund_managers')
-
-    #traversal_ids = test_handler.get_collection_ids('site_traverse_data')
-
-    fund_querys = [[x, test_handler.find_or_create_document('fund_managers', {'_id': x}, False)['metadata']['site_traversal_id']] for x in fund_ids]
-
-    test_handler.close_connection()
-
-
-    for fund_query in fund_querys:
-
-        fund_id = fund_query[0]
-
-        traversal_id = fund_query[1]
-
-        doctest = DocumentHandler()
-
-        doctest.open_connection()
-
-        file_list = doctest.filter_file_urls(traversal_id, 'PDS', [fund_id])
-
-        # Found pdfs
-        print("-\nFound pdfs")
-        [print(x) for x in file_list]
-
-
-
-        doc_data_list = [doctest.extract_document_data(x['url']) for x in file_list]
-
-        doctest.close_connection()
-
-        # Extracted Data
-        print("-\nExtracted Data")
-        for matches_cats in doc_data_list:
-            for cat in matches_cats:
-                matches = matches_cats[cat]
-                print(cat, matches[0])
-        # --
-
-
-        # Shove in
-        test_handler.open_connection()
-        fund = test_handler.find_or_create_document('fund_managers', {'_id': fund_id}, False)
-        
-        for matches_cats in doc_data_list:
-            for cat in matches_cats:
-                matches = matches_cats[cat]
-                fund[cat] = matches[0]['str']
-        # --
-
-        fund['metadata']['pdf_url_list'] = [x['url'] for x in file_list]
-
-        test_handler.find_or_create_document('fund_managers', fund, True)
-
-        test_handler.close_connection()
-    # --
-
-    return
-# --
-
-
-#doc_handling_run()
-
+#new_something.extract_data_from_documents()
+#new_something.extract_data_from_documents()
 
 
 
