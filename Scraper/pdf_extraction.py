@@ -30,6 +30,22 @@ import pandas as pd
 
 from operator import itemgetter
 
+
+from Scraper.nn_extraction import run_pdf_table_detection, pdf_to_images
+
+#from nn_extraction import run_pdf_table_detection
+
+
+
+import pdfplumber
+
+
+import io
+
+import requests
+
+
+
 '''
 Below are some funds and the corrisponding links to the pdfs, i dont think we dont want to be uploading pdfs to the bitbucket, so download them and then move them out when uploading or something
 https://www.pendalgroup.com/products/pendal-australian-share-fund/ : https://www.pendalgroup.com/wp-content/uploads/docs/factsheets/PDS/Pendal%20Australian%20Share%20Fund%20-%20PDS.pdf?v=2021-05-061620317117
@@ -86,24 +102,6 @@ def cosine_similarity(string_1, string_2, ommit=[]):
 # --
 
 
-
-
-
-
-from Scraper.nn_extraction import run_pdf_table_detection, pdf_to_images
-
-#from nn_extraction import run_pdf_table_detection
-
-
-
-import pdfplumber
-
-
-import io
-
-import requests
-
-
 #tables = camelot.read_pdf("https://www.hyperion.com.au/wp-content/uploads/Hyperion-Australian-Growth-Companies-Fund-PDS-Additional-Information.pdf",pages = 'all', flavor = 'stream',flag_size=True)
 
 
@@ -158,7 +156,7 @@ class StringTest:
 # --
 
 
-# NOTE: This numerics/symbols regex weight function will allow stuff like 23, %, /, ^3, @#421-3, +, - to be given increased or decrease wieghts
+# NOTE: This numerics/symbols regex weight function will allow stuff like 23, %, /, ^3, @#421-3, +, - to be given increased or decreased wieghts
 
 def pattern_weights(in_string, regex_list):
 	weight = 0
@@ -242,6 +240,7 @@ class DocumentExtraction:
 		self.detected_tables = page_table_detections
 
 	def extract_tables(self):
+		# Use nueral network to detect tables
 		self.detect_tables()
 		# Make sure to reset data to avoid repeats
 		self.pages_data = []
@@ -256,7 +255,6 @@ class DocumentExtraction:
 		global_dpi = 200
 
 		with pdfplumber.open(f) as pdf:
-			#print('No. Pages: ',len(pdf.pages))
 			# Get pdf initial page size
 			first_page = pdf.pages[0]
 			print('PDF Size: ', (first_page.width,first_page.height))
@@ -272,8 +270,6 @@ class DocumentExtraction:
 				pdf_page = pdf.pages[page_data['page_number']]
 
 				page_data['all_text'] = pdf_page.extract_text(x_tolerance=1, y_tolerance=1)
-				#print('\nNumber: ', page_data['page_number'])
-				#print('\nAll text: ', page_data['all_text'])
 
 				tables = page_data['tables']
 				for table in tables:
@@ -298,43 +294,6 @@ class DocumentExtraction:
 					table['text'] = cropped_table.extract_text(x_tolerance=1, y_tolerance=1)
 					if not table['text']:
 						table['text'] = ''
-
-
-					#ex_words = cropped_table.extract_words(x_tolerance=1, y_tolerance=1, use_text_flow=True, keep_blank_chars=True)
-					#print(ex_words)
-					#ex_words_ = [x['text'] for x in ex_words]
-
-					#print(ex_words_)
-					#text_list = []
-					'''
-					for text_section in ex_words_:
-						#print('\n text section {} \n'.format(text_section))
-						text_string = ''
-						for x_txt in text_section:
-							text_string += x_txt
-						print('\n-Text section: {} \n--\n'.format(text_string))
-						text_list.append(text_string)
-					'''
-					# --
-					#print('\n\n-- Text List --\n\n',text_list,'\n\n')
-					#table['text'] = text_list
-
-
-					#text_string = ''
-					#for x_txt in ex_words_:
-					#	text_string += ' ' + x_txt
-					# --
-
-					'''
-					print("\n-- NORMAL TEST --")
-					print(table['text'])
-
-					print("\n-- ex_words_ TEST --")
-					print(ex_words_)
-
-					print("\n-- text_string TEST --")
-					print(text_string)
-					'''
 
 					# Get text around the table
 					#padding_horizontal = 4
@@ -455,19 +414,20 @@ class DocumentDataExtractor:
 
 		document_data = self.documents[doc_idx]
 
+		# Init catagories for document data
 		for cat_name in self.compare_values:
 			if not cat_name in document_data['sim_data']:
 				document_data['sim_data'][cat_name] = []
 
+		# Extract infomation from tables
 		document = document_data['doc']
 		for page_idx, page in enumerate(document.pages_data):
 			for table_idx, table in enumerate(page['tables']):
 				#table['bbox']
 				text = table['text']
 
-				#\.\\n|\. [A-Z0-9] #\.\\n|\. [A-Z0-9]|\\n[\w\d]\\n #'\u00b2'
-				#print('Text type: ', type(text))
-				texts = re.split("\.\\n|\. [A-Z0-9]|\\n[\w\d]\\n|\\n\\n",text)#"\.\\n|\. [A-Z0-9]|\\n[\w\d]\\n|\\n\\n"
+				
+				texts = re.split("\.\\n|\. [A-Z0-9]|\\n[\w\d]\\n|\\n\\n",text)#"\.\\n|\. [A-Z0-9]|\\n[\w\d]\\n|\\n\\n"#\.\\n|\. [A-Z0-9] #\.\\n|\. [A-Z0-9]|\\n[\w\d]\\n #'\u00b2'
 				texts = [re.sub("\\n[\w\d]\\n|\\n",' ',x) for x in texts]#'\\n[\w\d]\\n|\\n
 
 				
@@ -495,42 +455,16 @@ class DocumentDataExtractor:
 		return
 	
 	def sort_as_most_similar(self, doc_idx):
+		"""
+		{
+			"ratio": 0,
+			"cat": "", catagory (similarity catagory)
+			"str": "", string extracted
+			"match": "", the regex string that matched for that catagory
+		}
+		"""
 
 		similarity_data = self.documents[doc_idx]['sim_data']
-
-		'''
-		for sim_type in self.similarity_data:
-			sim_values = self.similarity_data[sim_type]
-			self.similarity_data[sim_type] = sorted(sim_values, key=lambda tup: tup[2], reverse=True)
-		
-		shrinked_catagories = {}
-
-		for map_value in self.compare_catargories:
-			cat_value = self.compare_catargories[map_value]
-			shrinked_catagories[cat_value] = []
-
-		for sim_cat in self.similarity_data:
-			sim_data = self.similarity_data[sim_cat]
-			shrinked_catagories[self.compare_catargories[sim_cat]].extend(sim_data)
-
-		# Sort values by similarity threshold
-		for cat_name in shrinked_catagories:
-			sim_values = shrinked_catagories[cat_name]
-			sim_values = sorted(sim_values, key=lambda tup: tup[2], reverse=True)
-			#if shrink != None:
-			#    if shrink > 0:
-			shrinked_catagories[cat_name] = sim_values
-
-		for cat_name in shrinked_catagories:
-		    sim_values = shrinked_catagories[cat_name][:10]
-		    #for value in sim_values:
-		    #    print(value)
-
-		#print(self.similarity_data)
-		#print(shrinked_catagories)
-
-		#self.similarity_data = shrinked_catagories
-		'''
 		
 		for sim_type in similarity_data:
 			sim_values = similarity_data[sim_type]
