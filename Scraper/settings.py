@@ -29,11 +29,14 @@ MONGO_COLLECTIONS = ["funds","offerings"]
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
+    # Use these for offerings
     #'Scraper.pipelines.SuperDataClean': 1,
     #'Scraper.pipelines.SuperDataMongodb': 2,
+
+
     #'Scraper.pipelines.SuperTestTraversal': 1,
     #'Scraper.pipelines.SiteTraversal': 1,
-    'Scraper.pipelines.SiteTraversalDB': 800,
+    'Scraper.pipelines.SiteTraversalDB': 800,#<---
     #'Scraper.pipelines.SiteTraversalCSV': 801,
     #'Scraper.pipelines.SuperDataMongodb': 300,
 }
@@ -82,7 +85,9 @@ ITEM_PIPELINES = {
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
+    # Use this for sel mid
     'Scraper.middlewares.SeleniumMiddleware': 540,
+
     #'Scraper.middlewares.SetupHeadersMiddleware': 541,
     #'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware': None
 }

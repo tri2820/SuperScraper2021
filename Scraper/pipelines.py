@@ -195,10 +195,19 @@ class SuperDataMongodb:
                     continue
                 # --
             # --
+            '''
+            {
+            "Date": "2021-08",
+            "Value": 1.93448826457292
+            },
+            '''
+            print('\n\n SUPER ITEM \n\n')
+            print(super_fund['value_objects'])
 
-            query = {'_id' : offering['_id']}
+            query = {'_id' : offering['_id']}#addToSet
             values = {'$addToSet': {super_fund['insert_cat'] : {'$each': super_fund['value_objects'][table_column_value]}}}
-            self.db[self.collection_name].update_many(query, values)
+            #values = {'$set': {super_fund['insert_cat'] : []}}
+            self.db[self.collection_name].update_many(query, values)#, upsert=True
 
         # ---
 

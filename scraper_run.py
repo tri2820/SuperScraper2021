@@ -101,7 +101,7 @@ class SpiderHandler:
             fund_datas.append(db_connection.retrieve_fund_data(self.fund_data_list[i]))
         db_connection.close_connection()
 
-        configure_logging()
+        #configure_logging()
 
         #process = CrawlerProcess(get_project_settings())#get_project_settings()#{'SPIDER_MODULES': 'Scraper.Scraper.spiders'}
         runner = CrawlerRunner(get_project_settings())
@@ -268,9 +268,8 @@ def run_scraper_traversal():
                 ],
                 # Filters applied to urls after extraction and before entering into DB
                 'filters': [
-                    '.+product.disclosure.statement.+',
-                    '.+pds.+',
-                    '.+PDS.+',
+                    '.+Investment.+',
+                    '.+investment.+',
                 ]
             },
             "FeesCosts": {
@@ -279,11 +278,15 @@ def run_scraper_traversal():
                 'restrict_text': [
                     '.+fees.costs.+',
                     '.+Fees.Costs.+',
+                    '.+fees.+',
+                    '.+costs.+',
                 ],
                 # Filters applied to urls after extraction and before entering into DB
                 'filters': [
                     '.+fees.costs.+',
                     '.+Fees.Costs.+',
+                    '.+fees.+',
+                    '.+costs.+',
                 ]
             },
             "Performance": {
@@ -306,12 +309,15 @@ def run_scraper_traversal():
                     '.+FactSheet.+',
                     '.+Fact Sheet.+',
                     '.+fact.sheet.+',
+                    '.+fact.+',
                 ],
                 # Filters applied to urls after extraction and before entering into DB
                 'filters': [
                     '.+FactSheet.+',
                     '.+Fact Sheet.+',
                     '.+fact.sheet.+',
+                    '.+fact.+',
+
                 ]
             },
             "Report": {
@@ -384,6 +390,10 @@ def run_scraper_traversal():
 
 #run_scraper_traversal()
 
+#new_trav = SpiderHandler()
+
+#new_trav.run_scraper()
+
 #run_scraper()
 
 #     print("Crawl Completed")
@@ -393,11 +403,11 @@ from Scraper.DocHanding import Something
 
 new_something = Something()
 
-new_something.extract_data_from_documents()
+new_something.extract_data_from_documents('fund_managers',"CSA0038AU")#CSA0038AU #BFL0004AU
 
 #new_something.find_item_file_urls()
-
 #new_something.extract_data_from_documents()
+
 #new_something.extract_data_from_documents()
 
 

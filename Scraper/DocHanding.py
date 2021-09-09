@@ -191,13 +191,14 @@ class Something:
             [lambda x, obj: x.group(0)],
         ],
         'Management Fee': [
-            [lambda x, obj: re.search('[\d.%]+.{0,5}p\.a', x), lambda x, obj: x != None],
+            [lambda x, obj: re.search('[\d.%]+.{0,5}', x), lambda x, obj: x != None],#[\d.%]+.{0,5}p\.a
             [lambda x, obj: x.group(0)],
             [lambda x, obj: re.search('[\d]+\.[\d]+', x), lambda x, obj: x != None],
             [lambda x, obj: x.group(0)],
         ],
-        'Asset Allocation': [
-            [lambda x, obj: re.findall('0|[\d]{2,3}', x), lambda x, obj: x != None],
+        'NAV': [
+            [lambda x, obj: re.search('[\+\d.%]+ ?\/ ?\-[\d.%]+', x), lambda x, obj: x != None],
+            [lambda x, obj: x.group(0)],
         ],
     }
 
@@ -225,9 +226,9 @@ class Something:
         #item_querys = [["HOW0027AU",test_handler.find_or_create_document(collection_id, {'_id': "HOW0027AU"}, False)['metadata']['site_traversal_id']]]
 
         for item_query in item_querys:
-            count += 1
-            if count < 5:
-                continue
+            #count += 1
+            #if count < 5:
+            #    continue
 
             item_id = item_query[0]
 
@@ -243,25 +244,26 @@ class Something:
 
             all_files_list = []
 
-            for file_cat in self.file_filter_categories:
-                file_list = self.docHandler.filter_file_urls(traversal_id, file_cat, [item_id])
-                # Sort files
-                file_list = sorted(file_list, key=lambda item: item["epoch_time"], reverse=True)
-                # Found pdfs
-                print(f"-\nFound pdfs - {file_cat}")
-                [print(x) for x in file_list]
-                file_list_by_category[file_cat] = file_list
-                # REALLY DIRTY unduper
-                for idx, file in enumerate(file_list):
-                    can_append = True
-                    for all_idx, all_file in enumerate(all_files_list):
-                        print(file)
-                        if file['url'] == all_file['url']:
-                            can_append = False
-                            break
-                    if can_append:
-                        all_files_list.append(file)
-            # --
+            if True:
+                for file_cat in self.file_filter_categories:
+                    file_list = self.docHandler.filter_file_urls(traversal_id, file_cat, [item_id])
+                    # Sort files
+                    file_list = sorted(file_list, key=lambda item: item["epoch_time"], reverse=True)
+                    # Found pdfs
+                    print(f"-\nFound pdfs - {file_cat}")
+                    [print(x) for x in file_list]
+                    file_list_by_category[file_cat] = file_list
+                    # REALLY DIRTY unduper
+                    for idx, file in enumerate(file_list):
+                        can_append = True
+                        for all_idx, all_file in enumerate(all_files_list):
+                            print(file)
+                            if file['url'] == all_file['url']:
+                                can_append = False
+                                break
+                        if can_append:
+                            all_files_list.append(file)
+                # --
             self.docHandler.close_connection()
 
             # Pull out
@@ -276,14 +278,22 @@ class Something:
 
             #test_handler.open_connection()
 
+            #fund['metadata']['pdf_url_list'] = []
+
+            #return
+
             test_handler.find_or_create_document(collection_id, fund, True)
+
+            #test_handler.db['fund_managers'].update_one({'_id' : item_id}, {"$unset": {"metadata": 1}})
+            #fund = test_handler.find_or_create_document(collection_id, {'_id': item_id}, False)
+            #print(fund['metadata'])
 
             test_handler.close_connection()
         # --
         return
     
 
-    def extract_data_from_documents(self, collection_id = 'fund_managers'):
+    def extract_data_from_documents(self, collection_id = 'fund_managers', custom_query=None):
 
         #self.docExtractor = DocumentDataExtractor()
 
@@ -301,13 +311,19 @@ class Something:
 
         item_querys = [[x, test_handler.find_or_create_document(collection_id, {'_id': x}, False)['metadata']['site_traversal_id']] for x in fund_ids]
 
+        #item_querys = [["CSA0038AU",test_handler.find_or_create_document(collection_id, {'_id': "CSA0038AU"}, False)['metadata']['site_traversal_id']]]
+
+        if custom_query:
+            item_querys = [[custom_query,test_handler.find_or_create_document(collection_id, {'_id': custom_query}, False)['metadata']['site_traversal_id']]]
+
+
         test_handler.close_connection()
         count = 0
 
         for item_query in item_querys:
-            count += 1
-            if count < 5:
-                continue
+            #count += 1
+            #if count < 5:
+            #    continue
 
             
 
@@ -321,6 +337,10 @@ class Something:
             
             # Pull out
             test_handler.open_connection()
+
+            test_handler.db['fund_managers'].update_one({'_id' : item_id}, {"$unset": {"data": 1}})
+
+
             item = test_handler.find_or_create_document(collection_id, {'_id': item_id}, False)
             #test_handler.close_connection()
 
@@ -337,23 +357,44 @@ class Something:
 
             #item['metadata']['pdf_url_list'] = []
 
-            item["data"] = {}
+            #item["data"] = {}
 
 
             item = self.extract_item_data(item)
+            #test_handler.db['fund_managers'].update_one({'_id' : item_id}, {"$unset": {"data": 1}})
 
             #test_handler.db['fund_managers'].update_one({'_id' : item_id}, {"$unset": {"Buy/Sell spread":1}})
             #test_handler.db['fund_managers'].update_one({'_id' : item_id}, {"$unset": {"Management Fee":1}})
             #test_handler.db['fund_managers'].update_one({'_id' : item_id}, {"$unset": {"Asset Allocation":1}})
 
-            #test_handler.find_or_create_document(collection_id, item, True)
+            #test_handler.db['fund_managers'].update_one({'_id' : item_id}, {"$unset": {"data": 1}})
+
+
+            print_values = item['data']['_values']
+
+            print("\n\n\n--ITEM VALUES --")
+            #[print(x) for x in print_values]
+            print_values_not_null = []
+            for values_ in print_values:
+                print('--------')
+                print('url: ',values_['url'])
+                print('estimated_topic: ',values_['estimated_topic'])
+                for cat_name in values_:
+                    cat_ = values_[cat_name]
+                    if isinstance(cat_, list):
+                        for isnt in cat_:
+                            print(f'- {cat_name}')
+                            print('-- extracted_value: ',isnt['extracted_value'])
+
+
+            test_handler.find_or_create_document(collection_id, item, True)
 
             test_handler.close_connection()
 
         return
 
 
-    def extract_item_data(self, item, catagory_args = {'Report': 2, 'FactSheet':2, 'PDS': 1}, time_args = {'PDS': [1, math.inf]}):
+    def extract_item_data(self, item, catagory_args = {'Report': 3, 'FactSheet':3, 'PDS': 2, 'Performance':2, 'Investment':2}, time_args = {'PDS': [1, math.inf]}):
         """
         catagory_args: {topic: number, 'PDS': 5}
         time_args = {'PDS': [0, math.inf]}
@@ -372,9 +413,7 @@ class Something:
         for file_idx, file_url_data in enumerate(file_url_list):
             if not file_url_data['estimated_topic'] in catagory_args:
                 continue
-            elif file_url_data["epoch_time"] == 0:
-                continue
-            #elif file_url_data['estimated_topic'] <= 0:
+            #elif file_url_data["epoch_time"] == 0:
             #    continue
             elif file_url_data['estimated_topic'] in time_args:
                 time_range = time_args[file_url_data['estimated_topic']]
@@ -412,6 +451,11 @@ class Something:
                                 if not cond[1](x, match):
                                     break
                         # --
+                    if 'table' in match:
+                        #print('table-url: ', file_url_data['url'])
+                        x = match['table']
+                    if x == None:
+                        continue
                     match_data = {
                         'str': match['str'],
                         'ratio':  match['ratio'],
