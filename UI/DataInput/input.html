@@ -6,22 +6,12 @@
     <body>
         <a href="../index.html">Back To Menu</a>
         <h2>Fund Manager Data Input</h2>
-        <p>Add the following information from a fund managers website to populate the database for the scraper</p>
+        <p>Upload a csv with the following headers & appropriate data</p>
         <table>
             <tr>
-                <td>Site Name</td>
-                <td><input type="text" name="site" id="site"></td>
-            </tr>
-            <tr>
-                <td>Site URL</td>
-                <td><input type="text" name="url" placeholder="DO NOT Include https://" id="url"></td>
-            </tr>
-            <tr>
-                <td>APIR Code</td>
-                <td><input type="text" name="apir" id="apir"></td>
+                <th>Managed Fund Name,</th> <th>APIR,</th><th>Fund Managers Name,</th><th>URL</th>
             </tr>
         </table>
-        <button onclick="mong()" name="submit">Submit Data</button>
         <p id="data"></p>
         <form id="myForm">
             <input type="file" id="csvFile" accept=".csv" />
