@@ -26,19 +26,14 @@ app.whenReady().then(() => {
     }
   })
 })
-// Intergrating python script with electron JS 
-require('child_process').execFile("../Extractor/extractor.py", [3000], (error, stdout, stderr) => {
 
-  if (error) {
-
-      console.log(error);
-
-  }
-  console.log(stdout);
-})
 // Intergrating python script with electron JS 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
+
+function extract(){
+  console.log("Extracting...")
+}
