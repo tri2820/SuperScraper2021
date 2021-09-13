@@ -113,6 +113,7 @@ def extractSuper():
             perf_pivot_writer.writerow(row)
 
 def extractFundManagers():
+    print("Getting Fund Manager  Data...")
      #Connect with the export user
     client = pymongo.MongoClient("mongodb+srv://extractor:I62EK5HE5yBL59Yz@cluster0.tadma.mongodb.net/SuperScrapper?retryWrites=true&w=majority")
     #Database and collection information
@@ -132,21 +133,22 @@ def extractFundManagers():
         fund_managers[fund['domain']['domain_file']] = []
         for apir in fund['domain']['page_filters']:
             fund_managers[fund['domain']['domain_file']].append(apir)
-
     #Get the extracted data
     info = list(man_data.find())
     for entry in info:
-        useful_data[entry['APIR_code']] = entry['data']['_c']
+        if 'data' in entry:
+            useful_data[entry['APIR_code']] = entry['data']['_c']
     
     with open('fund_managers.csv', 'w', newline='') as managers:
         man_writer = csv.writer(managers)
         top_row = "Fund Manager,APIR,Name,Performance Fee,Management Fee,Admin Fee,Buy/Sell Spread,NAV,Performance,Asset Allocation,Ranges,Top Holdings,Bottom Holdings,Class Size,Fund Sizr,Strategy Size".split(",")
         man_writer.writerow(top_row)
         for man in fund_managers:
-
+            print("+---- " + man)
             for f in fund_managers[man]:
 
                 if f in useful_data:
+                    print("|-- " + f)
                     cur_data = useful_data[f]
                     name = "Not Currently Available"
                     apir = f
@@ -216,14 +218,14 @@ def extractFundManagers():
                     row.append(fund_size)
                     row.append(strat_size)
                     man_writer.writerow(row)
-                    
+            print("+-------------")
 
 
 
     
 
 def extract():
-    #extractSuper()
+    extractSuper()
     extractFundManagers()
 
 
