@@ -1,11 +1,4 @@
-from pymongo import MongoClient
-from urllib.parse import quote
-
-class Connect(object):
-    @staticmethod    
-    def get_connection():
-        MONGODB_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
-        return MongoClient(MONGODB_URI, ssl = True)
+from mongo_connector import Connect
 
 client = Connect.get_connection()
 db = client['APRAseries']

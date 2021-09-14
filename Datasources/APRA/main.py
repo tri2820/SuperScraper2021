@@ -60,11 +60,12 @@ def extract_groups(ws: Worksheet):
     return groups
 
 def read(F : Format, data: DataFrame, groups : list[GroupedCol]) -> Table :
-    name = data.iloc[F.name_row][0]
+    name = data.iloc[F.name_row][0] if F.name_row else None
     data.replace(to_replace=[r'\\t|\\n|\\r,\t|\n|\r', r'^\*$', '%$'], value=[' ', MaskedUnit, ''], regex=True, inplace=True)
     data.iloc[F.header_row] = data.iloc[F.header_row].str.strip()
     data.columns = data.iloc[F.header_row]
-    data.drop([F.name_row, F.header_row, *F.unknown_rows], inplace=True)
+    dropped_rows = [F.name_row, F.header_row, *F.unknown_rows] if F.name_row else [F.header_row, *F.unknown_rows]
+    data.drop(dropped_rows, inplace=True)
 
     default_view_names = map(lambda g: f'Group {g.min}', groups)
     views = map(lambda gn: View(gn[0], gn[1]), zip(groups, default_view_names))
@@ -72,7 +73,7 @@ def read(F : Format, data: DataFrame, groups : list[GroupedCol]) -> Table :
     return Table(name, data, list(views))
 
 def loadWorkSheet(bookname: str, S : SheetReader) -> DataFrame:
-    df = pd.read_excel(bookname, sheet_name=S.name)
+    df = pd.read_excel(bookname, sheet_name=S.name, header=None) if S.format.name_row is None else pd.read_excel(bookname, sheet_name=S.name)
     groups = loadGroupInfos(bookname, S.name)
     table = read(S.format, df, groups)
     return table
@@ -125,7 +126,6 @@ def jsonify(t: Table):
     return J
     
 # ----------------------------
-
 # bookname = 'Annual fund-level superannuation statistics June 2020.xlsx'
 
 # Working
@@ -147,22 +147,32 @@ def jsonify(t: Table):
 
 
 # -----------------------------
-bookname = 'Quarterly MySuper statistics backseries September 2013 - June 2019.xlsx'
+# bookname = 'Quarterly MySuper statistics backseries September 2013 - June 2019.xlsx'
 # Not working - Group inside group, multiple nan columns
-S = SheetReader(Format(3, 0, [0,1,2,4,5]), 'Table 2a')
-S = SheetReader(Format(3, 0, [0,1,2,4,5]), 'Table 2b')
+# S = SheetReader(Format(3, 0, [0,1,2,4,5]), 'Table 2a')
+# S = SheetReader(Format(3, 0, [0,1,2,4,5]), 'Table 2b')
 
 # Working
-S = SheetReader(Format(2, 0, [0,1,3,4]), 'Table 1b')
-S = SheetReader(Format(2, 0, [0,1,3,4]), 'Table 1a')
-S = SheetReader(Format(3, 0, [0,1,2,4,5]), 'Table 3')
-S = SheetReader(Format(1, 0, [0,2,3]), 'Table 4')
-S = SheetReader(Format(2, 0, [0,1,3,4]), 'Table 5')
-S = SheetReader(Format(2, 0, [0,1,3,4]), 'Table 6')
-S = SheetReader(Format(3, 0, [0,1,2,4,5]), 'Table 7')
+# S = SheetReader(Format(2, 0, [0,1,3,4]), 'Table 1b')
+# S = SheetReader(Format(2, 0, [0,1,3,4]), 'Table 1a')
+# S = SheetReader(Format(3, 0, [0,1,2,4,5]), 'Table 3')
+# S = SheetReader(Format(1, 0, [0,2,3]), 'Table 4')
+# S = SheetReader(Format(2, 0, [0,1,3,4]), 'Table 5')
+# S = SheetReader(Format(2, 0, [0,1,3,4]), 'Table 6')
+# S = SheetReader(Format(3, 0, [0,1,2,4,5]), 'Table 7')
 
+# ------------------------------
+
+bookname = 'List of RSES and RSE Licensees and MySuper Authorised products and ERFs 23 August 2021.xlsx'
+
+S = SheetReader(Format(0, None, []), 'List of RSE')
+S = SheetReader(Format(0, None, []), 'List of Licensee')
+S = SheetReader(Format(0, None, []), 'MySuper Products')
+S = SheetReader(Format(0, None, []), 'Eligible Rollover Funds')
 
 table : Table = loadWorkSheet(bookname, S)
-
 J = jsonify(table)
-print(json.dumps(J))
+f = open(f"{S.name}.json", 'w')
+content = json.dumps(J)
+f.write(content)
+f.close()
