@@ -16,6 +16,7 @@ import pandas as pd
 
 import re
 
+import argparse
 
 
 MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
@@ -37,7 +38,7 @@ def configure_extension_requests(dny_ext,remove_extensions, add_extensions):
     return dny_ext
 # --
 
-
+# UNGO23
 DENY_EXTENSIONS = configure_extension_requests(DENY_EXTENSIONS,['pdf'],[])#'html'
 
 
@@ -69,7 +70,7 @@ class DatabaseHandler:
     
     def find_or_create_document(self, collection_name_, data_object, overwrite=False):
         query = {'_id' : data_object['_id']}
-        print(type(collection_name_))
+        #print(type(collection_name_))
         document = self.db[collection_name_].find_one(query)
         # If none create one
         if document == None:
@@ -204,7 +205,7 @@ example_traversal_document = {
 
 def run_scraper_traversal():
 
-    configure_logging()
+    #configure_logging()
 
     runner = CrawlerRunner(get_project_settings())
 
@@ -221,11 +222,16 @@ def run_scraper_traversal():
         print(prog_count)
         prog_count += 1
         traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
+        '''
         if not 'schedule_data' in traversal_document:
             traversal_document['schedule_data'] = {
                 "last_traversed": 0,
-                "should_traverse": False
+                "should_traverse": True
             }
+        traversal_document['schedule_data'] = {
+            "last_traversed": 0,
+            "should_traverse": True
+        }
         #traversal_document['filtered_file_urls']['FeesCosts'] = {}
         #if 'filtered_file_urls' in traversal_document:
             #if 'Fees&Costs' in traversal_document['filtered_file_urls']:
@@ -339,7 +345,30 @@ def run_scraper_traversal():
             },
         }
         #"""
+        '''
+
+        if not 'filtered_file_urls' in traversal_document:
+            traversal_document['filtered_file_urls'] = {
+                "PDS": [],
+                "Investment": [],
+                "Performance": [],
+                "FactSheet": [],
+                "FeesCosts": [],
+                "Report": []
+            }
+
+        if traversal_document['schedule_data']['should_traverse'] == "False":
+            traversal_document['schedule_data']['should_traverse'] = False
+        
+        if traversal_document['schedule_data']['should_traverse'] == "True":
+            traversal_document['schedule_data']['should_traverse'] = True
+
         test_handler.find_or_create_document('site_traverse_data',traversal_document, True)
+
+        if traversal_document['schedule_data']['should_traverse'] == "False" or traversal_document['schedule_data']['should_traverse'] == False:
+            continue
+
+        #test_handler.find_or_create_document('site_traverse_data',traversal_document, True)
 
         traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
         traversal_documents.append(traversal_document)
@@ -351,6 +380,7 @@ def run_scraper_traversal():
 
     #return
 
+    '''
     # Sequential
     @defer.inlineCallbacks
     def crawl():
@@ -360,14 +390,21 @@ def run_scraper_traversal():
         #document = test_handler.find_or_create_document('site_traverse_data', {'_id': "novaport_site_traversal"}, False)
         #yield runner.crawl('Traversal', traverse_data = document)
         for document in traversal_documents:
-            if document['schedule_data']['should_traverse']:
-                print('CRAWLING - ',document['_id'])
-                yield runner.crawl('Traversal', traverse_data = document)
+            try:
+                if document['schedule_data']['should_traverse']:
+                    print('CRAWLING - ',document['_id'])
+                    yield runner.crawl('Traversal', traverse_data = document)
+            except:
+                print('\n\n\n\n\n\n\n\n\n\n------------------- A-SPIDER-FAILED -------------------\n\n\n\n\n\n\n\n\n\n')
 
         reactor.stop()
     # --
 
     '''
+    '''
+
+    #traversal_documents = [traversal_documents[1]]
+
     # Parrallal
     for document in traversal_documents:
         if document['schedule_data']['should_traverse']:
@@ -377,50 +414,122 @@ def run_scraper_traversal():
 
     d = runner.join()
     d.addBoth(lambda _: reactor.stop())
-    '''
+    #'''
+
+    # RUN 10 AT A TIME
+    print(" crawl ")
+
+    @defer.inlineCallbacks
+    def crawl():
+
+        print("---")
+        max_parallel = 10
+        cur_parallel = 0
+
+
+        for document in traversal_documents:
+            if document['schedule_data']['should_traverse']:
+                cur_parallel += 1
+                if cur_parallel >= max_parallel:
+                    d = runner.join()
+                    d.addBoth(lambda _: reactor.stop())
+                    cur_parallel = 0
+                    #reactor.run()
+                    yield runner.crawl('Traversal', traverse_data = document)
+                else:
+                    runner.crawl('Traversal', traverse_data = document)
+
+        #reactor.run()
+        #reactor.stop()
+        d = runner.join()
+        d.addBoth(lambda _: reactor.stop())
+    # --
 
     crawl()
-
     reactor.run()
 
     print("Crawl Completed")
 # --
 
-#print(DENY_EXTENSIONS)
-
-#run_scraper_traversal()
-
-#new_trav = SpiderHandler()
-
-#new_trav.run_scraper()
-
-#run_scraper()
-
-#     print("Crawl Completed")
 
 
 from Scraper.DocHanding import Something
 
-new_something = Something()
 
-new_something.extract_data_from_documents('fund_managers',"CSA0038AU")#CSA0038AU #BFL0004AU
-
-#new_something.find_item_file_urls()
-#new_something.extract_data_from_documents()
-
-#new_something.extract_data_from_documents()
-
-
-
+def showcase(fund_id = "CSA0038AU"):
+    new_something = Something()
+    print("FINDING FILE ITEMS")
+    new_something.find_item_file_urls('fund_managers', fund_id)
+    print("\n-----\n")
+    print('DATA EXTRACTION')
+    new_something.extract_data_from_documents('fund_managers', fund_id)
+    return
 
 
+def populate_funds():
+    dbHandler = DatabaseHandler(MONGO_URI, MONGO_DB)
+    dbHandler.open_connection()
+
+    fund_managers_ids = dbHandler.get_collection_ids('fund_managers')
+    site_traverse_data_ids = dbHandler.get_collection_ids('site_traverse_data')
+
+    for site_id in site_traverse_data_ids:
+        traversal_obj = dbHandler.find_or_create_document('site_traverse_data', {'_id': site_id}, False)
+        if not traversal_obj:
+            continue
+        page_filters = traversal_obj['domain']['page_filters']
+        for page_filter in page_filters:
+            new_manager = {
+                '_id': page_filter,
+                'name': 'N/A',
+                'APIR_code': page_filter,
+                'metadata': {
+                    'site_traversal_id': traversal_obj['_id'],
+                    "pdf_url": None,
+                    "pdf_url_list": []
+                },
+                "data": {
+                    "_c": {},
+                    "_values": []
+                }
+            }
+            new_manager = dbHandler.find_or_create_document('fund_managers', new_manager, overwrite=False)
+    # --
+    dbHandler.close_connection()
+
+
+
+def main(options):
+    if options.pop_funds:
+        populate_funds()
+    if options.web_trav:
+        run_scraper_traversal()
+    
+    if options.show_case:
+        showcase()
+    else:
+        new_something = Something()
+        if options.doc_check:
+            new_something.find_item_file_urls()
+        if options.data_extract:
+            new_something.extract_data_from_documents()
+
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--web_trav", type=bool, default=False, help="Should run website traversal")
+    parser.add_argument("--doc_check", type=bool, default=False, help="Seach file urls for each fund")
+    parser.add_argument("--data_extract", type=bool, default=False, help="Extract data from pdfs")
+    parser.add_argument("--pop_funds", type=bool, default=False, help="Populate new funds")
+    parser.add_argument("--old", type=bool, default=False, help="Run old site data extraction")
+    options = parser.parse_args()
+    main(options)
 
 
 
 
-
-
-
+# pip install pyyaml
 
 
 

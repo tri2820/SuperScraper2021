@@ -222,7 +222,7 @@ class onnx_detection_handler:
         img_in /= 255.0
         input_name = self.session.get_inputs()[0].name
         outputs = self.session.run(None, {input_name: img_in})
-        filterd_predictions = self.non_max_suppression(torch.tensor(outputs[0]), conf_thres = 0.25, iou_thres = 0.45)
+        filterd_predictions = self.non_max_suppression(torch.tensor(outputs[0]), conf_thres = 0.3, iou_thres = 0.45)# conf_thres = 0.25, iou_thres = 0.45
         return filterd_predictions
 
     def get_detection_boxes(self, img, predictions, image_path=None):

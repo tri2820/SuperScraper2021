@@ -41,7 +41,7 @@ class DBHandler:
 
     def find_or_create_document(self, collection_name_, data_object, overwrite=False):
         query = {'_id' : data_object['_id']}
-        print(type(collection_name_))
+        #print(type(collection_name_))
         document = self.db[collection_name_].find_one(query)
         # If none create one
         if document == None:
@@ -85,6 +85,14 @@ class DocumentHandler:
         #site_traversal_id = document['metadata']['site_traversal_id']
         
         traversal_document = self.dbHandler.db[self.traversal_collection].find_one({'_id' : traversal_id})
+
+        # If not filtered file urls
+        if not 'filtered_file_urls' in traversal_document:
+            return []
+
+        if not file_filter_catagory in traversal_document['filtered_file_urls']:
+            print('FAIL')
+            return []
         filtered_file_urls = traversal_document['filtered_file_urls'][file_filter_catagory]
 
 
@@ -174,6 +182,8 @@ class DocumentHandler:
         #last_doc_idx = len(self.docExtractor.documents) - 1
         self.docExtractor.extract_similar_rows(0.2, last_doc_idx)
 
+        #self.docExtractor.data_to_csv(last_doc_idx)
+
         sorted_values = self.docExtractor.sort_as_most_similar(last_doc_idx)
 
 
@@ -193,11 +203,30 @@ class Something:
         'Management Fee': [
             [lambda x, obj: re.search('[\d.%]+.{0,5}', x), lambda x, obj: x != None],#[\d.%]+.{0,5}p\.a
             [lambda x, obj: x.group(0)],
-            [lambda x, obj: re.search('[\d]+\.[\d]+', x), lambda x, obj: x != None],
+            [lambda x, obj: re.search('[\d]+[\.,][\d]+', x), lambda x, obj: x != None],
+            [lambda x, obj: x.group(0)],
+        ],
+        'Performance Fee': [
+            [lambda x, obj: re.search('[\d.%]+.{0,5}', x), lambda x, obj: x != None],#[\d.%]+.{0,5}p\.a
+            [lambda x, obj: x.group(0)],
+            [lambda x, obj: re.search('[\d]+[\.,][\d]+', x), lambda x, obj: x != None],
             [lambda x, obj: x.group(0)],
         ],
         'NAV': [
-            [lambda x, obj: re.search('[\+\d.%]+ ?\/ ?\-[\d.%]+', x), lambda x, obj: x != None],
+            [lambda x, obj: re.search('([^ \n\t\r]{0,4} {0,2}[\d]+[\d.,]+ *)(million)*(billion)*([bm])*', x), lambda x, obj: x != None],
+            [lambda x, obj: x.group(0)],
+        ],
+
+        'Class Size': [
+            [lambda x, obj: re.search('([^ \n\t\r]{0,4} {0,2}[\d]+[\d.,]+ *)(million)*(billion)*([bm])*', x), lambda x, obj: x != None],
+            [lambda x, obj: x.group(0)],
+        ],
+        'Fund Size': [
+            [lambda x, obj: re.search('([^ \n\t\r]{0,4} {0,2}[\d]+[\d.,]+ *)(million)*(billion)*([bm])*', x), lambda x, obj: x != None],
+            [lambda x, obj: x.group(0)],
+        ],
+        'Strategy Size': [
+            [lambda x, obj: re.search('([^ \n\t\r]{0,4} {0,2}[\d]+[\d.,]+ *)(million)*(billion)*([bm])*', x), lambda x, obj: x != None],
             [lambda x, obj: x.group(0)],
         ],
     }
@@ -212,13 +241,16 @@ class Something:
         return
 
 
-    def find_item_file_urls(self, collection_id = 'fund_managers'):
+    def find_item_file_urls(self, collection_id = 'fund_managers', custom_query=None):
 
         test_handler = DBHandler(MONGO_URI, MONGO_DB)
         test_handler.open_connection()
         fund_ids = test_handler.get_collection_ids(collection_id)
 
         item_querys = [[x, test_handler.find_or_create_document(collection_id, {'_id': x}, False)['metadata']['site_traversal_id']] for x in fund_ids]
+
+        if custom_query:
+            item_querys = [[custom_query,test_handler.find_or_create_document(collection_id, {'_id': custom_query}, False)['metadata']['site_traversal_id']]]
 
         test_handler.close_connection()
         count = 0
@@ -229,22 +261,22 @@ class Something:
             #count += 1
             #if count < 5:
             #    continue
+            try:
+                item_id = item_query[0]
 
-            item_id = item_query[0]
+                traversal_id = item_query[1]
 
-            traversal_id = item_query[1]
+                self.reset_document_handler()
 
-            self.reset_document_handler()
+                #doctest = DocumentHandler()
 
-            #doctest = DocumentHandler()
+                self.docHandler.open_connection()
 
-            self.docHandler.open_connection()
+                file_list_by_category = {}
 
-            file_list_by_category = {}
+                all_files_list = []
 
-            all_files_list = []
-
-            if True:
+                #if True:
                 for file_cat in self.file_filter_categories:
                     file_list = self.docHandler.filter_file_urls(traversal_id, file_cat, [item_id])
                     # Sort files
@@ -257,38 +289,40 @@ class Something:
                     for idx, file in enumerate(file_list):
                         can_append = True
                         for all_idx, all_file in enumerate(all_files_list):
-                            print(file)
+                            #print(file)
                             if file['url'] == all_file['url']:
                                 can_append = False
                                 break
                         if can_append:
                             all_files_list.append(file)
-                # --
-            self.docHandler.close_connection()
+                    # --
+                self.docHandler.close_connection()
 
-            # Pull out
-            test_handler.open_connection()
-            fund = test_handler.find_or_create_document(collection_id, {'_id': item_id}, False)
-            #test_handler.close_connection()
+                # Pull out
+                test_handler.open_connection()
+                fund = test_handler.find_or_create_document(collection_id, {'_id': item_id}, False)
+                #test_handler.close_connection()
 
-            # Sort all files list
-            all_files_list = sorted(all_files_list, key=lambda item: item["epoch_time"], reverse=True)
+                # Sort all files list
+                all_files_list = sorted(all_files_list, key=lambda item: item["epoch_time"], reverse=True)
 
-            fund['metadata']['pdf_url_list'] = all_files_list
+                fund['metadata']['pdf_url_list'] = all_files_list
 
-            #test_handler.open_connection()
+                #test_handler.open_connection()
 
-            #fund['metadata']['pdf_url_list'] = []
+                #fund['metadata']['pdf_url_list'] = []
 
-            #return
+                #return
 
-            test_handler.find_or_create_document(collection_id, fund, True)
+                test_handler.find_or_create_document(collection_id, fund, True)
 
-            #test_handler.db['fund_managers'].update_one({'_id' : item_id}, {"$unset": {"metadata": 1}})
-            #fund = test_handler.find_or_create_document(collection_id, {'_id': item_id}, False)
-            #print(fund['metadata'])
+                #test_handler.db['fund_managers'].update_one({'_id' : item_id}, {"$unset": {"metadata": 1}})
+                #fund = test_handler.find_or_create_document(collection_id, {'_id': item_id}, False)
+                #print(fund['metadata'])
 
-            test_handler.close_connection()
+                test_handler.close_connection()
+            except:
+                print(' -- ERROR -- 157838 - DocHandling - find_item_file_urls - db detection fail')
         # --
         return
     
@@ -394,7 +428,7 @@ class Something:
         return
 
 
-    def extract_item_data(self, item, catagory_args = {'Report': 3, 'FactSheet':3, 'PDS': 2, 'Performance':2, 'Investment':2}, time_args = {'PDS': [1, math.inf]}):
+    def extract_item_data(self, item, catagory_args = {'Report': 3, 'FactSheet':3, 'PDS': 3, 'Performance':3, 'Investment':3}, time_args = {'PDS': [1, math.inf]}):
         """
         catagory_args: {topic: number, 'PDS': 5}
         time_args = {'PDS': [0, math.inf]}
@@ -409,6 +443,9 @@ class Something:
             '_c': {},
             '_values': []
         }
+
+        # This is for getting the most cronologically up to date and highest ratio values from everything
+        highest_cats = {}
 
         for file_idx, file_url_data in enumerate(file_url_list):
             if not file_url_data['estimated_topic'] in catagory_args:
@@ -431,6 +468,7 @@ class Something:
                 'estimated_topic': file_url_data['estimated_topic']
             }
 
+            # Get values for catagories
             for category in doc_data:
                 matches = doc_data[category]
                 if len(matches) == 0:
@@ -463,10 +501,24 @@ class Something:
                     }
                     values_data[category].append(match_data)
 
+                    # If most similar
+                    if category in highest_cats:
+                        if match_data['ratio'] > highest_cats[category]['ratio']:
+                            highest_cats[category] = match_data
+                            # Set index for file this comes from
+                            highest_cats[category]['file_url_idx'] = file_idx
+                    else:
+                        highest_cats[category] = match_data
+                        # Set index for file this comes from
+                        highest_cats[category]['file_url_idx'] = file_idx
+
             item_data['_values'].append(values_data)
 
             # Deincrement remaining
             catagory_args[file_url_data['estimated_topic']] -= 1
+        # --
+
+        item_data['_c'] = highest_cats
 
 
         item['data'] = item_data

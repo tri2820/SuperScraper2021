@@ -23,7 +23,7 @@ import re
 import json
 import csv
 
-from Scraper.spiderdatautils import requests_session_handler
+from Scraper.spiderdatautils import requests_session_handler, requests_session_handler_v2
 
 
 
@@ -390,15 +390,36 @@ class SiteTraversalDB:
         return document
 
     def close_spider(self, spider):#spider.traverse_data
-        print('*!)$&*#&$)&* CLOSE SPIDER!')
+        print('CLOSE SPIDER - SUCCESSFULLY')
 
-        session_handler = requests_session_handler()
+        #session_handler = requests_session_handler()
 
         file_urls = {}
 
+        session_handler = requests_session_handler_v2()
+
+        req_urls = []
         for key in spider.file_urls:
             obj = spider.file_urls[key]
-            content_type = session_handler.check_content_type(obj[0].url)
+            req_urls.append(obj[0].url)
+        # --
+
+        # Get urls all at once :)
+
+        req_out_urls = session_handler.get_content_for_url_list(req_urls)
+
+        req_url_dict = {}
+        for url_info in req_out_urls:
+            req_url_dict[url_info[0]] = url_info[1]
+
+        #print(req_url_dict)
+
+
+        for key in spider.file_urls:
+            #print('KEY: ', key)
+            obj = spider.file_urls[key]
+            #content_type = session_handler.check_content_type(obj[0].url)
+            content_type = req_url_dict[obj[0].url]
             for re_content_match in spider.file_extraction['content_types']:
                 if content_type:
                     if re.match(content_type,re_content_match):
@@ -432,7 +453,7 @@ class SiteTraversalDB:
         for filtered_type_name in spider.file_filters:
             filtered_file_urls[filtered_type_name] = list(filtered_file_urls[filtered_type_name].values())
 
-        session_handler.close_session()
+        #session_handler.close_session()
 
         new_document = spider.traverse_data
         new_document['traverse_urls'] = list(spider.traversed_urls.values())

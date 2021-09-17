@@ -12,10 +12,10 @@ import socket
 import requests.packages.urllib3.util.connection as urllib3_cn
 
 
-def allowed_gai_family():
-    return socket.AF_INET
+#def allowed_gai_family():
+#    return socket.AF_INET
 
-urllib3_cn.allowed_gai_family = allowed_gai_family
+#urllib3_cn.allowed_gai_family = allowed_gai_family
 #'''
 
 
@@ -130,9 +130,45 @@ class requests_session_handler:
 
 
 
+import concurrent.futures
+import time
 
+#CONNECTIONS = 100
+#TIMEOUT = 9
 
+class requests_session_handler_v2:
 
+    def __init__(self):
+        self.connections = 100
+        self.timeout = 10
+
+    def load_url(self, url, timeout):
+        ans = requests.head(url, timeout=timeout)
+        #out_res = ans.status_code
+        out_res = (url, ans.headers.get('content-type'))
+        return out_res
+
+    def get_content_for_url_list(self, urls):
+        out = []
+        with concurrent.futures.ThreadPoolExecutor(max_workers=self.connections) as executor:
+            future_to_url = (executor.submit(self.load_url, url, self.timeout) for url in urls)
+            time1 = time.time()
+            for future in concurrent.futures.as_completed(future_to_url):
+                try:
+                    data = future.result()
+                except Exception as exc:
+                    data = str(type(exc))
+                finally:
+                    out.append(data)
+
+                    print(str(len(out)),end="\r")
+
+            time2 = time.time()
+        
+        print(f'requests headers took {time2-time1:.2f} s')
+        return out
+
+# --
 
 
 

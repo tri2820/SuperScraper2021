@@ -59,19 +59,35 @@ url = "https://www.hyperion.com.au/app/uploads/2021/06/Hyperion-Australian-Growt
 
 url = "https://au.dimensional.com/dfsmedia/f27f1cc5b9674653938eb84ff8006d8c/59107-source/options/download/pds-world-equity-trust-au.pdf"
 
-url = "https://www.benthamam.com.au/assets/fundreports/20200831-GIF-Monthly-Report5.pdf"
+#url = "https://www.benthamam.com.au/assets/fundreports/20200831-GIF-Monthly-Report5.pdf"
 
-url = "https://www.benthamam.com.au/assets/fundreports/Bentham-Global-Income-Fund-Profile-2019-FINAL.pdf"
+#url = "https://www.benthamam.com.au/assets/fundreports/Bentham-Global-Income-Fund-Profile-2019-FINAL.pdf"
 
-pg_no = 1
+url = "https://www.benthamam.com/assets/fundreports/20201130-GIF-Monthly-Report.pdf"
+
+pg_no = 0
 
 search_texts = ['assets', 'asset class', 'financial year']#'sector allocation']
 search_texts = ['target asset']
 search_texts = ['asset class']
 search_texts = ['monthly distribution']
 
+text_guy_1 = "Portfolio Summary Statistics".lower()
+
 r = requests.get(url)
 f = io.BytesIO(r.content)
+
+def solve_dist(r1, r2):
+     # sort the two ranges such that the range with smaller first element
+     # is assigned to x and the bigger one is assigned to y
+     x, y = sorted((r1, r2))
+
+     #now if x[1] lies between x[0] and y[0](x[1] != y[0] but can be equal to x[0])
+     #then the ranges are not overlapping and return the differnce of y[0] and x[1]
+     #otherwise return 0 
+     if x[0] <= x[1] < y[0] and all( y[0] <= y[1] for y in (r1,r2)):
+        return y[0] - x[1]
+     return 0
 
 
 class Table:
@@ -360,8 +376,10 @@ class Table:
 					small_value = False
 
 					if 'dist' in cur_rect:
-						half_avg = cur_rect['dist'] < (average_dist / 2) + min(2, mode_threshold)
-						small_value = cur_rect['dist'] < min(6, mode_threshold)
+						#print((average_dist / 2) + min(3, mode_threshold))
+						#half_avg = cur_rect['dist'] < (average_dist / 2) + min(3, mode_threshold)
+						half_avg = cur_rect['dist'] < average_dist + min(3, mode_threshold)
+						small_value = cur_rect['dist'] <= min(6, mode_threshold)
 					if half_avg and small_value:
 						cur_text += cur_rect['text'] + ' '
 						cur_group.append(cur_rect)
@@ -406,10 +424,130 @@ class Table:
 				#im.draw_rects([x['group_rect'] for x in word_groups], stroke=(255, 66, 144), fill=(255, 0, 46, 30))
 			# --
 
+			x_range_list_prior = []
+			# Each lines groups
+			#for word_groups in table_line_groups:
+			for table_line in table_collection['table_lines']:
+				word_groups = table_line['word_groups']
+				# Groups on line
+				for word_group in word_groups:
+					group_rect = word_group['group_rect']
+					#new_x_range = (group_rect['x0'] - 1, group_rect['x1'] + 1, group_rect['top'], group_rect['bottom'])
+					new_x_range = (group_rect['x0'], group_rect['x1'], group_rect['top'], group_rect['bottom'])
+					exists = False
+					#exists = True
+
+					#'''
+					for idx, x_range_bit in enumerate(x_range_list_prior):
+						x_range = x_range_bit[0]
+						x_range_mid = (x_range[0] + x_range[1]) / 2
+						# If mid of the group_rect being considered on this line is within the range of the any of the current ranges, or the other way round, take the max
+						if new_x_range[0] == x_range[0] and new_x_range[1] == x_range[1]:
+							new_x_range = (min(new_x_range[0], x_range[0]), max(new_x_range[1], x_range[1]), min(new_x_range[2], x_range[2]), max(new_x_range[3], x_range[3]))
+							x_range_list_prior[idx] = (new_x_range, x_range_bit[1] + 1)
+							#word_group['range_idx'] = idx
+							exists = True
+							break
+					#'''
+					
+					if not exists:
+						current_len = len(x_range_list_prior)
+						#word_group['range_idx'] = current_len
+						x_range_list_prior.append((new_x_range,1))
+					# --
+			# --
+			#table_collection['column_ranges'] = x_range_list_prior
+
+			'''
+			for table_line in table_collection['table_lines']:
+				word_groups = table_line['word_groups']
+				# Groups on line
+				for word_group in word_groups:
+					group_rect = word_group['group_rect']
+					#new_x_range = (group_rect['x0'] - 1, group_rect['x1'] + 1, group_rect['top'], group_rect['bottom'])
+					new_x_range = (group_rect['x0'], group_rect['x1'], group_rect['top'], group_rect['bottom'])
+					new_x_dist = new_x_range[1] - new_x_range[0]
+					#exists = False
+					total_cover = 0
+					for idx, x_range_bit in enumerate(x_range_list_prior):
+						x_range = x_range_bit[0]
+						x_range_dist = x_range[1] - x_range[0]
+						dist_intersect = solve_dist([new_x_range[0], new_x_range[1]], [x_range[0], x_range[1]])
+						# If you cover them
+						if x_range[0] - 2 > new_x_range[0] and x_range[1] + 2 < new_x_range[1] and x_range_bit[1] >= 2:
+							total_cover += 1
+						if not total_cover < 2:
+							word_group['too_large'] = True
+					# --
+			'''
+
+			x_range_list_prior_new = []
+
+			x_range_list = []
+			for table_line in table_collection['table_lines']:
+				word_groups = table_line['word_groups']
+				# Groups on line
+				for word_group in word_groups:
+					group_rect = word_group['group_rect']
+					#new_x_range = (group_rect['x0'] - 1, group_rect['x1'] + 1, group_rect['top'], group_rect['bottom'])
+					new_x_range = (group_rect['x0'], group_rect['x1'], group_rect['top'], group_rect['bottom'])
+					#exists = False
+					total_cover = 0
+					for idx, x_range_bit in enumerate(x_range_list_prior):
+						x_range = x_range_bit[0]
+						# If you cover them
+						if x_range[0] - 2 > new_x_range[0] and x_range[1] + 2 < new_x_range[1] and x_range_bit[1] >= 2:
+							total_cover += 1
+					# --
+					if total_cover < 2:
+						exists = False
+						for idx, x_range in enumerate(x_range_list):
+							x_range_mid = (x_range[0] + x_range[1]) / 2
+							# If mid of the group_rect being considered on this line is within the range of the any of the current ranges, or the other way round, take the max
+							if (group_rect['x_mid'] >= x_range[0] and group_rect['x_mid'] <= x_range[1]) or (x_range_mid >= new_x_range[0] and x_range_mid <= new_x_range[1]):
+								new_x_range = (min(new_x_range[0], x_range[0]), max(new_x_range[1], x_range[1]), min(new_x_range[2], x_range[2]), max(new_x_range[3], x_range[3]))
+								x_range_list[idx] = new_x_range
+								word_group['range_idx'] = idx
+								exists = True
+								break
+						
+						if not exists:
+							word_group['range_idx'] = len(x_range_list)
+							x_range_list.append(new_x_range)
+						# --
+
+
+			# Consolidate all things with same x and very close x coords
+			'''
+			x_range_list_prior_new = []
+			for idx, x_range in enumerate(x_range_list_prior):
+				cur_new_len = len(x_range_list_prior_new)
+				same_list = []
+				for table_line in table_collection['table_lines']:
+					word_groups = table_line['word_groups']
+					# Groups on line
+					for word_group in word_groups:
+						group_rect = word_group['group_rect']
+						new_x_range = (group_rect['x0'] - 1, group_rect['x1'] + 1, group_rect['top'], group_rect['bottom'])
+						if x_range[0] == new_x_range[0] and x_range[1] == new_x_range[1]:
+							word_group['range_idx'] = cur_new_len
+			
+			
+
+			table_columns_rects = []
+			for x_range in x_range_list_prior:
+				rect_ = {'x0': x_range[0], 'x1': x_range[1], 'top': x_range[2], 'bottom': x_range[3]}
+				table_columns_rects.append(rect_)
+			'''
+			#self.im.draw_rects(table_columns_rects, stroke=(255, 66, 144), fill=(255, 0, 46, 30))
+			# --
+
 
 			"""
 			-- Create and seperate word group columns --
 			"""
+
+			'''
 			x_range_list = []
 			# Each lines groups
 			#for word_groups in table_line_groups:
@@ -422,6 +560,7 @@ class Table:
 					exists = False
 					for idx, x_range in enumerate(x_range_list):
 						x_range_mid = (x_range[0] + x_range[1]) / 2
+						# If mid of the group_rect being considered on this line is within the range of the any of the current ranges, or the other way round, take the max
 						if (group_rect['x_mid'] >= x_range[0] and group_rect['x_mid'] <= x_range[1]) or (x_range_mid >= new_x_range[0] and x_range_mid <= new_x_range[1]):
 							new_x_range = (min(new_x_range[0], x_range[0]), max(new_x_range[1], x_range[1]), min(new_x_range[2], x_range[2]), max(new_x_range[3], x_range[3]))
 							x_range_list[idx] = new_x_range
@@ -434,6 +573,7 @@ class Table:
 						x_range_list.append(new_x_range)
 					# --
 			# --
+			'''
 			table_collection['column_ranges'] = x_range_list
 
 			table_columns_rects = []
@@ -600,7 +740,8 @@ with pdfplumber.open(f) as pdf:
 	new_table.extract_words(page)
 	search_regex = [
 		{
-			'search': 'distribution as a',
+			#'search': 'distribution as a',
+			'search': text_guy_1,#'asset class',
 			'label': 'asset_class',
 		}
 	]
