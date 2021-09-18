@@ -1,0 +1,158 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="style.css">
+
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      // google.charts.setOnLoadCallback(drawChart);
+      /*Adding relevent attributes and data for the linechart*/
+      //extracted data will go here
+    </script>
+</head>
+
+<body style="background: white;">
+
+  <div class="topnav">
+    <a>
+      <h2>Super Scraper <i class="fa fa-line-chart" style="font-size:24px"></i> </h2>
+    </a>
+    <a class="active" href="homepage.html">
+      <h3>Home</h3>
+    </a>
+    <a href="ManagedInvestments.html">
+      <h3>Managed Investments</h3>
+    </a>
+    <a href="Management.html">
+      <h3>Management</h3>
+    </a>
+  </div>
+  <div class="sidenav">
+    <a class="label" href="#home">Super Funds</a>
+    <button class="dropdown-btn">Hesta Super <i class="fa fa-caret-down"></i></button>
+    <div class="dropdown-container" id="dropdownID"></div>
+    <button class="dropdown-btn">Aware Super <i class="fa fa-caret-down"></i></button>
+    <div class="dropdown-container" id="dropdownID2"></div>
+    <button class="dropdown-btn">Telstra Super <i class="fa fa-caret-down"></i></button>
+    <div class="dropdown-container" id="dropdownID3"></div>
+    <button class="dropdown-btn">Future Super <i class="fa fa-caret-down"></i></button>
+    <div class="dropdown-container">
+      <a href="#">Historical Data </a>
+    </div>
+    <button class="dropdown-btn">Uni Super <i class="fa fa-caret-down"></i></button>
+    <div class="dropdown-container">
+      <a href="#">Balanced Growth</a>
+      <a href="#">High Growth</a>
+      <a href="#">Conservative Growth</a>
+    </div>
+    <button class="dropdown-btn">Sun Super <i class="fa fa-caret-down"></i></button>
+    <div class="dropdown-container">
+      <a href="#">Balanced Growth</a>
+      <a href="#">High Growth</a>
+      <a href="#">Conservative Growth</a>
+    </div>
+  </div>
+  <!-- <script>
+    /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+  
+    for (i = 0; i < dropdown.length; i++) {
+      dropdown[i].addEventListener("click", function () {
+        this.classList.toggle("active");
+        var dropdownContent = this.nextElementSibling;
+        if (dropdownContent.style.display === "block") {
+          dropdownContent.style.display = "none";
+        } else {
+          dropdownContent.style.display = "block";
+        }
+      });
+    }
+  </script> -->
+  
+  <script>
+    //Call dropdown menu
+    function myFunction() {
+      document.getElementById("myDropdown").classList.toggle("show");
+    }
+    window.onclick = function(event) {
+      if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    }
+    </script> 
+
+
+  <div class="main">
+    <!--Call the line chart-->
+    <h2>Superannuation Graph</h2>
+    <div id="curve_chart" style="width: 800px; height: 500px"></div>
+
+    <h1 style="text-align:left">Super Rankings</h1>
+    <div class="container">
+      <div class="wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Super Annuation</th>
+              <th>Performance Rate</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="rank">1</td>
+              <td class="team">Uni Super</td>
+              <td class="points">1460</td>
+
+            </tr>
+            <tr>
+              <td class="rank">2</td>
+              <td class="team">Aware Super</td>
+              <td class="points">1340</td>
+
+            </tr>
+            <tr>
+              <td class="rank">3</td>
+              <td class="team">Future Super</td>
+              <td class="points">1245</td>
+
+            </tr>
+            <tr>
+              <td class="rank">4</td>
+              <td class="team">Hesta Super</td>
+              <td class="points">1210</td>
+
+            </tr>
+            <tr>
+              <td class="rank">5</td>
+              <td class="team">Sun Super</td>
+              <td class="points">1186</td>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+</body>
+</html>
