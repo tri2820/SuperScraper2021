@@ -218,6 +218,12 @@
           ['May', 1409, 2432, 1340]
         ]);
 
+        // var result = [
+        //   ["MonthYear", "Value"],
+        //   ["Jan 93", 0.1],
+        //   ["Feb 93", 0.2],
+        // ];
+
         var options = {
           chart: {
             title: 'Super Performance',
@@ -229,6 +235,8 @@
         var chart = new google.charts.Bar(document.getElementById('barchart_material'));
 
         chart.draw(data, google.charts.Bar.convertOptions(options));
+
+        console.log("FIND ME!: " + dropdowns);
       }
 
       //Table format settings
@@ -251,6 +259,7 @@
         var table = new google.visualization.Table(document.getElementById('table_div'));
 
         table.draw(data, {showRowNumber: false, width: '100%', height: '100%'});
+
       }
     </script>
 </head>
