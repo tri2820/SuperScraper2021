@@ -36,6 +36,7 @@ from Scraper.nn_extraction import run_pdf_table_detection, pdf_to_images
 
 #from nn_extraction import run_pdf_table_detection
 
+import os
 
 
 import pdfplumber
@@ -54,7 +55,7 @@ import numpy as np
 
 import json
 
-import openpyxl as pyxl
+import pymongo
 
 # https://bitbucket-students.deakin.edu.au/scm/webmc-ug/super-scrapper.git
 
@@ -347,12 +348,121 @@ class DocumentExtraction:
 				page_ = pdf.pages[pg_no]
 				page_ = page_.filter(font_size_filter)
 				new_page = DocPage(page_, pg_no, page_tables)
-				new_page.extract_data()
+				res_ = new_page.extract_data()
+				if res_ == 'page':
+					return True
+				elif res_ == 'fund':
+					return 'fund'
 
 				self.doc_pages.append(new_page)
 
-		return
+		return True
 # --
+
+MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
+MONGO_DB = "SuperScrapper"
+
+
+class DBHandler:
+
+	def __init__(self, mongo_uri, mongo_db):
+		self.mongo_uri = mongo_uri
+		self.mongo_db = mongo_db
+
+	def open_connection(self):
+		self.client = pymongo.MongoClient(self.mongo_uri)
+		self.db = self.client[self.mongo_db]
+
+
+	def close_connection(self):
+		self.client.close()
+
+
+	def get_collection_ids(self, collection_name_):
+		ids_list = [str(x) for x in self.db[collection_name_].find().distinct('_id')]
+		return ids_list
+
+
+	def find_or_create_document(self, collection_name_, data_object, overwrite=False):
+		query = {'_id' : data_object['_id']}
+		print(type(collection_name_))
+		document = self.db[collection_name_].find_one(query)
+		# If none create one
+		if document == None:
+			self.db[collection_name_].insert_one(data_object)
+			document = self.db[collection_name_].find_one(query)
+		elif overwrite == True:
+			self.db[collection_name_].update_one(query, {"$set": data_object})
+		# --
+		return document
+
+
+class Something:
+
+	def extract_document_data(self, url):
+		# Extract doc
+		doc_extract = DocumentExtraction(url, save_iamges=False)
+		res_ = doc_extract.extract_tables()
+		if res_ == 'fund':
+			return 'fund'
+		else:
+			return True
+	
+	def extract_data_from_documents(self, collection_id = 'fund_managers', custom_query=None):
+
+		#self.docExtractor = DocumentDataExtractor()
+
+		# Extract doc
+		#doc_extract = DocumentExtraction("https://www.benthamam.com.au/assets/fundreports/20210630-GIF-Monthly-Report.pdf", save_iamges=True)
+		#doc_extract.extract_tables()
+
+		# Add extracted doc to handler
+		#last_doc_idx = self.docExtractor.add_document(doc_extract)
+		#return
+
+		test_handler = DBHandler(MONGO_URI, MONGO_DB)
+		test_handler.open_connection()
+		fund_ids = test_handler.get_collection_ids(collection_id)
+
+		item_querys = [[x, test_handler.find_or_create_document(collection_id, {'_id': x}, False)['metadata']['site_traversal_id']] for x in fund_ids]
+
+		#item_querys = [["CSA0038AU",test_handler.find_or_create_document(collection_id, {'_id': "CSA0038AU"}, False)['metadata']['site_traversal_id']]]
+
+		if custom_query:
+			item_querys = [[custom_query,test_handler.find_or_create_document(collection_id, {'_id': custom_query}, False)['metadata']['site_traversal_id']]]
+
+
+		test_handler.close_connection()
+		count = 0
+
+		for item_query in item_querys:
+			#count += 1
+			#if count < 5:
+			#    continue
+
+			
+
+			item_id = item_query[0]
+
+			print(f'\n-- {item_id} --\n')
+
+			traversal_id = item_query[1]
+
+			test_handler.open_connection()
+
+			item = test_handler.find_or_create_document(collection_id, {'_id': item_id}, False)
+
+			test_handler.close_connection()
+
+			file_url_list = item['metadata']['pdf_url_list']
+
+			for file_idx, file_url_data in enumerate(file_url_list):
+				res_ = self.extract_document_data(file_url_data['url'])
+				if res_ == 'fund':
+					break
+		# --
+
+			
 
 
 
@@ -838,7 +948,6 @@ class DocumentDataExtractor:
 						if len(df_dict) < 2:
 							continue
 						item["table"] = df_dict
-						item["df"] = df_
 						item["ratio"] += 5
 						item_list[idx] = item
 						item_table_list.append(item)
@@ -854,46 +963,6 @@ class DocumentDataExtractor:
 	
 
 
-	def data_to_csv(self, doc_idx):
-
-		#wb = pyxl.Workbook()
-		#ws = wb.active
-
-		writer = pd.ExcelWriter('sim_values.xlsx',engine='xlsxwriter')
-		wb=writer.book
-
-		similarity_data = self.documents[doc_idx]['sim_data']
-		
-		for sim_type in similarity_data:
-			sim_values = similarity_data[sim_type]
-			similarity_data[sim_type] = sorted(sim_values, key=lambda item: item["ratio"], reverse=True)
-
-			sim_values_tables = []
-
-			for item in sim_values:
-				if "df" in item:
-					sim_values_tables.append(item)
-
-
-			subed_name = re.sub("[^\w\d_]+",'',sim_type)
-			ws_name = f"{subed_name}"
-
-			ws=wb.add_worksheet(f"{ws_name}")
-			writer.sheets[f"{ws_name}"] = ws
-
-			shape_count = [0,0]
-			for item in sim_values_tables:
-				table_shape = item["df"].shape
-				item["df"].to_excel(writer,sheet_name=f"{ws_name}",startrow=shape_count[0] , startcol=shape_count[1])
-
-				shape_count[0] += table_shape[0]
-				#shape_count[1] += table_shape[1]
-
-
-			#ws = wb.create_sheet(f"sim_vals_{sim_type}")
-			#ws.title = f"sim_vals_{sim_type}"
-		writer.save()
-		return
 
 	
 	def sort_as_most_similar(self, doc_idx):
@@ -912,21 +981,16 @@ class DocumentDataExtractor:
 			sim_values = similarity_data[sim_type]
 			similarity_data[sim_type] = sorted(sim_values, key=lambda item: item["ratio"], reverse=True)
 
-			sim_values_no_tables = []
-			for item in similarity_data[sim_type]:
-				if not "table" in sim_values_no_tables:
-					sim_values_no_tables.append(item)
-
-			sim_values_no_tables = sorted(sim_values_no_tables, key=lambda item: item["ratio"], reverse=True)
-
-			print(f"\n -- {sim_type} -- ")
-			[print("- Ratio: ", x["ratio"], " - Text: ", x["str"][:min(len(x["str"]), 70)]) for x in sim_values_no_tables]
-
-		
 		return similarity_data
 
 # --
 
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
+import cv2 as cv
+
+from PIL import Image
 
 class DocPage:
 
@@ -946,8 +1010,6 @@ class DocPage:
 		# If you change this, go look at the nn_extraction and change the dpi there as well
 		self.global_dpi = 200
 
-		self.save_table_images = False
-
 		return
 	
 	
@@ -955,11 +1017,13 @@ class DocPage:
 
 		self.text = self.page_.extract_text(x_tolerance=1, y_tolerance=1)
 
+		#self.page_.to_image(resolution=72).save("train_page.png", format="PNG")
+
 		#print("\n\n -- PAGE WIDTH: ", self.page_.width)
 
 		#for nn_table in self.nn_tables:
 		table_areas = self.nn_tables['table_areas']#nn_table
-		for tbl_idx, table_area in enumerate(table_areas):
+		for table_area in table_areas:
 			bbox = table_area['bbox']
 
 			padding_table = 0
@@ -978,9 +1042,42 @@ class DocPage:
 			# Get page table crop
 			cropped_table = self.page_.crop(cropped_bbox, relative=False)
 
-			if self.save_table_images:
-				print()
-				cropped_table.to_image(resolution=200).save(f"nn_data/{self.page_number}_table_{tbl_idx}.png", format="PNG")
+			'''
+			print('-- TABLE MID --')
+
+			cat_list = ['Allocation', 'Top_Holdings', 'Bot_Holdings', 'Performance', 'FeesCosts', 'Nothing']
+			input_prompt = ''
+			for idx, cat_ in enumerate(cat_list):
+				input_prompt += f'({idx})-{cat_},'
+				# Make dir if does not exist
+				os.makedirs('data\\' + cat_, exist_ok=True)
+
+			cropped_table.to_image(resolution=72).save("train_img.png", format="PNG")
+
+			img_1 = cv.imread("train_img.png")
+			img_2 = cv.imread("train_page.png")
+
+			cv.imshow("img_1",img_1)
+			cv.imshow("img_2",img_2)
+
+			cv.waitKey(500)
+
+			prompt_output = input(input_prompt)
+			print(prompt_output)
+
+			cv.destroyAllWindows()
+
+			save_dir_prefix = 'data/' + cat_list[int(prompt_output)]
+
+			lastnumber_ = 0
+			try:
+				while os.path.isfile(save_dir_prefix + "/" + str(lastnumber_) + "_" + prompt_output + ".txt"):
+					lastnumber_ += 1
+			except:
+				print('--')
+			'''
+
+			
 			
 			new_table = self.add_table(cropped_bbox, cropped_table)
 
@@ -1023,14 +1120,123 @@ class DocPage:
 					#table_bottom.to_image(resolution=200).save("table_bottom.png", format="PNG")
 			except:
 				print('-- FAILED CROP -- ERROR: 999358')
-			
 			#print(table_ext_data)
 			new_table.ext_data = table_ext_data
 
+
+
+
+			print('\n\n ----------------- NEXT TABLE ----------------- ')
+			print(f'PAGE NUMBER: {self.page_number}\n\n')
+
+
+			for pos in new_table.word_lines:
+
+				next_text = new_table.word_lines[pos]['text']
+
+				print('-- NEXT LINE --')
+
+				print('-TEXT-\n', next_text, '\n------')
+
+				page_image = self.page_.to_image(resolution=72)#.save("train_page.png", format="PNG")
+
+				page_image.draw_rects([new_table.word_lines[pos]['line_rect']], stroke=(255, 66, 144), fill=(255, 0, 46, 30))
+
+				page_image.save("train_page.png", format="PNG")
+
+				cat_list = ['Allocation', 'Holdings_Top', 'Holdings_Bot', 'Performance', 'FeesCosts', 'FundName', 'Managed_Funds', 'Buy_Sell',
+				'Fee_Perform', 'Fee_Manage', 'NAV','ClassSize','FundSize','StrategySize','Fee_Ind', 'x_new_1', 'x_new_2', 'Trust_Valuations', 'x3', 'x4']
+				#'Skip_To_Table'
+
+				cat_list = sorted(cat_list)
+
+				input_prompt = ''
+				for idx, cat_ in enumerate(cat_list):
+					input_prompt += f'- ({idx})-{cat_}\n'
+					# Make dir if does not exist
+					os.makedirs('data\\' + cat_, exist_ok=True)
+					os.makedirs('data\\' + cat_ + '_table', exist_ok=True)
+
+				#cropped_table.to_image(resolution=150).save("train_img.png", format="PNG")
+
+				input_prompt = '(n)-Next Line, (t)-TableInput, (p)-NextTable, (|)-Next Fund\n' + input_prompt
+
+				#img_1 = cv.imread("train_img.png")
+				img_2 = cv.imread("train_page.png")
+
+				#cv.imshow("img_1",img_1)
+				cv.imshow("img_2",img_2)
+
+				cv.waitKey(50)
+
+				prompt_output = input(input_prompt)
+				print(prompt_output)
+
+				text_to_save = next_text
+				addtional_dir_arg = ""
+
+
+				cv.destroyAllWindows()
+
+				if prompt_output == 'n':
+					print('-- SKIPPING --')
+					continue
+				elif prompt_output == 't':
+					print('-- TABLE --')
+					text_to_save = new_table.text
+					addtional_dir_arg = "_table"
+
+					#img_1 = cv.imread("train_img.png")
+					img_2 = cv.imread("train_page.png")
+
+					#cv.imshow("img_1",img_1)
+					cv.imshow("img_2",img_2)
+
+					cv.waitKey(50)
+
+					prompt_output = input(input_prompt)
+					print(prompt_output)
+
+					cv.destroyAllWindows()
+					#break
+				elif prompt_output == 'p':
+					break
+				elif prompt_output == '|':
+					full_finish = 'page'
+					print("\n\n ------ NEXT DOC ------ \n\n")
+					return 'page'
+				elif prompt_output == 'fund':
+					print("\n\n\n\n\n ------------- FULL FINISH ------------- \n\n\n\n\n")
+					full_finish = 'fund'
+					return 'fund'
+
+				print('-.-')
+
+
+
+				prompt_outputs = prompt_output.split(",")
+
+				for prompt_out in prompt_outputs:
+					save_dir_prefix = 'data/' + cat_list[int(prompt_out)] + addtional_dir_arg
+
+					lastnumber_ = 0
+					try:
+						while os.path.isfile(save_dir_prefix + "/" + str(lastnumber_) + "_" + prompt_out + ".txt"):
+							lastnumber_ += 1
+					except:
+						print('--')
+
+					print('SAVED')
+					txt_save = open(save_dir_prefix + "/" + str(lastnumber_) + "_" + prompt_out + ".txt", 'w')
+					txt_save.write(text_to_save)
+					txt_save.close()
+			# --
+
 			self.tables.append(new_table)
+			
 
 
-		return
+		return True
 	
 
 	def add_table(self, bbox, page_crop):
@@ -1061,6 +1267,7 @@ class Table:
 		self.text = ''
 
 		return
+
 	
 	def extract_words(self):
 		#if not page_:
@@ -1334,6 +1541,9 @@ class Table:
 					if 'dist' in cur_rect:
 						half_avg = cur_rect['dist'] < (average_dist / 2) + min(2, mode_threshold)
 						small_value = cur_rect['dist'] < min(6, mode_threshold)
+						#half_avg = cur_rect['dist'] < (average_dist / 2) + min(3, mode_threshold)
+						half_avg = cur_rect['dist'] < average_dist + min(3, mode_threshold)
+						small_value = cur_rect['dist'] < min(6, mode_threshold)
 					if half_avg and small_value:
 						cur_text += cur_rect['text'] + ' '
 						cur_group.append(cur_rect)
@@ -1382,6 +1592,7 @@ class Table:
 			"""
 			-- Create and seperate word group columns --
 			"""
+
 			x_range_list_prior = []
 			# Each lines groups
 			#for word_groups in table_line_groups:
@@ -1415,7 +1626,7 @@ class Table:
 					# --
 			# --
 
-			
+
 			x_range_list = []
 			for table_line in table_collection['table_lines']:
 				word_groups = table_line['word_groups']
@@ -1481,4 +1692,22 @@ class Table:
 
 
 
-	# ----------------------------------------------------------------------- #
+# ----------------------------------------------------------------------- #
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# --

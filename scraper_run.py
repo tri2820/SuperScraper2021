@@ -14,6 +14,9 @@ import pymongo
 import logging
 import pandas as pd
 
+import re
+
+import argparse
 
 
 MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
@@ -35,7 +38,7 @@ def configure_extension_requests(dny_ext,remove_extensions, add_extensions):
     return dny_ext
 # --
 
-
+# UNGO23
 DENY_EXTENSIONS = configure_extension_requests(DENY_EXTENSIONS,['pdf'],[])#'html'
 
 
@@ -67,7 +70,7 @@ class DatabaseHandler:
     
     def find_or_create_document(self, collection_name_, data_object, overwrite=False):
         query = {'_id' : data_object['_id']}
-        print(type(collection_name_))
+        #print(type(collection_name_))
         document = self.db[collection_name_].find_one(query)
         # If none create one
         if document == None:
@@ -99,7 +102,7 @@ class SpiderHandler:
             fund_datas.append(db_connection.retrieve_fund_data(self.fund_data_list[i]))
         db_connection.close_connection()
 
-        configure_logging()
+        #configure_logging()
 
         #process = CrawlerProcess(get_project_settings())#get_project_settings()#{'SPIDER_MODULES': 'Scraper.Scraper.spiders'}
         runner = CrawlerRunner(get_project_settings())
@@ -202,7 +205,7 @@ example_traversal_document = {
 
 def run_scraper_traversal():
 
-    configure_logging()
+    #configure_logging()
 
     runner = CrawlerRunner(get_project_settings())
 
@@ -219,8 +222,28 @@ def run_scraper_traversal():
         print(prog_count)
         prog_count += 1
         traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
+        '''
+        if not 'schedule_data' in traversal_document:
+            traversal_document['schedule_data'] = {
+                "last_traversed": 0,
+                "should_traverse": True
+            }
+        traversal_document['schedule_data'] = {
+            "last_traversed": 0,
+            "should_traverse": True
+        }
+        #traversal_document['filtered_file_urls']['FeesCosts'] = {}
+        #if 'filtered_file_urls' in traversal_document:
+            #if 'Fees&Costs' in traversal_document['filtered_file_urls']:
+            #    traversal_document['filtered_file_urls']['FeesCosts'] = traversal_document['filtered_file_urls'].pop('Fees&Costs', [])
+            #if not 'Report' in traversal_document['filtered_file_urls']:
+            #    traversal_document['filtered_file_urls']['Report'] = []
+        # traversal_document['schedule_data']['should_traverse'] = True
+        #traversal_document['schedule_data']['should_traverse'] = True
+
         if traversal_document['schedule_data']['should_traverse'] == "False" or traversal_document['schedule_data']['should_traverse'] == False:
             continue
+
         #traversal_document['schedule_data']['should_traverse'] = True
         # Fix domain slash issue
         domain_string = traversal_document['domain']['domain_name']
@@ -251,22 +274,25 @@ def run_scraper_traversal():
                 ],
                 # Filters applied to urls after extraction and before entering into DB
                 'filters': [
-                    '.+product.disclosure.statement.+',
-                    '.+pds.+',
-                    '.+PDS.+',
+                    '.+Investment.+',
+                    '.+investment.+',
                 ]
             },
-            "Fees&Costs": {
+            "FeesCosts": {
                 # The following are now pipeline filters (after extraction)
                 # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
                 'restrict_text': [
                     '.+fees.costs.+',
                     '.+Fees.Costs.+',
+                    '.+fees.+',
+                    '.+costs.+',
                 ],
                 # Filters applied to urls after extraction and before entering into DB
                 'filters': [
                     '.+fees.costs.+',
                     '.+Fees.Costs.+',
+                    '.+fees.+',
+                    '.+costs.+',
                 ]
             },
             "Performance": {
@@ -289,28 +315,60 @@ def run_scraper_traversal():
                     '.+FactSheet.+',
                     '.+Fact Sheet.+',
                     '.+fact.sheet.+',
+                    '.+fact.+',
                 ],
                 # Filters applied to urls after extraction and before entering into DB
                 'filters': [
                     '.+FactSheet.+',
                     '.+Fact Sheet.+',
                     '.+fact.sheet.+',
+                    '.+fact.+',
+
                 ]
             },
-            "FactSheet": {
+            "Report": {
                 # The following are now pipeline filters (after extraction)
                 # Regex that the text in the </a> anchor can match (this accounts for urls that say nothing)
                 'restrict_text': [
                     '.+Report.+',
+                    '.+report.+',
+                    '.+FR.+',
+                    '.+fr.+',
                 ],
                 # Filters applied to urls after extraction and before entering into DB
                 'filters': [
                     '.+Report.+',
+                    '.+report.+',
+                    '.+FR.+',
+                    '.+fr.+',
                 ]
             },
         }
         #"""
+        '''
+
+        if not 'filtered_file_urls' in traversal_document:
+            traversal_document['filtered_file_urls'] = {
+                "PDS": [],
+                "Investment": [],
+                "Performance": [],
+                "FactSheet": [],
+                "FeesCosts": [],
+                "Report": []
+            }
+
+        if traversal_document['schedule_data']['should_traverse'] == "False":
+            traversal_document['schedule_data']['should_traverse'] = False
+        
+        if traversal_document['schedule_data']['should_traverse'] == "True":
+            traversal_document['schedule_data']['should_traverse'] = True
+
         test_handler.find_or_create_document('site_traverse_data',traversal_document, True)
+
+        if traversal_document['schedule_data']['should_traverse'] == "False" or traversal_document['schedule_data']['should_traverse'] == False:
+            continue
+
+        #test_handler.find_or_create_document('site_traverse_data',traversal_document, True)
 
         traversal_document = test_handler.find_or_create_document('site_traverse_data', {'_id': trav_id}, False)
         traversal_documents.append(traversal_document)
@@ -320,6 +378,9 @@ def run_scraper_traversal():
     print("Start Crawl")
     print('tav no. ', len(traversal_documents))
 
+    #return
+
+    '''
     # Sequential
     @defer.inlineCallbacks
     def crawl():
@@ -329,12 +390,20 @@ def run_scraper_traversal():
         #document = test_handler.find_or_create_document('site_traverse_data', {'_id': "novaport_site_traversal"}, False)
         #yield runner.crawl('Traversal', traverse_data = document)
         for document in traversal_documents:
-            if document['schedule_data']['should_traverse']:
-                print('CRAWLING - ',document['_id'])
-                yield runner.crawl('Traversal', traverse_data = document)
+            try:
+                if document['schedule_data']['should_traverse']:
+                    print('CRAWLING - ',document['_id'])
+                    yield runner.crawl('Traversal', traverse_data = document)
+            except:
+                print('\n\n\n\n\n\n\n\n\n\n------------------- A-SPIDER-FAILED -------------------\n\n\n\n\n\n\n\n\n\n')
 
         reactor.stop()
     # --
+
+    '''
+    '''
+
+    #traversal_documents = [traversal_documents[1]]
 
     # Parrallal
     for document in traversal_documents:
@@ -345,136 +414,122 @@ def run_scraper_traversal():
 
     d = runner.join()
     d.addBoth(lambda _: reactor.stop())
+    #'''
 
-    #crawl()
+    # RUN 10 AT A TIME
+    print(" crawl ")
 
+    @defer.inlineCallbacks
+    def crawl():
+
+        print("---")
+        max_parallel = 10
+        cur_parallel = 0
+
+
+        for document in traversal_documents:
+            if document['schedule_data']['should_traverse']:
+                cur_parallel += 1
+                if cur_parallel >= max_parallel:
+                    d = runner.join()
+                    d.addBoth(lambda _: reactor.stop())
+                    cur_parallel = 0
+                    #reactor.run()
+                    yield runner.crawl('Traversal', traverse_data = document)
+                else:
+                    runner.crawl('Traversal', traverse_data = document)
+
+        #reactor.run()
+        #reactor.stop()
+        d = runner.join()
+        d.addBoth(lambda _: reactor.stop())
+    # --
+
+    crawl()
     reactor.run()
 
     print("Crawl Completed")
 # --
 
-#print(DENY_EXTENSIONS)
-
-run_scraper_traversal()
-
-#run_scraper()
-
-#     print("Crawl Completed")
 
 
-
-from Scraper.DocHanding import DocumentHandler
-
-def doc_handling_test():
-
-    doctest = DocumentHandler()
-
-    doctest.open_connection()
-
-    file_list = doctest.filter_file_urls('novaport_site_traversal', 'PDS', ["HOW0027AU"])
-
-    # Found pdfs
-    print("-\nFound pdfs")
-    [print(x) for x in file_list]
+from Scraper.DocHanding import Something
 
 
-
-    doc_data_list = [doctest.extract_document_data(x['url']) for x in file_list]
-
-    # Extracted Data
-    print("-\nExtracted Data")
-    for matches_cats in doc_data_list:
-        for cat in matches_cats:
-            matches = matches_cats[cat]
-            print(cat, matches[0])
-    # --
-
-
-    doctest.close_connection()
+def showcase(fund_id = "CSA0038AU"):
+    new_something = Something()
+    print("FINDING FILE ITEMS")
+    new_something.find_item_file_urls('fund_managers', fund_id)
+    print("\n-----\n")
+    print('DATA EXTRACTION')
+    new_something.extract_data_from_documents('fund_managers', fund_id)
     return
-# --
-
-def doc_handling_run():
 
 
-    test_handler = DatabaseHandler(MONGO_URI, MONGO_DB)
+def populate_funds():
+    dbHandler = DatabaseHandler(MONGO_URI, MONGO_DB)
+    dbHandler.open_connection()
 
-    test_handler.open_connection()
-    fund_ids = test_handler.get_collection_ids('fund_managers')
+    fund_managers_ids = dbHandler.get_collection_ids('fund_managers')
+    site_traverse_data_ids = dbHandler.get_collection_ids('site_traverse_data')
 
-    #traversal_ids = test_handler.get_collection_ids('site_traverse_data')
-
-    fund_querys = [[x, test_handler.find_or_create_document('fund_managers', {'_id': x}, False)['metadata']['site_traversal_id']] for x in fund_ids]
-
-    test_handler.close_connection()
-
-
-    for fund_query in fund_querys:
-
-        fund_id = fund_query[0]
-
-        traversal_id = fund_query[1]
-
-        doctest = DocumentHandler()
-
-        doctest.open_connection()
-
-        file_list = doctest.filter_file_urls(traversal_id, 'PDS', [fund_id])
-
-        # Found pdfs
-        print("-\nFound pdfs")
-        [print(x) for x in file_list]
-
-
-
-        doc_data_list = [doctest.extract_document_data(x['url']) for x in file_list]
-
-        doctest.close_connection()
-
-        # Extracted Data
-        print("-\nExtracted Data")
-        for matches_cats in doc_data_list:
-            for cat in matches_cats:
-                matches = matches_cats[cat]
-                print(cat, matches[0])
-        # --
-
-
-        # Shove in
-        test_handler.open_connection()
-        fund = test_handler.find_or_create_document('fund_managers', {'_id': fund_id}, False)
-        
-        for matches_cats in doc_data_list:
-            for cat in matches_cats:
-                matches = matches_cats[cat]
-                fund[cat] = matches[0]['str']
-        # --
-
-        fund['metadata']['pdf_url_list'] = [x['url'] for x in file_list]
-
-        test_handler.find_or_create_document('fund_managers', fund, True)
-
-        test_handler.close_connection()
+    for site_id in site_traverse_data_ids:
+        traversal_obj = dbHandler.find_or_create_document('site_traverse_data', {'_id': site_id}, False)
+        if not traversal_obj:
+            continue
+        page_filters = traversal_obj['domain']['page_filters']
+        for page_filter in page_filters:
+            new_manager = {
+                '_id': page_filter,
+                'name': 'N/A',
+                'APIR_code': page_filter,
+                'metadata': {
+                    'site_traversal_id': traversal_obj['_id'],
+                    "pdf_url": None,
+                    "pdf_url_list": []
+                },
+                "data": {
+                    "_c": {},
+                    "_values": []
+                }
+            }
+            new_manager = dbHandler.find_or_create_document('fund_managers', new_manager, overwrite=False)
     # --
-
-    return
-# --
-
-
-#doc_handling_run()
+    dbHandler.close_connection()
 
 
 
+def main(options):
+    if options.pop_funds:
+        populate_funds()
+    if options.web_trav:
+        run_scraper_traversal()
+    
+    if options.show_case:
+        showcase()
+    else:
+        new_something = Something()
+        if options.doc_check:
+            new_something.find_item_file_urls()
+        if options.data_extract:
+            new_something.extract_data_from_documents()
+
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--web_trav", type=bool, default=False, help="Should run website traversal")
+    parser.add_argument("--doc_check", type=bool, default=False, help="Seach file urls for each fund")
+    parser.add_argument("--data_extract", type=bool, default=False, help="Extract data from pdfs")
+    parser.add_argument("--pop_funds", type=bool, default=False, help="Populate new funds")
+    parser.add_argument("--old", type=bool, default=False, help="Run old site data extraction")
+    options = parser.parse_args()
+    main(options)
 
 
 
 
-
-
-
-
-
-
+# pip install pyyaml
 
 
 
