@@ -16,8 +16,9 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js')
     }
   })
-  win.openDevTools();
+  //win.openDevTools();
   win.loadFile('homepage.html')
+  //win.loadFile('index.html')
 
   win.webContents.once('dom-ready', () => {
     var fileData = path.join(__dirname, 'performance.csv');
@@ -103,7 +104,7 @@ function createWindow() {
         
         let navBarClickHandler = `
           let dropdowns = `+JSON.stringify(dropdowns)+`;
-          document.querySelectorAll(".dropdown a").forEach(menu => 
+          document.querySelectorAll(".dropdown-container a").forEach(menu => 
             menu.addEventListener("click", function(){
               let key1 = this.dataset.key1;
               let key2 = this.dataset.key2;
@@ -124,7 +125,7 @@ function createWindow() {
             })   
           ); 
         `;
-
+ 
         win.webContents.executeJavaScript(navBarClickHandler);
      /////
         let dropfunc = `
