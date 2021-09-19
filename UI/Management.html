@@ -2,28 +2,14 @@
 
 <head>
   <script src="input.js"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-  <link rel="stylesheet" href="style.css">
+  <app-loadhead></app-loadhead>
+  <script src="components.js"></script>
 </head>
 
 <body>
   <!--Top navigation-->
-  <div class="topnav">
-    <a>
-      <h2>Super Scraper <i class="fa fa-line-chart" style="font-size:24px"></i> </h2>
-    </a>
-    <a href="homepage.html">
-      <h3>Home</h3>
-    </a>
-    <a href="ManagedInvestments.html">
-      <h3>Managed Investments</h3>
-    </a>
-    <a class="active" href="Management.html">
-      <h3>Management</h3>
-    </a>
-  </div>
+  <app-topnav></app-topnav>
+
   <div class="content" style="margin-left: 50px;">
     <h2>Fund Manager Data Input</h2>
     <p>Upload a csv with the following headers & appropriate data</p>
