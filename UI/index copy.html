@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
+
+      /*Intergrating design aspects to dropdown buttons*/
         .dropbtn {
-        background-color: #0115ca;
+        background-color: #997ab3;
         color: white;
         padding: 16px;
         font-size: 16px;
@@ -29,15 +31,18 @@
             background-color: #0b018d;
         }
         
+        /*Implementing hover button color*/
         .dropbtn:hover, .dropbtn:focus {
         background-color: #997ab3;
         }
-
+        
+        /*Creating Dropdown menu*/
         .dropdown {
         position: relative;
         display: inline-block;
         }
         
+        /*Creating Dropdown Menu*/
         .dropdown-content {
         display: none;
         position: absolute;
@@ -47,6 +52,7 @@
         z-index: 1;
         }
         
+        /*Creating Dropdown Menu*/
         .dropdown-content a {
         color: black;
         padding: 12px 16px;
@@ -54,8 +60,9 @@
         display: block;
         }
         
+        /*Implementing font color for hover button options*/
         .dropdown a:hover {background-color: #ddd;}
-        
+
         .btn:hover {
         background-color: #000d85;
         }
@@ -94,7 +101,7 @@
         .dropdown:hover .dropdown-content {display: block;}
  
         .dropdown:hover .dropbtn {background-color: #0b018d;}
-        
+                
         .show {display: block;}
 
         body {font-family: Arial, Helvetica, sans-serif;}
@@ -202,64 +209,44 @@
         }
       }
     </style>
-    <!--Bar chart settings-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
+      google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
 
+      /*Adding relevent attributes and data for the linechart*/
+      //extracted data will go here
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Month', 'Balanced Growth', 'High Growth', 'Conservative Growth'],
-          ['Feb', 500, 600, 500],
-          ['Mar', 1370, 1400, 1850],
-          ['Apr', 129, 500, 400],
-          ['May', 1509, 1432, 1340]
+          ['Month', 'Hesta', 'Aware', 'Telstra'],
+          ['May',  1000,      400, 100],
+          ['April',  1170,      460, 500],
+          ['March',  660,       1120, 1000],
+          ['February',  1030,      540, 900]
         ]);
 
+        //Title for the chart
         var options = {
-          chart: {
-            title: 'Super Performance',
-            subtitle: 'Balanced growth, High Growth, and Conservative growth: 2021',
-          },
-          bars: 'vertical' // Required for Material Bar Charts.
+          title: 'Monthly Super Performance',
+          curveType: 'function',
+          legend: { position: 'bottom' }
         };
 
-        var chart = new google.charts.Bar(document.getElementById('barchart_material'));
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
-        chart.draw(data, google.charts.Bar.convertOptions(options));
-      }
-      //Table format settings
-      google.charts.load('current', {'packages':['table']});
-      google.charts.setOnLoadCallback(drawTable);
-
-      function drawTable() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Type');
-        data.addColumn('number', 'Feb');
-        data.addColumn('number', 'Mar');
-        data.addColumn('number', 'Apr');
-        data.addColumn('number', 'May');
-        data.addRows([
-          ['Balanced Growth', 500, 1670, 129, 1409],
-          ['Conservative growth', 600,  1090, 500, 1432],
-          ['High Growth',500, 1750, 400, 1640]          
-        ]);
-
-        var table = new google.visualization.Table(document.getElementById('table_div'));
-
-        table.draw(data, {showRowNumber: false, width: '100%', height: '100%'});
+        chart.draw(data, options);
       }
     </script>
 </head>
 <body style="background: white;">
     <h1>Super Scraper <i class="fa fa-line-chart" style="font-size:24px"></i> </h1> 
+    <!--Top navigation-->
     <div class="topnav">
-      <a href="index.html">Home</a>
+      <a class="active" href="index.html">Home</a>
       <a href="#about">Contact</a>
       <a href="#contact">Extract</a>
       <a href="#contact">Scrape</a>
-      <a href="telstra.html">Refresh</a>
+      <a href="index.html">Refresh</a>
       <div class="search-container">
         <form action="/action_page.php">
           <input type="text" placeholder="Search.." name="search">
@@ -267,17 +254,18 @@
         </form>
       </div>
     </div>
-
+    <!--Superannuation options-->
     <p> </p>
+    <!--Hesta-->
     <div class="dropdown">
       <button class="dropbtn">Hesta Super</button>
-        <div class="dropdown-content">
+        <div class="dropdown-content" id="dropdownID">
         <a href="hesta.html">Balance Growth</a>
         <a href="hesta.html">Conservative Growth</a>
         <a href="hesta.html">High Growth</a>
         </div>
       </div>
-      
+      <!--Aware-->
       <div class="dropdown">
       <button class="dropbtn">Aware Super</button>
         <div class="dropdown-content">
@@ -286,7 +274,7 @@
         <a href="aware.html">High Growth</a>
         </div>
       </div>
-      
+      <!--Telstra-->
       <div class="dropdown">
       <button class="dropbtn">Telstra Super</button>
         <div class="dropdown-content">
@@ -295,7 +283,7 @@
         <a href="telstra.html">High Growth</a>
         </div>
       </div>
-      
+      <!--Future-->
       <div class="dropdown">
       <button class="dropbtn">Future Super</button>
         <div class="dropdown-content">
@@ -305,11 +293,10 @@
       <!--Other Websites-->
     <div class="dropdown">
       <a href="urlLink.html" class="dropbtn2">Other Websites</a>
-  </div>
-    <br>
-    <h2><b>Telstra Superannuation</b></h2>
+    </div>
 
       <script>
+      //Call dropdown menu
       function myFunction() {
         document.getElementById("myDropdown").classList.toggle("show");
       }
@@ -323,16 +310,16 @@
               openDropdown.classList.remove('show');
             }
           }
+          console.log("FINDME!:");
+          console.log(dropdowns);
         }
       }
       </script> 
-      <!--Call bar chart-->
-      <div id="barchart_material" style="width: 800px; height: 500px"></div>
-      <br>
-      <br>
-      <h2>Table Format</h2>
-      <!--Call table format-->
-      <div id="table_div" style="width: 800px; height: 500px"></div>
+      <!--Call the line chart-->
+      <h2>Summary of Superannuation</h2>
+      <div id="curve_chart" style="width: 800px; height: 500px"></div>
+
+
       
     
 </body>

@@ -1,0 +1,29 @@
+<html>
+
+<head>
+  <app-loadhead></app-loadhead>
+  <script src="components.js"></script>
+  
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      // google.charts.setOnLoadCallback(drawChart);
+      /*Adding relevent attributes and data for the linechart*/
+      //extracted data will go here
+    </script>
+    
+</head>
+
+<body style="background: white;">
+
+  <app-topnav></app-topnav>
+  <app-sidenav onload="dynamicDrop()"></app-sidenav>
+
+  <div class="main">
+    <!--Call the line chart-->
+    <h2>Graph Representation of Superannuation</h2>
+    <div id="curve_chart" style="width: 800px; height: 500px"></div>
+    <app-ranktable></app-ranktable>
+  </div>
+</body>
+</html>

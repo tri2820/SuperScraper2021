@@ -7,20 +7,17 @@ var dropdowns = {};
 //dropdown["telsta"] = "AASAS"
 //dropdown["telsta"] = "AASAS"
 
-// Creating Desktop Window and loading homepage.html 
+// Creating Desktop Window and loading index.html 
 function createWindow() {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: true,
-      contextIsolation: false
+      preload: path.join(__dirname, 'preload.js')
     }
   })
-  //win.openDevTools();
-  win.loadFile('homepage.html')
-  //win.loadFile('index.html')
+  win.openDevTools();
+  win.loadFile('index.html')
 
   win.webContents.once('dom-ready', () => {
     var fileData = path.join(__dirname, 'performance.csv');
@@ -55,12 +52,19 @@ function createWindow() {
         itemValues.push(singleArrayCombinedValues);
         dropdowns[parts[0]].push(itemValues);
 
-        // dropdowns concept:
-        // dropdowns: Keys = hesta / aware / telstra
+        //dropdowns: Keys = hesta / aware / telstra
+        // dropdowns["hesta"] = ["Conserva", "FSDDS", "SDSDS"]
+
+        // dropdowns["hesta"] = [{ "Conservative" : [1, 2, 3, 4, 5] },  { "Super" : [1, 2, 3, 4, 5] },  ]
+
         // dropdowns["hesta"] = [{ "Conservative" : [["Jan", 1] , ["Feb", 2], ["Mar", 3], ["Apr", 4], ["Mey", 5]] },
       }
       //Append to html button
       //Hesta
+
+      //var dropdowns2 = `+JSON.stringify(dropdowns['hesta'])+`
+        //let nodes = dropdowns2.map(dropdown => {
+
 
       let code = `var parent = document.getElementById("dropdownID");
         var dropdowns2 = `+JSON.stringify(dropdowns['hesta'])+`
@@ -76,12 +80,11 @@ function createWindow() {
         win.webContents.executeJavaScript(code);
 
         //Aware
-        let code2 = `var parent2 = document.getElementById("dropdownID2");
+      let code2 = `var parent2 = document.getElementById("dropdownID2");
         var dropdowns3 = `+JSON.stringify(dropdowns['aware'])+`
-        let nodes2 = dropdowns3.map((dropdown, idx) => {
+        let nodes2 = dropdowns3.map(dropdown, idx => {
           let a = document.createElement('A');
-          let key2 = dropdown[0];
-          a.textContent = dropdown[0];
+          a.textContent = dropdown[1];
           a.dataset.key1 = 'aware'
           a.dataset.key2 = idx;
           return a;
@@ -92,21 +95,18 @@ function createWindow() {
         //telsta
         let code3 = `var parent3 = document.getElementById("dropdownID3");
         var dropdowns4 = `+JSON.stringify(dropdowns['telstra'])+`
-        let nodes3 = dropdowns4.map((dropdown, idx) => {
-          let a = document.createElement('A');
-          let key2 = dropdown[0];
-          a.textContent = dropdown[0];
-          a.dataset.key1 = 'telstra'
-          a.dataset.key2 = idx;
-          return a;
+        let nodes3 = dropdowns4.map(dropdown => {
+        let a = document.createElement('A');
+        a.textContent = dropdown;
+        return a;
         });
         parent3.append(...nodes3);`
         win.webContents.executeJavaScript(code3);
         
-        
+
         let navBarClickHandler = `
           let dropdowns = `+JSON.stringify(dropdowns)+`;
-          document.querySelectorAll(".dropdown-container a").forEach(menu => 
+          document.querySelectorAll("#dropdownID a").forEach(menu => 
             menu.addEventListener("click", function(){
               let key1 = this.dataset.key1;
               let key2 = this.dataset.key2;
@@ -127,27 +127,14 @@ function createWindow() {
             })   
           ); 
         `;
- 
-        win.webContents.executeJavaScript(navBarClickHandler);
-     /////
-        let dropfunc = `
-        var dropdown = document.getElementsByClassName("dropdown-btn");
-        var i;
-      
-        for (i = 0; i < dropdown.length; i++) {
-          dropdown[i].addEventListener("click", function () {
-            this.classList.toggle("active");
-            var dropdownContent = this.nextElementSibling;
-            if (dropdownContent.style.display === "block") {
-              dropdownContent.style.display = "none";
-            } else {
-              dropdownContent.style.display = "block";
-            }
-          });
-        }`;
-        win.webContents.executeJavaScript(dropfunc);
 
-        /////
+        win.webContents.executeJavaScript(navBarClickHandler);
+      // var iframe = document.createElement('iframe');
+      // iframe.addAtributes("class", ".drpbns");
+      // iframe.id = 'iframe';
+      // iframe.style.display = 'none';
+      // document.body.appendChild(iframe);
+      // iframe.src = 'testing1.txt';
     });
   });
 }
@@ -162,15 +149,15 @@ app.whenReady().then(() => {
   })
 })
 // Intergrating python script with electron JS 
-// require('child_process').execFile("Users/priyankaram/super-scrapper/Extractor/extractor.py", [3000], (error, stdout, stderr) => {
+require('child_process').execFile("Users/priyankaram/super-scrapper/Extractor/extractor.py", [3000], (error, stdout, stderr) => {
 
-//   if (error) {
+  if (error) {
 
-//     console.log(error);
+    console.log(error);
 
-//   }
-//   // console.log(stdout);
-// })
+  }
+  // console.log(stdout);
+})
 // Intergrating python script with electron JS 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

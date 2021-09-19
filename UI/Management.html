@@ -1,0 +1,60 @@
+<html>
+
+<head>
+  <script src="input.js"></script>
+  <app-loadhead></app-loadhead>
+  <script src="components.js"></script>
+</head>
+
+<body>
+  <!--Top navigation-->
+  <app-topnav></app-topnav>
+
+  <div class="content" style="margin-left: 50px;">
+    <h2>Fund Manager Data Input</h2>
+    <p>Upload a csv with the following headers & appropriate data</p>
+    <code style="font-size: 20px;">Managed Fund Name,APIR,Fund Managers Name,URL</code>
+    <p id="data"></p>
+    <form id="myForm">
+      <input type="file" id="csvFile" accept=".csv" />
+      <br />
+      <input style="margin-top: 30px;" type="submit" value="Submit" />
+    </form>
+    <h2>Data Collection Tools</h2>
+    <p><b>Scrape</b> to run the scraping tool. <i>NOTE</i> This can be time and resource intensive. Do not run more than
+      needed. Most data soruces update no more than weekly.</p>
+    <p><b>Extract</b> to extract the database and update information in the interface. This takes ~10-15 seconds to
+      complete, an alert will be shown.</p>
+    <button>Scrape</button>
+    <button onclick="extract()">Extract</button>
+    <h2> Scheduling (Experimental)</h2>
+    <p>Schedule the scraper and extractor to run at a given date and time. <i>NOTE</i> this uses the <i>launchctl</i>
+      functionality and is only available on MacOS platforms.</p>
+    <p><b>Example: </b> Monday, 13:15 will schedule these tasks for each Monday at 1:15pm. The nature of
+      <i>launchctl</i> means that if your computer is asleep at the scheduled time, it will run when the computer wakes
+      up.</p>
+    <label for="day">Day of Week</label>
+
+    <select id="day">
+      <option value="1">Monday</option>
+      <option value="2">Tuesday</option>
+      <option value="3">Wednesday</option>
+      <option value="4">Thursday</option>
+      <option value="5">Friday</option>
+      <option value="6">Saturday</option>
+      <option value="7">Sunday</option>
+    </select>
+    <label for="hour">Hour (0 - 23)</label>
+    <select id="hour"></select>
+    <label for="min">Minute (0 - 59)</label>
+    <select id="min"></select><br />
+    <button onclick="schedule()">Schedule</button>
+  </div>
+
+</body>
+<script>window.onload = setup()
+
+
+</script>
+
+</html>
