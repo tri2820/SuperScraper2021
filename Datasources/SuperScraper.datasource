@@ -1,0 +1,29 @@
+Note
+    Work with Phillip
+
+Data
+    Summary
+        https://www.apra.gov.au/annual-fund-level-superannuation-statistics
+        https://prod.apra.shared.skpr.live/annual-fund-level-superannuation-statistics
+        https://prod.apra.shared.skpr.live/annual-mysuper-statistics
+        https://data.gov.au/data/dataset/self-managed-superannuation-funds
+        https://www.superannuation.asn.au/resources/superannuation-statistics
+        https://www.apra.gov.au/quarterly-superannuation-statistics
+
+    Specific client data
+        Holding
+            https://www.praemium.com/ResourcesByName/2466/praemium-super-single-assets-listpdf
+            https://www.allangray.com.au/documents/Investment_Menu.pdf
+    
+    Invester-oritented data
+        https://data.gov.au/data/dataset/ad-hoc-data-requests/resource/b3865826-d9e0-445d-9ca1-08ef24662c4a
+
+    Thesis
+        https://ses.library.usyd.edu.au/bitstream/handle/2123/9264/Liu_K_THesis_2013.pdf;jsessionid=2FD2E933753A2BDE07901B0D93BE3680?sequence=1
+
+    Interesting apis
+        https://www.ato.gov.au/super/apra-regulated-funds/in-detail/apra-resources/guide-to-using-the-ato-superannuation-dashboard/
+        https://api.gov.au/definitions?query=super
+        https://superfundlookup.gov.au/ABN/View?id=23145360935
+            To discover more api providers, search "super"
+        https://in.marketpanorama.com/profile/mlc-masterkey-business-super-mlc-mysuper-fund-1/charts

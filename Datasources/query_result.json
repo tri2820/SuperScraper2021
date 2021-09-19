@@ -1,0 +1,422 @@
+{
+    "APRA": {
+        "fee_rebates_and_discounts": [
+            {
+                "Description of fee rebate or discount": "Investment fee rebate",
+                "Fee rebate or discount": 14425,
+                "Fund name": "ASGARD Independence Plan Division Two",
+                "Group 11": {
+                    "Duration": 12,
+                    "RSE Wind up date": null
+                },
+                "Group 2": {
+                    "ABN": 90194410365,
+                    "Fund type": "Retail",
+                    "Fund's RSE licensee": "BT Funds Management Limited",
+                    "RSE Membership base": "General base",
+                    "RSE Regulatory classification": "Public offer",
+                    "RSE licensee board structure": "Non equal representation",
+                    "RSE licensee ownership type": "Financial services corporation ownership",
+                    "RSE licensee profit status": "For profit status"
+                },
+                "Number of member accounts  with rebate or discount": 115988,
+                "Proportion of fee rebate or fee discount as a proportion of total fees paid": 0.06,
+                "RSE Balance date": 1593475200000,
+                "Total fees paid": 244222,
+                "Type of fee": "Investment fee",
+                "_id": {
+                    "$oid": "612afbdaff22a923d7622b02"
+                }
+            }
+        ],
+        "financial_position": [
+            {
+                "Accrued default amounts": 0,
+                "Accrued default amounts as a proportion of total assets": 0,
+                "Cash": 2355522,
+                "Commodities": 108552,
+                "Equity": 10901430,
+                "Fixed income": 4921374,
+                "Fund name": "ASGARD Independence Plan Division Two",
+                "Group 11": {
+                    "Duration": 12,
+                    "RSE Wind up date": null
+                },
+                "Group 19": {
+                    "of which: Defined benefit members' benefits": 0,
+                    "of which: Defined contribution members' benefits": 20788402,
+                    "of which: Unallocated contributions": 0
+                },
+                "Group 2": {
+                    "ABN": 90194410365,
+                    "Fund type": "Retail",
+                    "Fund's RSE licensee": "BT Funds Management Limited",
+                    "RSE Membership base": "General base",
+                    "RSE Regulatory classification": "Public offer",
+                    "RSE licensee board structure": "Non equal representation",
+                    "RSE licensee ownership type": "Financial services corporation ownership",
+                    "RSE licensee profit status": "For profit status"
+                },
+                "Group 31": {
+                    "Proportion of investments in  fixed income": 0.24,
+                    "Proportion of investments in cash": 0.11,
+                    "Proportion of investments in commodities": 0.01,
+                    "Proportion of investments in equity": 0.52,
+                    "Proportion of investments in infrastructure": 0.01,
+                    "Proportion of investments in other": 0.05,
+                    "Proportion of investments in property": 0.06
+                },
+                "Infrastructure": 277512,
+                "Net assets available for members' benefits": 20815492,
+                "Other": 978391,
+                "Percentage of directly held investments to total investments": 0.15,
+                "Property": 1282205,
+                "RSE Balance date": 1593475200000,
+                "Surplus/deficit in net assets": 27090,
+                "Total assets": 20906303,
+                "Total investments": 20824986,
+                "Total liabilities": 90811,
+                "Total liability for members' benefits": 20788402,
+                "_id": {
+                    "$oid": "612afbf5ff22a923d76230d5"
+                }
+            }
+        ],
+        "fund_level_financial_performance": [
+            {
+                "Advice expenses": 0,
+                "Cash flow adjusted net assets": 22168616,
+                "Contribution tax and surcharge": 81038,
+                "Defined benefit contributions": 0,
+                "Employer contributions": 582903,
+                "Fund name": "ASGARD Independence Plan Division Two",
+                "Group 11": {
+                    "Duration": 12,
+                    "RSE Wind up date": null
+                },
+                "Group 15": {
+                    "Government co-contributions": 703,
+                    "Low income super contributions": 2954,
+                    "Other member contributions": 2143,
+                    "Personal contributions": 378222,
+                    "of which: Salary sacrifice contributions": 51587,
+                    "of which: Super guarantee contributions": 531316
+                },
+                "Group 2": {
+                    "ABN": 90194410365,
+                    "Fund type": "Retail",
+                    "Fund's RSE licensee": "BT Funds Management Limited",
+                    "RSE Membership base": "General base",
+                    "RSE Regulatory classification": "Public offer",
+                    "RSE licensee board structure": "Non equal representation",
+                    "RSE licensee ownership type": "Financial services corporation ownership",
+                    "RSE licensee profit status": "For profit status"
+                },
+                "Group 27": {
+                    "of which: SMSF rollovers": 71275,
+                    "of which: Successor fund transfers": 0
+                },
+                "Group 30": {
+                    "of which: SMSF rollovers": 113318,
+                    "of which: Successor fund transfers": 0
+                },
+                "Group 36": {
+                    "Other members\u2019 benefits flows out": 0,
+                    "Repatriation to employer sponsor": 0
+                },
+                "Group 41": {
+                    "Inward insurance flows": 55325,
+                    "Outward insurance flows": 114736
+                },
+                "Group 44": {
+                    "Dividend revenue": 43716,
+                    "Interest revenue": 33269,
+                    "Other investment income": 25034,
+                    "Rental income": 0,
+                    "Trust distributions": 754685
+                },
+                "Group 50": {
+                    "Impairment expense": 0
+                },
+                "Group 52": {
+                    "Realised gains/losses": 177308,
+                    "Unrealised gains/losses": -1463047
+                },
+                "Group 56": {
+                    "Associated with service provider expenses": 0,
+                    "Custodian": 11039,
+                    "Investment consultant": 0,
+                    "Investment expenses associated with investment management base fee": 0,
+                    "Investment expenses associated with investment management performance based fee": 0,
+                    "Other investment expenses": 1034
+                },
+                "Group 65": {
+                    "Administration expenses": 101058,
+                    "Advertising/marketing expenses": 0,
+                    "Associated with service provider  expenses": 0,
+                    "Commissions": 110910,
+                    "Director/individual trustee expenses": 4684,
+                    "Other administration and operating expenses": 0,
+                    "of which: associated with member activity": 0
+                },
+                "Group 75": {
+                    "of which: associated with intrafund advice": 0
+                },
+                "Group 77": {
+                    "Income tax expense / benefit": -70030
+                },
+                "Group 80": {
+                    "Total assets at the end of the period": 20906303,
+                    "Total liabilities at the end of the period": 90811
+                },
+                "Investment expenses ratio": 0.001,
+                "Investment income after impairment expense": 856704,
+                "Investment income and gains / losses": -429035,
+                "Inward rollovers": 683221,
+                "Lump sum benefit payments": 736387,
+                "Member contributions": 384022,
+                "Net assets at beginning of period": 22934010,
+                "Net assets at the end of period": 20815492,
+                "Net earnings": -657760,
+                "Net earnings after tax": -587730,
+                "Net insurance flows": -59411,
+                "Net members' benefits flows": -1471377,
+                "Net members' benefits outflow ratio": 1.938,
+                "Net rollovers": -1002142,
+                "One-year rate of return": -0.027,
+                "Operating expense ratio": 0.01,
+                "Operating income": 0,
+                "Other members\u2019 benefits flows in": 0,
+                "Outward rollover": 1685363,
+                "Pension benefit payments": 618735,
+                "RSE Balance date": 1593475200000,
+                "Total Investment expenses": 12073,
+                "Total Members' benefit flows in": 885887,
+                "Total Members' benefit flows out": 1355122,
+                "Total administration and operating expenses": 216652,
+                "Total benefit payments": 1355122,
+                "Total gains/losses": -1285739,
+                "Total investment income": 856704,
+                "_id": {
+                    "$oid": "612afb94ff22a923d7621df2"
+                }
+            }
+        ],
+        "fund_level_profile_and_structure": [
+            {
+                "Average member account balance": 111,
+                "Five-year rate of return": 0.03859,
+                "Fund name": "ASGARD Independence Plan Division Two",
+                "Group 11": {
+                    "Duration": 12,
+                    "RSE Wind up date": null
+                },
+                "Group 2": {
+                    "ABN": 90194410365,
+                    "Fund type": "Retail",
+                    "Fund's RSE licensee": "BT Funds Management Limited",
+                    "RSE Membership base": "General base",
+                    "RSE Regulatory classification": "Public offer",
+                    "RSE licensee board structure": "Non equal representation",
+                    "RSE licensee ownership type": "Financial services corporation ownership",
+                    "RSE licensee profit status": "For profit status"
+                },
+                "Growth in number of member accounts": -0.12,
+                "Investment expenses ratio": 0.001,
+                "Net members' benefits outflow ratio": 1.938,
+                "Number of MySuper products authorised": 1,
+                "Number of investment options": 1973,
+                "One-year rate of return": -0.027,
+                "Operating expense ratio": 0.01,
+                "Proportion of benefits which are defined benefits": 0,
+                "Proportion of total assets in default or MySuper strategy": 0.12,
+                "RSE Balance date": 1593475200000,
+                "Ten-year rate of return": 0.05352,
+                "Total assets": 20906303,
+                "Total members' benefits": 20788402,
+                "Total number of member accounts": 186704,
+                "_id": {
+                    "$oid": "612afb6bff22a923d7621666"
+                }
+            }
+        ],
+        "membership_profile": [
+            {
+                "Average member account balance of active member accounts": 149,
+                "Average member account balance of both defined  benefit and contribution only accounts": null,
+                "Average member account balance of defined benefit only accounts": null,
+                "Average member account balance of defined contribution only accounts": 111,
+                "Average member account balance of inactive member accounts": 50,
+                "Average member account balance of lost member accounts": 34,
+                "Both defined benefits and defined contributions only - member benefits": 0,
+                "Defined benefits only - member benefits": 0,
+                "Defined contributions only - member benefits": 20788402,
+                "Fund name": "ASGARD Independence Plan Division Two",
+                "Group 11": {
+                    "Duration": 12,
+                    "RSE Wind up date": null
+                },
+                "Group 2": {
+                    "ABN": 90194410365,
+                    "Fund type": "Retail",
+                    "Fund's RSE licensee": "BT Funds Management Limited",
+                    "RSE Membership base": "General base",
+                    "RSE Regulatory classification": "Public offer",
+                    "RSE licensee board structure": "Non equal representation",
+                    "RSE licensee ownership type": "Financial services corporation ownership",
+                    "RSE licensee profit status": "For profit status"
+                },
+                "Group 30": {
+                    "of which: defined benefit interests - member benefits": 0,
+                    "of which: defined contribution interests - member benefits": 0
+                },
+                "Group 39": {
+                    "Proportion of member accounts  in Taxed phase": 0.81,
+                    "Proportion of member accounts  in tax free phase": 0.19,
+                    "Proportion of members accounts in both taxed and tax free phase": 0
+                },
+                "Group 45": {
+                    "Proportion of members' benefits in both taxed and tax free phase": 0,
+                    "Proportion of members' benefits in in tax free phase": 0.42,
+                    "Proportion of members' benefits in taxed phase": 0.58
+                },
+                "Group 49": {
+                    "of which: Unique TFN": 178201
+                },
+                "Group 54": {
+                    "of which:  Members' benefits of member accounts with unique TFN": 20748685
+                },
+                "Members' benefits  of member accounts in tax-free phase": 8783846,
+                "Members' benefits of active member accounts": 17816003,
+                "Members' benefits of inactive member accounts": 2122046,
+                "Members' benefits of lost member accounts": 850353,
+                "Members' benefits of member accounts in both taxed and tax-free phase": 0,
+                "Members' benefits of member accounts in taxed phase": 12004556,
+                "Members' benefits of member accounts with a TFN": 20748685,
+                "Members' benefits of member accounts without a TFN": 39717,
+                "Number of Defined benefits only accounts": 0,
+                "Number of Defined contribution benefits only accounts": 186704,
+                "Number of active member accounts": 119240,
+                "Number of both defined benefits and defined contribution benefits accounts": 0,
+                "Number of inactive member accounts": 42660,
+                "Number of lost member accounts": 24804,
+                "Number of member accounts in both taxed and tax-free phase": 0,
+                "Number of member accounts in tax-free phase": 35946,
+                "Number of member accounts in taxed phase": 150758,
+                "Number of member accounts with a TFN": 184907,
+                "Number of member accounts without a TFN": 1797,
+                "Proportion of  member accounts without a TFN": 0.01,
+                "Proportion of benefits which are defined benefits": 0,
+                "Proportion of member accounts with a TFN": 0.99,
+                "Proportion of members' benefits of member accounts with a TFN": 1,
+                "Proportion of members' benefits of member accounts without a TFN": 0,
+                "RSE Balance date": 1593475200000,
+                "Total members' benefits at end of period": 20788402,
+                "Total number of member accounts at the end of period": 186704,
+                "_id": {
+                    "$oid": "612afc0fff22a923d76235fb"
+                }
+            }
+        ]
+    },
+    "APRAseries": {
+        "eligible_rollover_funds": [
+            {
+                "Current MySuper Product Name": "Asgard Employee MySuper",
+                "Employer ABN": null,
+                "Employer Name": null,
+                "Fund ABN": "90194410365",
+                "Fund Name": "ASGARD Independence Plan Division Two",
+                "Fund Type": "Public offer fund",
+                "MySuper Product Type": "Generic",
+                "Product Unique Identifier": "90194410365092",
+                "Registration Number": "R1055580",
+                "Trustee ABN": "63002916458",
+                "Trustee Name": "BT Funds Management Limited",
+                "_id": {
+                    "$oid": "61400e4c6d67e439725d4a1c"
+                }
+            }
+        ],
+        "list_of_RSE": [
+            {
+                "Class of Licence": "Public offer entities",
+                "Contact Facsimile Number": "02 9274 5780",
+                "Contact Person": "Clive Barnsley",
+                "Contact Telephone Number": "+612 9155 4070",
+                "Fund ABN": "90194410365",
+                "Fund Name": "ASGARD Independence Plan Division Two",
+                "Fund Status": "Complying",
+                "Fund Type": "Public offer fund",
+                "Licence Number": "L0001090",
+                "Postal Address": "WESTPAC PLACE LEVEL 18 275 KENT STREET  SYDNEY  2000",
+                "Register Address": "LEVEL 18 275 Kent St SYDNEY  2000",
+                "Registration Number": "R1055580",
+                "Trustee ABN": "63002916458",
+                "Trustee Name": "BT Funds Management Limited",
+                "_id": {
+                    "$oid": "614011797654e548a3b14d20"
+                }
+            }
+        ],
+        "mysuper_products": [
+            {
+                "Current MySuper Product Name": "Asgard Employee MySuper",
+                "Employer ABN": null,
+                "Employer Name": null,
+                "Fund ABN": "90194410365",
+                "Fund Name": "ASGARD Independence Plan Division Two",
+                "Fund Type": "Public offer fund",
+                "MySuper Product Type": "Generic",
+                "Product Unique Identifier": "90194410365092",
+                "Registration Number": "R1055580",
+                "Trustee ABN": "63002916458",
+                "Trustee Name": "BT Funds Management Limited",
+                "_id": {
+                    "$oid": "6140117d7654e548a3b15364"
+                }
+            }
+        ]
+    },
+    "Fundlist": {
+        "list_of_RSE": [
+            {
+                "Class of Licence": "Public offer entities",
+                "Contact Facsimile Number": "02 9274 5780",
+                "Contact Person": "Clive Barnsley",
+                "Contact Telephone Number": "+612 9155 4070",
+                "Fund ABN": "90194410365",
+                "Fund Name": "ASGARD Independence Plan Division Two",
+                "Fund Status": "Complying",
+                "Fund Type": "Public offer fund",
+                "Licence Number": "L0001090",
+                "Postal Address": "WESTPAC PLACE LEVEL 18 275 KENT STREET  SYDNEY  2000",
+                "Register Address": "LEVEL 18 275 Kent St SYDNEY  2000",
+                "Registration Number": "R1055580",
+                "Trustee ABN": "63002916458",
+                "Trustee Name": "BT Funds Management Limited",
+                "_id": {
+                    "$oid": "614012211ee2404ec6cb953c"
+                }
+            }
+        ],
+        "mysuper_products": [
+            {
+                "Current MySuper Product Name": "Asgard Employee MySuper",
+                "Employer ABN": null,
+                "Employer Name": null,
+                "Fund ABN": "90194410365",
+                "Fund Name": "ASGARD Independence Plan Division Two",
+                "Fund Type": "Public offer fund",
+                "MySuper Product Type": "Generic",
+                "Product Unique Identifier": "90194410365092",
+                "Registration Number": "R1055580",
+                "Trustee ABN": "63002916458",
+                "Trustee Name": "BT Funds Management Limited",
+                "_id": {
+                    "$oid": "614012221ee2404ec6cb9b80"
+                }
+            }
+        ]
+    }
+}
