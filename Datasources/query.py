@@ -3,7 +3,6 @@
 from mongo_connector import Connect
 from itertools import product
 import json
-from bson import BSON
 from bson import json_util
 
 
@@ -25,12 +24,10 @@ def find_by(db, query):
         qresult = list(qresult)
         if qresult:
             document[collection_name] = qresult
-            # print(f'Found in {collection_name}', '\n', qresult, '\n', '-'*10)
-
     return document
 
 """
-    Query in multiple databases
+Query in multiple databases
 """    
 def find_all_by(query, database_names):
     client = Connect.get_connection()
