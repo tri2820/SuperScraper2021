@@ -1,0 +1,40 @@
+<html>
+
+<head>
+  <app-loadhead></app-loadhead>
+  <script src="components.js"></script>
+  <script src="input.js"></script>
+
+</head>
+
+<body style="background: white;">
+
+  <app-topnav></app-topnav>
+  <div class="content">
+    <h2 style="display: inline-block; padding: 10px">Fund Managers Data</h2>
+    <select style="display: inline-block" onchange="updateManager()" id="fundManagers">
+      <option>Select a fund manager </option>>
+    </select>
+
+    <table id="dataDisp">
+      <tr>
+        <th>APIR</th>
+        <th>Name</th>
+        <th>Performance Fee</th>
+        <th>Management Fee</th>
+        <th>Admin Fee</th>
+        <th>Buy/Sell Spread</th>
+        <th>NAV</th>
+        <th>Performance</th>
+        <th>Asset Allocation</th>
+        <th>Ranges</th>
+        <th>Top Holdings</th>
+        <th>Bottom Holdings</th>
+        <th>Class Size</th>
+        <th>Fund Size</th>
+        <th>Strategy Size</th>
+      </tr>
+    </table>
+  </div>
+
+</html>

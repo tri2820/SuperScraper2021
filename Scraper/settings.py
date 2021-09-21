@@ -29,12 +29,30 @@ MONGO_COLLECTIONS = ["funds","offerings"]
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'Scraper.pipelines.SuperDataClean': 1,
-    'Scraper.pipelines.SuperDataMongodb': 2,
+    # Use these for offerings
+    #'Scraper.pipelines.SuperDataClean': 1,
+    #'Scraper.pipelines.SuperDataMongodb': 2,
+
+
+    #'Scraper.pipelines.SuperTestTraversal': 1,
+    #'Scraper.pipelines.SiteTraversal': 1,
+    'Scraper.pipelines.SiteTraversalDB': 800,#<---
+    #'Scraper.pipelines.SiteTraversalCSV': 801,
+    #'Scraper.pipelines.SuperDataMongodb': 300,
 }
 
+
+#from shutil import which
+
+#'''
+#SELENIUM_DRIVER_NAME = 'chrome'
+#SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
+#SELENIUM_DRIVER_ARGUMENTS=['-headless']
+
+#'''
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 32
+#CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -51,22 +69,28 @@ CONCURRENT_REQUESTS = 32
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
+#'''
+#,application/pdf
 #DEFAULT_REQUEST_HEADERS = {
 #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
 #}
-
+#'''
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
 #    'Scraper.middlewares.ScraperSpiderMiddleware': 543,
 #}
-
+#https://www.vanguard.com.au/personal/products/documents/22444/AU
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'Scraper.middlewares.ScraperDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+    # Use this for sel mid
+    'Scraper.middlewares.SeleniumMiddleware': 540,
+
+    #'Scraper.middlewares.SetupHeadersMiddleware': 541,
+    #'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware': None
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
