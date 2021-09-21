@@ -523,6 +523,7 @@ if __name__ == "__main__":
     parser.add_argument("--data_extract", type=bool, default=False, help="Extract data from pdfs")
     parser.add_argument("--pop_funds", type=bool, default=False, help="Populate new funds")
     parser.add_argument("--old", type=bool, default=False, help="Run old site data extraction")
+    parser.add_argument("--show_case", type=bool, default=True, help="Showcase mode")
     options = parser.parse_args()
     main(options)
 
