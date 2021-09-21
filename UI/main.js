@@ -10,7 +10,7 @@ var dropdowns = {};
 // Creating Desktop Window and loading homepage.html 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
+    width: 1400,
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),

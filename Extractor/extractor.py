@@ -1,7 +1,11 @@
+#!/usr/bin/env python3.9
+
 #Import pymongo for mongoDB integration, csv for file creation
 import pymongo
 import csv
 import json
+import ssl
+import datetime
 
 class managedFund:
     def __init__(self, name, age):
@@ -24,7 +28,7 @@ def extractSuper():
     Outputs two .csv files, with the data transposed
     '''
     #Connect with the export user
-    client = pymongo.MongoClient("mongodb+srv://extractor:I62EK5HE5yBL59Yz@cluster0.tadma.mongodb.net/SuperScrapper?retryWrites=true&w=majority")
+    client = pymongo.MongoClient("mongodb+srv://extractor:I62EK5HE5yBL59Yz@cluster0.tadma.mongodb.net/SuperScrapper?retryWrites=true&w=majority", ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
     #Database and collection information
     db = client.SuperScrapper
     fundCol = db.funds
@@ -45,12 +49,12 @@ def extractSuper():
 
     #extract all the offerings for each fund
     for fundID in fundIDs:
-        print('+-- Getting ' + fundID + ' Data --+')
+        #print('+-- Getting ' + fundID + ' Data --+')
         #get list of offerings for each fund
         offerings = list(offeringCol.find({"fund_id": fundID}, {'fund_id' : 1, 'name' : 1, 'monthly_performances' : 1, 'historical_performances' : 1}))
         
         for offering in offerings:
-            print("\t" + offering['name'])
+            #print("\t" + offering['name'])
             #Build list of dates there is recorded data for
             for period in offering['monthly_performances']:
                 if period['Date'] not in dates:
@@ -112,10 +116,13 @@ def extractSuper():
         for row in newPerf:
             perf_pivot_writer.writerow(row)
 
+    
+    print(str(datetime.datetime.now()) + ": Super Extracted")
+
 def extractFundManagers():
-    print("Getting Fund Manager  Data...")
+    #print("Getting Fund Manager  Data...")
      #Connect with the export user
-    client = pymongo.MongoClient("mongodb+srv://extractor:I62EK5HE5yBL59Yz@cluster0.tadma.mongodb.net/SuperScrapper?retryWrites=true&w=majority")
+    client = pymongo.MongoClient("mongodb+srv://extractor:I62EK5HE5yBL59Yz@cluster0.tadma.mongodb.net/SuperScrapper?retryWrites=true&w=majority", ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
     #Database and collection information
     db = client.SuperScrapper
     man_data = db.fund_managers
@@ -144,11 +151,11 @@ def extractFundManagers():
         top_row = "Fund Manager,APIR,Name,Performance Fee,Management Fee,Admin Fee,Buy/Sell Spread,NAV,Performance,Asset Allocation,Ranges,Top Holdings,Bottom Holdings,Class Size,Fund Sizr,Strategy Size".split(",")
         man_writer.writerow(top_row)
         for man in fund_managers:
-            print("+---- " + man)
+            #print("+---- " + man)
             for f in fund_managers[man]:
 
                 if f in useful_data:
-                    print("|-- " + f)
+                    #print("|-- " + f)
                     cur_data = useful_data[f]
                     name = "Not Currently Available"
                     apir = f
@@ -218,7 +225,8 @@ def extractFundManagers():
                     row.append(fund_size)
                     row.append(strat_size)
                     man_writer.writerow(row)
-            print("+-------------")
+            #print("+-------------")
+    print(str(datetime.datetime.now()) + ": Fund Managers Extracted")
 
 
 
