@@ -378,7 +378,7 @@ def run_scraper_traversal():
     print("Start Crawl")
     print('tav no. ', len(traversal_documents))
 
-    #return
+    #return scipy==1.7.1
 
     '''
     # Sequential
@@ -518,11 +518,12 @@ def main(options):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--web_trav", type=bool, default=False, help="Should run website traversal")
-    parser.add_argument("--doc_check", type=bool, default=False, help="Seach file urls for each fund")
-    parser.add_argument("--data_extract", type=bool, default=False, help="Extract data from pdfs")
-    parser.add_argument("--pop_funds", type=bool, default=False, help="Populate new funds")
-    parser.add_argument("--old", type=bool, default=False, help="Run old site data extraction")
+    parser.add_argument("--web_trav", type=bool, default=True, help="Should run website traversal")
+    parser.add_argument("--doc_check", type=bool, default=True, help="Seach file urls for each fund")
+    parser.add_argument("--data_extract", type=bool, default=True, help="Extract data from pdfs")
+    parser.add_argument("--pop_funds", type=bool, default=True, help="Populate new funds")
+    parser.add_argument("--old", type=bool, default=True, help="Run old site data extraction")
+    parser.add_argument("--show_case", type=bool, default=False, help="Showcase mode")
     options = parser.parse_args()
     main(options)
 
