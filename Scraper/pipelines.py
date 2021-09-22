@@ -390,7 +390,8 @@ class SiteTraversalDB:
         return document
 
     def close_spider(self, spider):#spider.traverse_data
-        print('CLOSE SPIDER - SUCCESSFULLY')
+        #print('CLOSE SPIDER - SUCCESSFULLY')
+        print(f' SPIDER - {spider.traverse_data["_id"]} - CLOSING')
 
         #session_handler = requests_session_handler()
 
@@ -463,14 +464,25 @@ class SiteTraversalDB:
         new_document['file_urls'] = [x[0].url for x in list(file_urls.values())]
         new_document['filtered_file_urls'] = filtered_file_urls#list(filtered_file_urls.values())
 
+
+        # Handle scheduling control
+        new_document = self.handle_scheduling(new_document)
+
+        # Insert into database
         document = self.find_or_create_document(new_document, True)
         traversal_urls = spider.traversed_urls.values()
 
         self.client.close()
 
+        print('CLOSE SPIDER - SUCCESSFULLY')
+
         #values = {'$addToSet': {super_fund['insert_cat'] : {'$each': traversal_urls}}}
         #self.db[self.collection_name].update_many(query, values)
     # --
+
+    def handle_scheduling(self, document):
+        document['schedule_data']['should_traverse'] = False
+        return document
 # --
 
 

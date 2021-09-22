@@ -281,17 +281,20 @@ def run_pdf_table_detection(pdf_url, save_images=False):
     page_detections = []
 
     for idx, pil_img in enumerate(pdf_images):
-        #print(idx)
-        image_path = None
-        if save_images:
-            image_path = 'nn_data\\{}-img.jpg'.format(str(idx))
-        cv2_img = np.array(pil_img)
-        inference_tensors = onnx_test.run_image_detection(cv2_img)
-        table_areas, new_img = onnx_test.get_detection_boxes(cv2_img, inference_tensors, image_path)
-        if len(table_areas) > 0:
-            page_det = {'table_areas': table_areas, 'page_number': idx}#- 1
+        try:
             #print(idx)
-            page_detections.append(page_det)
+            image_path = None
+            if save_images:
+                image_path = 'nn_data\\{}-img.jpg'.format(str(idx))
+            cv2_img = np.array(pil_img)
+            inference_tensors = onnx_test.run_image_detection(cv2_img)
+            table_areas, new_img = onnx_test.get_detection_boxes(cv2_img, inference_tensors, image_path)
+            if len(table_areas) > 0:
+                page_det = {'table_areas': table_areas, 'page_number': idx}#- 1
+                #print(idx)
+                page_detections.append(page_det)
+        except Exception as e:
+            print(e)
     # --
 
     return page_detections
