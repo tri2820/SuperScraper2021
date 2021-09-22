@@ -120,6 +120,12 @@ import time
 
 from selenium.webdriver.common.action_chains import ActionChains
 
+from scraper_run import CHROME_DRIVER_PATH
+
+
+#CHROME_DRIVER_PATH = "../chromedriver.exe"
+
+#CHROME_DRIVER_PATH = "install/chrome_driver/chromedriver.exe"
 
 
 class SeleniumMiddleware(object):
@@ -132,7 +138,7 @@ class SeleniumMiddleware(object):
         options.add_argument("--disable-gpu")
         #options.add_argument("start-maximized")
         self.chrome_options=options
-        self.driver = webdriver.Chrome(executable_path = "../chromedriver.exe", options=options)
+        self.driver = webdriver.Chrome(executable_path = CHROME_DRIVER_PATH, options=options) # "../chromedriver.exe"
 
         # The first url recived, run the accept popup handler
         self.fist_url = True

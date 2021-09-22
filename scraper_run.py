@@ -19,11 +19,22 @@ import re
 import argparse
 
 
+# Detect OS
+import os
+import platform
+
+
+
+
+
 MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
 MONGO_DB = "SuperScrapper"
 MONGO_COLLECTIONS = ["funds","offerings"]
 
 DENY_EXTENSIONS = []
+
+
+
 
 
 
@@ -41,6 +52,26 @@ def configure_extension_requests(dny_ext,remove_extensions, add_extensions):
 # UNGO23
 DENY_EXTENSIONS = configure_extension_requests(DENY_EXTENSIONS,['pdf'],[])#'html'
 
+
+
+def system_type():
+
+    system_name = platform.system()
+
+    print(f" System detected as {system_name}")
+    return system_name
+# --
+
+def set_chrome_driver_path():
+    chrome_driver_path_ = "install/chrome_driver/chromedriver"
+    system_name = system_type()
+    if system_name == "Windows":
+        chrome_driver_path_ += ".exe"
+    return chrome_driver_path_
+# --
+
+
+CHROME_DRIVER_PATH = set_chrome_driver_path()
 
 
 class DatabaseHandler:

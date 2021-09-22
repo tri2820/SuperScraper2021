@@ -34,7 +34,7 @@ import requests
 
 
 #POPPLER_DIR = r"C:\Program Files\poppler-21.03.0\Library\bin"
-POPPLER_DIR = r".\poppler\Library\bin"
+POPPLER_DIR = r".\install\poppler\Library\bin"
 
 def pdf_to_images(pdf_url,dpi=200):
     r = requests.get(pdf_url)
