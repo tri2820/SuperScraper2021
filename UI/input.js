@@ -541,7 +541,7 @@ document.addEventListener('DOMContentLoaded', buildFundManagers, false);
 
 function extract() {
     console.log("Extracting...")
-    var python = require('child_process').spawn('python', ['../Extractor/extractor.py'])
+    var python = require('child_process').spawn("..\\install\\python_install\\python ../Extractor/extractor.py", { shell: true })
     python.stdout.on('data', function (data) {
         console.log("Python response: ", data.toString('utf8'));
     });
