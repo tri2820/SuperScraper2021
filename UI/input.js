@@ -571,7 +571,7 @@ function extract() {
 function scrape() {
     var cmd = getCmd()
     console.log("Scraping... This will take a while")
-    var python = require('child_process').spawn(cmd, ['../run_scraper.py'])
+    var python = require('child_process').spawn(cmd, ['../scraper_run.py'])
     python.stdout.on('data', function (data) {
         console.log("Python response: ", data.toString('utf8'));
     });
