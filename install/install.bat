@@ -1,26 +1,26 @@
 @echo on
 
-curl.exe --output Miniconda3-latest-Windows-x86_64.exe --url https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe
+call download_py.bat
 
-echo /wait Downloading
+echo -- Downloaded Python --
 
-start /wait "" Miniconda3-latest-Windows-x86_64.exe /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\Miniconda3
+call python_install\python python_install.py
 
-call %UserProfile%\Miniconda3\Scripts\activate.bat
+echo -- Installed Pip --
 
-cd ..
+call python_install\Scripts\pip install -r requirements.txt -q -q
 
-call conda deactivate
+echo -- Installed Requirements --
 
-call conda create --name ScrapperTest -y
+call python_install\python python_files_install.py
 
-call conda activate ScrapperTest
+echo -- Installed Data Files --
 
-call conda install pip -y
+rem pause
 
-echo /wait Installing pip
 
-call pip install -r requirements.txt
+
+
 
 
 

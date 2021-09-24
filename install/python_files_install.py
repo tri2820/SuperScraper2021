@@ -53,22 +53,25 @@ nltk.download('punkt', download_dir='./nltk_data')
 
 
 
+"""
+print("-- Test --")
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+CHROME_DRIVER_PATH = "chrome_driver/chromedriver.exe"
+
+options = Options()
+options.headless = False
+options.add_argument("--log-level=3")
+options.add_argument("--disable-logging")
+options.add_argument("--disable-gpu")
+options.add_argument("start-maximized")
+chrome_options=options
+driver = webdriver.Chrome(executable_path = CHROME_DRIVER_PATH, options=options)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+driver.get("https://www.google.com/")
+"""
 
 
 
