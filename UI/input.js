@@ -1,6 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
 const url = "mongodb+srv://dataInput:lOIIVKEKLoTtOdQH@cluster0.tadma.mongodb.net/SuperScrapper?retryWrites=true&w=majority";
-const platform = require('process').platform;
 
 
 
@@ -538,22 +537,11 @@ function updateManager() {
         table.appendChild(tr)
     }
 }
+document.addEventListener('DOMContentLoaded', buildFundManagers, false);
 
-
-function getCmd() {
-    //var platform = process.platform;
-    if(platform === 'win32'){
-        console.log("WINDOWS")
-        return("..\\install\\python_install\\python")
-    }else if (platform === 'darwin'){
-        console.log("MAC")
-        return("python")
-    }
-}
 function extract() {
-    var cmd = getCmd()
     console.log("Extracting...")
-    var python = require('child_process').spawn(cmd, ['../Extractor/extractor.py'])
+    var python = require('child_process').spawn('python', ['../Extractor/extractor.py'])
     python.stdout.on('data', function (data) {
         console.log("Python response: ", data.toString('utf8'));
     });
