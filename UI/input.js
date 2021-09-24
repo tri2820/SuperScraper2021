@@ -547,7 +547,7 @@ function getCmd() {
         return("..\\install\\python_install\\python")
     }else if (platform === 'darwin'){
         console.log("MAC")
-        return("python")
+        return("python3")
     }
 }
 function extract() {
@@ -565,5 +565,18 @@ function extract() {
     python.on('close', (code) => {
         console.log(`child process exited with code ${code}`);
         alert("Extraction complete!")
+    });
+}
+
+function scrape() {
+    var cmd = getCmd()
+    console.log("Scraping... This will take a while")
+    var python = require('child_process').spawn(cmd, ['../run_scraper.py'])
+    python.stdout.on('data', function (data) {
+        console.log("Python response: ", data.toString('utf8'));
+    });
+
+    python.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
     });
 }
