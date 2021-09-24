@@ -388,6 +388,10 @@ class SiteTraversalDB:
             self.db[self.collection_name].update_one(query, {"$set": data_object})
         # --
         return document
+    
+    def open_spider(self, spider):
+        print(f' SPIDER - {spider.traverse_data["_id"]} - OPENING')
+        return
 
     def close_spider(self, spider):#spider.traverse_data
         #print('CLOSE SPIDER - SUCCESSFULLY')
@@ -468,9 +472,13 @@ class SiteTraversalDB:
         # Handle scheduling control
         new_document = self.handle_scheduling(new_document)
 
+        #print(new_document)
+
         # Insert into database
         document = self.find_or_create_document(new_document, True)
         traversal_urls = spider.traversed_urls.values()
+
+        #print(document)
 
         self.client.close()
 
