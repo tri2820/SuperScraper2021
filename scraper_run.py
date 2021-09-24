@@ -18,7 +18,7 @@ import re
 
 import argparse
 
-
+import ssl
 # Detect OS
 import os
 import platform
@@ -84,7 +84,7 @@ class DatabaseHandler:
 
 
     def open_connection(self):
-        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.client = pymongo.MongoClient(self.mongo_uri, ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
         self.db = self.client[self.mongo_db]
 
 
