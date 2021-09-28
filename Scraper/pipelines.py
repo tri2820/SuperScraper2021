@@ -22,7 +22,7 @@ import re
 
 import json
 import csv
-
+import ssl
 from Scraper.spiderdatautils import requests_session_handler, requests_session_handler_v2
 
 
@@ -166,7 +166,7 @@ class SuperDataMongodb:
         )
 
     def open_spider(self, spider):
-        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.client = pymongo.MongoClient(self.mongo_uri, ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
         self.db = self.client[self.mongo_db]
 
     def close_spider(self, spider):
@@ -370,7 +370,7 @@ class SiteTraversalDB:
         )
 
     def open_spider(self, spider):
-        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.client = pymongo.MongoClient(self.mongo_uri, ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
         self.db = self.client[self.mongo_db]
 
     def process_item(self, item, spider):
