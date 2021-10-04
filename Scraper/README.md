@@ -11,187 +11,178 @@
 Download and unzip the file.
 
 
-###### 2. Run install .bat or .bash
+###### 2. Run install .bat or .sh
 
-Go to /install and run: 
+--(Windows)--
+
+Go to /install and run:
 ``` install.bat ```
+
+Wait until it says it is finished
+
+--(MacOSx)--
+
+Go to /install and run:
+``` install.sh ```
 
 Wait until it says it is finished
 
 ###### 3. Running program
 
 Go to the main directory and run:
-``` run_refreashbutton.bat ```
+``` run_program.bat ```
 
 
 ### Installation - Dev
 
-###### 1. Install Anaconda(Python)
+The following consists of very basic instructions.
 
-In order to run the scraper you will need to install anaconda (data science python package handler and environment)
+###### 1. Setup git
 
-Go to the website using this link:
-https://www.anaconda.com/products/individual
+Download the project through bitbucket / scourcetree, pull, ect...
 
-Click download and choose the version in accordance with your OS.
+###### 2. Run install .bat or .sh
 
-Install anaconda, follow the installation instructions.
+--(Windows)--
 
-###### 2. Download the files
+Go to /install and run:
+``` install.bat ```
 
-Download this repo.
-It will be in a zip file, extract it.
+Wait until it says it is finished
 
-###### 3. Change directory to the downloaded files
+--(MacOSx)--
 
-Navigate to the files that you just extracted and copy the directory address (underlined in red)
+Go to /install and run:
+``` install.sh ```
 
-![Example on windows](../repo_images/extract_file_location.png)
+Wait until it says it is finished
 
+###### 3. Running program
 
-###### 4. Open Anaconda Prompt
+There are several methods to run the scraper.
 
-Once anaconda is installed you will need to open anaconda prompt.
+###### (1) - Run file
+Go to the main directory and run:
+``` run_program.bat ```
 
-Search for 'anaconda prompt' and run it.
+###### (2) - Command Line - Relative (Windows)
 
-![Example on windows](../repo_images/anaconda_prompt.png)
+Using cmd or other command line equivelent, change directory (cd) to the project.
+After this run the following command.
 
+Full argument:
 
-###### 5. Navigate to the extracted files in anaconda prompt
+```install\\python_install\\python scraper_run.py```
 
-Enter the following command to navigate to the files:
-``` cd {the directory address you copied} ```
+If you are working with the scraper it is probably important that you understand what this is doing.
+The command consists of 2 parts, the path to the python executable and the path to the python(.py) file to run.
 
-Make sure that you successfully navigated to that directory
+1st part:
 
-###### 6. Run the following commands
+```install\\python_install\\python ```
 
-When running the commands type 'y' to accept when prompted.
+2nd part:
 
-``` conda deactivate ```
+```scraper_run.py```
 
-``` conda create --name ScrapperTest --file requirements.txt --channel default --channel conda-forge --channel anaconda ```
+In additon to this arguments may be added.
 
-``` conda activate ScrapperTest ```
+###### (3) - Python Install
 
-If this all works then the installation was successful
+###### Step 1 - Install python
+While the program can be run using the relative isntallation, this does not leand itself well to development as
+for example you cannot easily install additional libaries.
 
+Install python, if you dont know how look it up https://www.python.org/
 
+###### Step 1.5 (optional) - Setup a vertual environment
 
-### How To Run This
+--
 
-In the anaconda prompt console (or in IDE ect..) type: 'python refreshbutton.py' .
+###### Step 2 - Install the required libaries
 
-This will run the scraper.
+Using command line / terminal (macOS) cd to the install directory and install the reqirments.txt
 
+```pip install -r requirements.txt```
 
-### How Scrapy Works - ish
-The spiders folder is where more individual logic and code for spiders and per website scraping is held.
-A new spider can be made by just copying the code of one to a new file and changing the requisite values.
 
-More general and hopefully dynamic scraping coming in future, however there will always be an element of: Specific Logic for Specific Website
+###### Step 3 - Run
 
-'spiderdatautils.py' is a utilities file with some hardcode right now, I will be expanded upon as/if spiders and logic become more dynamic and more utils are needed.
+Now you can run the scraper aswell as other files in the project.
 
-'settings.py' its settings
+```python {name of file you want to run}```
 
-'piplines.py' this is basically where data coming out of the spiders is handled and manipulated, it goes in order and stuff there is a whole thing. Very useful
+You probably know what you are doing.
 
 
-### Things to do
 
-##### Documentation [PRIO: N/A] - ONGOING
 
-Update documentation for all readme.md files. This includes 2 scraper files, 1 database one.
 
-Specific stuff:
- - Add brief explanations for each spider.
- - Add explanations of functions in base spider class.
- - Add explanations of database - spider interaction in files: (base spider class, pipelines, scraper_run.py).
- - Add explanations of data cleaning and formatting in pipelines.
- - Add explanations of database document creation in pipelines.
 
-General stuff:
- - Update documentation explaining how to install scrapy and requisite libraries, add documentation explaining other file interactions.
- - Outline future direction of scraper.
- - Some database documentation
- - Database table of variable types and what they mean/do.
 
-Types of documentation:
- - Trello future features, direction, current tasks (very general) [Amount: small]
- - In code documentation [Amount: Large]
- - Readme.txt [Amount: Small]
- - Readme.md(like this) [Amount: Mid - Large]
- - Separate ms teams dev thread.
 
-#### - Build basis for potential features to be expanded on / looked into -
 
 
-##### Create domain and sitemap traversal spiders [PRIO: N/A] - NOT-DOING
 
-The client expressed intrest in the possability of spiders that traverse sites in order to guide other scraping operations.
-This effectivly involves creating spiders that traverse listings websites (websites that list superannuation and fund manager data).
-The data extracted (eg: fund manager urls) can then serve as quiery parameters for website traversal spider,
-they traverse and map the sites and the data is extracted.
 
 
-##### Finish setting up case case specific data extraction for fund managers [PRIO: N/A] - NOT-DOING
 
-Everything is here, the values and parameters as well as additonal catagories just need to be added & finetuned.
 
-##### Finally get the backend scraper to work with the front end electron UI [PRIO: N/A] - NOT-DOING
 
-Do some more indepth googling consider potential options (there will be different ways to approach this).
-Set something up running and create some basic documentation for it.
 
-##### Advanced PDF-Extraction [PRIO: N/A] - NOT-DOING
 
-While the current PDF-Extraction works table and text detection is not as effective as I should be.
-Look into viability of using advanced detection for pdf extraction.
 
-#####  Intergrate Website Traversal inputs with runtime systems [PRIO: N/A] - NOT-DOING
 
-Currently traversal is being issued traversal input parameters from the database.
-Intergrate the issuing of website traversal using file commands or potentially UI.
 
-##### Create more dynamic/universal superannuation site spiders [PRIO: N/A] - NOT-DOING
 
-Currently the superannuation spiders are limited and specific to certain sites and data extraction processes.
 
-Look into to creating more dynamic/universal superannuation spiders with different extraction processes.
-This would involve doing some additional research on the superannuation sites with the context of the site traversal in mind.
 
-Things that could be setup / ideas:
-	- Use traversal page filters to find certain pages.
-    - Look into extracting files such as pdfs that match filters.
-    - Do some more reasearch to find if there are some more commenalities in files or pages for superannuation sites.
-    - Look into creating advanced table and form extract using contextual infomation combined with page filtering.
 
-This process could be tested initially (does not need to be refactoring).
 
-##### Database handler / utils [PRIO: N/A] - NOT-DOING
 
-As the database is expanded and more data objects, metadata objects and standardization is implemented it will become necessery to off load database interactions into a seperate model / utils.
 
-Currently database connections are just done on the spot in the code.
-A simple connection class exists, the problem is that when the connection class is used consequtivly throughout the code at runtime connections interfeare with each other,
-this leads to connections closing and the program being unable to upload to the db.
+### How Scrapy Works - ish (WIP)
+The spiders folder is where more individual logic and code for both broad crawl spiders and per website scraping is held.
+A new spider can be made by just copying the code of one to a new file and changing the requisite values. You can then work from there.
 
-A potential solution to this would be to have a set of database handler classes and utils. Specifically a master database connection class that handles connections.
-Once a connection is established it would then be used for all following database connections until closed.
 
-Additionally database item and collection handlers could be added:
-	- Dataframe handlers
-    - JSON object handlers
-    - CSV and other format handlers
-    - Dataframe and other object type storage & convertion ( convert -> push to db ) ( pull from db -> convert back )
+##### 'spiderdatautils.py'
+is a utilities file with some functions for scraping and dataprocessing.
 
-These are some things that could be added.
+##### 'settings.py'
+its settings for scrapy.
 
+##### 'piplines.py'
+this is where data coming out of the spiders is handled and manipulated.
+It is basically the next step after data is collected by a spider.
+Once a spider has finished scraping, pipelines processes and filters the data and then uploads it to the database.
 
 
-## NOTE: Feel free to append to this document thingy or ask Hamish about stuff in it
+##### 'middlewares.py'
+the middlewares file is responsable for the 'connection' and 'content' that are retrived when a website is visited.
+Normally a scraper visits a website and just grabs the first version of the page that exists, this is a problem however.
+The reason this is a problem, is because sometimes there is dynamic content (content that is loaded with javascript run on your end or server stuff)
+that is not loaded when just retriving the page scource.
 
+The solution to this is to load the page in a similar way to if you opened it yourself on your browser. This involves a different web scraler libary called selenium.
+Selenium docs: https://selenium-python.readthedocs.io/
 
-# --
+
+Selenium is different to scrapy because it uses a webdriver, in this case chrome.
+
+To understand Selenium I recommend setting up a test project and following the getting started page in the docs: https://selenium-python.readthedocs.io/getting-started.html
+Additonally you must have google chrome installed and must ensure the version of chrome matches the chromedriver/chromedriver.exe file in the ``` install\chrome_driver ``` directoty,
+if you are getting version errors you can swap that chromedriver file out here: https://chromedriver.chromium.org/downloads
+
+So using this driver, instead of scrapy requesting the web page, scrapy asks the Selenium driver code in middlewares to load the page,
+then the middlewares gives the loaded page back to scrapy.
+
+To learn more about dowloader middlewares: https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
+
+
+
+### How pdf-extraction works - ish (WIP)
+
+'nn_extraction.py' this is the runtime code for the nueral network. There is an entire explination (WIP)
+
+'pdf_extraction.py' this is the runtime code for the pdf extraction. There is an entire explination (WIP)

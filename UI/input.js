@@ -540,20 +540,20 @@ function updateManager() {
 }
 
 
-function getCmd() {
+function getCmd(win_ops = "", mac_ops = "") {
     //var platform = process.platform;
     if(platform === 'win32'){
         console.log("WINDOWS")
-        return("..\\install\\python_install\\python")
+        return(win_ops + "install\\python_install\\python")
     }else if (platform === 'darwin'){
         console.log("MAC")
-        return("python3")
+        return(mac_ops + "python3")
     }
 }
 function extract() {
-    var cmd = getCmd()
-    console.log("Extracting...")
-    var python = require('child_process').spawn(cmd, ['../Extractor/extractor.py'])
+    var cmd = getCmd("..\\");
+    console.log("Extracting...");
+    var python = require('child_process').spawn(cmd, ['../Extractor/extractor.py'], {shell: true, detached: true});
     python.stdout.on('data', function (data) {
         console.log("Python response: ", data.toString('utf8'));
     });
@@ -569,9 +569,9 @@ function extract() {
 }
 
 function scrape() {
-    var cmd = getCmd()
-    console.log("Scraping... This will take a while")
-    var python = require('child_process').spawn(cmd, ['../scraper_run.py'])
+    var cmd = getCmd("cd.. && ", "cd.. && ");
+    console.log("Scraping... This will take a while");
+    var python = require('child_process').spawn(cmd, ['scraper_run.py'], {shell: true, detached: true});//pre_ops + cmd, ['scraper_run.py']
     python.stdout.on('data', function (data) {
         console.log("Python response: ", data.toString('utf8'));
     });
