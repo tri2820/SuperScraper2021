@@ -6,7 +6,7 @@ poppler_zip_dir = "poppler.zip"
 poppler_dir = "poppler"
 
 
-chromeDriver_url = "https://chromedriver.storage.googleapis.com/92.0.4515.43/chromedriver_win32.zip"
+chromeDriver_url = "https://chromedriver.storage.googleapis.com/94.0.4606.61/chromedriver_win32.zip"
 chromeDriver_zip_dir = "chromedriver_win32.zip"
 chromeDriver_dir = "chrome_driver"
 
@@ -21,7 +21,7 @@ system_name = platform.system()
 print(f" System detected as {system_name}")
 
 if system_name == "Darwin":
-    chromeDriver_url = "https://chromedriver.storage.googleapis.com/92.0.4515.107/chromedriver_mac64.zip"
+    chromeDriver_url = "https://chromedriver.storage.googleapis.com/94.0.4606.61/chromedriver_mac64.zip"
     chromeDriver_zip_dir = "chromedriver_mac64.zip"
 
 
