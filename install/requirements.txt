@@ -77,4 +77,3 @@ w3lib==1.22.0
 Wand==0.6.7
 wincertstore==0.2
 zope.interface==5.4.0
-mongodb==4.0.1

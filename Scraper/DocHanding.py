@@ -11,7 +11,7 @@ import dateparser
 import math
 
 import re
-
+import ssl
 import time
 
 
@@ -26,7 +26,7 @@ class DBHandler:
         self.mongo_db = mongo_db
 
     def open_connection(self):
-        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.client = pymongo.MongoClient(self.mongo_uri, ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
         self.db = self.client[self.mongo_db]
 
 

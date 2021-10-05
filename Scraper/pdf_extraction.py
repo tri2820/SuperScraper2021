@@ -331,6 +331,9 @@ class DocumentExtraction:
 		global_dpi = 200
 
 		with pdfplumber.open(f) as pdf:
+
+			if  len(pdf.pages) <= 0:
+				return
 			# Get pdf initial page size
 			first_page = pdf.pages[0]
 			#print("\n\n -- FIRST PAGE WIDTH: ",first_page.width)

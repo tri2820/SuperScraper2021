@@ -3,3 +3,6 @@ best2.onnx
 poppler**
 nltk_data
 nn_data
+chrome_driver
+install/python_install
+chromedriver**.zip

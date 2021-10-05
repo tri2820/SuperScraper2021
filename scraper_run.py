@@ -18,12 +18,23 @@ import re
 
 import argparse
 
+import ssl
+# Detect OS
+import os
+import platform
+
+
+
+
 
 MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
 MONGO_DB = "SuperScrapper"
 MONGO_COLLECTIONS = ["funds","offerings"]
 
 DENY_EXTENSIONS = []
+
+
+
 
 
 
@@ -43,6 +54,26 @@ DENY_EXTENSIONS = configure_extension_requests(DENY_EXTENSIONS,['pdf'],[])#'html
 
 
 
+def system_type():
+
+    system_name = platform.system()
+
+    print(f" System detected as {system_name}")
+    return system_name
+# --
+
+def set_chrome_driver_path():
+    chrome_driver_path_ = "install/chrome_driver/chromedriver"
+    system_name = system_type()
+    if system_name == "Windows":
+        chrome_driver_path_ += ".exe"
+    return chrome_driver_path_
+# --
+
+
+CHROME_DRIVER_PATH = set_chrome_driver_path()
+
+
 class DatabaseHandler:
 
     collection_name = 'funds'
@@ -53,7 +84,7 @@ class DatabaseHandler:
 
 
     def open_connection(self):
-        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.client = pymongo.MongoClient(self.mongo_uri, ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
         self.db = self.client[self.mongo_db]
 
 
@@ -356,6 +387,8 @@ def run_scraper_traversal():
                 "FeesCosts": [],
                 "Report": []
             }
+        
+        print(traversal_document['schedule_data']['should_traverse'])
 
         if traversal_document['schedule_data']['should_traverse'] == "False":
             traversal_document['schedule_data']['should_traverse'] = False
@@ -502,28 +535,38 @@ def populate_funds():
 def main(options):
     if options.pop_funds:
         populate_funds()
-    if options.web_trav:
+    if options.run_webtrav:
         run_scraper_traversal()
     
-    if options.show_case:
+    if options.showcase:
         showcase()
     else:
         new_something = Something()
-        if options.doc_check:
+        if options.run_funds_file_check:
             new_something.find_item_file_urls()
-        if options.data_extract:
+        if options.run_funds_file_extract:
             new_something.extract_data_from_documents()
+    
+    if options.reset_webtrav:
+        print("Next web traversal will rescrape all websites")
 
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--web_trav", type=bool, default=True, help="Should run website traversal")
-    parser.add_argument("--doc_check", type=bool, default=True, help="Seach file urls for each fund")
-    parser.add_argument("--data_extract", type=bool, default=True, help="Extract data from pdfs")
+    parser.add_argument("--run_webtrav", type=bool, default=True, help="Should run website traversal")
+    parser.add_argument("--run_funds_file_check", type=bool, default=True, help="Seach file urls for each fund")
+    parser.add_argument("--run_funds_file_extract", type=bool, default=True, help="Extract data from pdfs")
     parser.add_argument("--pop_funds", type=bool, default=True, help="Populate new funds")
-    parser.add_argument("--old", type=bool, default=True, help="Run old site data extraction")
-    parser.add_argument("--show_case", type=bool, default=False, help="Showcase mode")
+    parser.add_argument("--run_super", type=bool, default=True, help="Run old site data extraction")
+    parser.add_argument("--showcase", type=bool, default=False, help="Showcase mode")
+
+
+    parser.add_argument("--reset_webtrav", type=bool, default=False, help="Set schedule data to run again")
+    parser.add_argument("--reset_funds_data", type=bool, default=False, help="Clear out the collected data from all funds_manager objects")
+    parser.add_argument("--reset_funds_file_urls", type=bool, default=False, help="Clear out the file urls for all funds_manager objects")
+
+
     options = parser.parse_args()
     main(options)
 
