@@ -2,10 +2,17 @@ const { app, BrowserWindow } = require('electron')
 const path = require('path')
 var fs = require('fs');
 
+//array collecting all the data from performance.csv
 var dropdowns = {};
-//dropdown["telsta"] = "AASAS"
-//dropdown["telsta"] = "AASAS"
-//dropdown["telsta"] = "AASAS"
+/*
+array concept:
+// dropdowns: Keys = hesta / aware / telstra
+
+dropdowns["hesta"] = [{ "Conservative" : [["Jan", 1] , ["Feb", 2], ["Mar", 3], ["Apr", 4], ["Mey", 5]] },
+dropdown["aware"] = .....
+dropdown["telsta"] = .....
+
+*/
 
 // Creating Desktop Window and loading homepage.html 
 function createWindow() {
@@ -20,8 +27,8 @@ function createWindow() {
   })
   //win.openDevTools();
   win.loadFile('homepage.html')
-  //win.loadFile('index.html')
 
+  //reading through performance.csv and collection process
   win.webContents.once('dom-ready', () => {
     var fileData = path.join(__dirname, 'performance.csv');
     fs.readFile(fileData, 'utf8', function (err, filedata) {
@@ -55,13 +62,10 @@ function createWindow() {
         itemValues.push(singleArrayCombinedValues);
         dropdowns[parts[0]].push(itemValues);
 
-        // dropdowns concept:
-        // dropdowns: Keys = hesta / aware / telstra
-        // dropdowns["hesta"] = [{ "Conservative" : [["Jan", 1] , ["Feb", 2], ["Mar", 3], ["Apr", 4], ["Mey", 5]] },
       }
-      //Append to html button
-      //Hesta
 
+      //Append to html dropdown buttons (inside vertical navigation)
+      //Hesta
       let code = `var parent = document.getElementById("dropdownID");
         var dropdowns2 = `+JSON.stringify(dropdowns['hesta'])+`
         let nodes = dropdowns2.map((dropdown, idx) => {
@@ -103,7 +107,7 @@ function createWindow() {
         parent3.append(...nodes3);`
         win.webContents.executeJavaScript(code3);
         
-        
+        //graph generator for each offerings
         let navBarClickHandler = `
           let dropdowns = `+JSON.stringify(dropdowns)+`;
           document.querySelectorAll(".dropdown-container a").forEach(menu => 
@@ -128,8 +132,8 @@ function createWindow() {
           ); 
         `;
  
+        //other vertival naviigation display function
         win.webContents.executeJavaScript(navBarClickHandler);
-     /////
         let dropfunc = `
         var dropdown = document.getElementsByClassName("dropdown-btn");
         var i;
@@ -146,11 +150,10 @@ function createWindow() {
           });
         }`;
         win.webContents.executeJavaScript(dropfunc);
-
-        /////
     });
   });
 }
+
 // Enabling browsing via desktop window 
 app.whenReady().then(() => {
   createWindow()
@@ -161,17 +164,7 @@ app.whenReady().then(() => {
     }
   })
 })
-// Intergrating python script with electron JS 
-// require('child_process').execFile("Users/priyankaram/super-scrapper/Extractor/extractor.py", [3000], (error, stdout, stderr) => {
 
-//   if (error) {
-
-//     console.log(error);
-
-//   }
-//   // console.log(stdout);
-// })
-// Intergrating python script with electron JS 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()

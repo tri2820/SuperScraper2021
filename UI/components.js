@@ -117,7 +117,6 @@ customElements.define('app-ranktable', RankingTable);
 
 //the function that creates the dropdown from csv file, call this on load with the sidenav element
 function dynamicDrop(){
-   
     document.getElementById("myDropdown").classList.toggle("show");
 
     window.onclick = function(event) {
