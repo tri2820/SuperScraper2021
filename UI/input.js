@@ -553,11 +553,7 @@ function getCmd() {
 function extract() {
     var cmd = getCmd()
     console.log("Extracting...")
-<<<<<<< HEAD
-    var python = require('child_process').spawn('python3', ['../Extractor/extractor.py'])
-=======
     var python = require('child_process').spawn(cmd, ['../Extractor/extractor.py'])
->>>>>>> e76ca210b1cc724e2557cfd7f4a7d3c9f3395a1d
     python.stdout.on('data', function (data) {
         console.log("Python response: ", data.toString('utf8'));
     });
