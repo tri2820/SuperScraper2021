@@ -1,0 +1,69 @@
+# The following is a set of commands that can be run in an instance if you decide to train a nn model on an externalized instance/servers-service.
+# When entering you instance environment, use the terminal and run these commands
+# These commands assume the instance is running linux (99% chance it is)
+
+# Install some useful libaries
+
+apt-get install git
+
+apt-get install unzip
+
+apt-get install wget
+
+# Git download the zip for yolo pipeline repo
+
+git clone https://github.com/ultralytics/yolov5
+
+# NOTE: Uload you training data to the instance, in zip format usually
+# Unzip your training data
+# In my case NAME_OF_TRAINING_DATA == yolopdf.zip
+# So the command is "unzip yolopdf.zip"
+
+unzip {NAME_OF_TRAINING_DATA}
+
+# Now cd into the yolo directory
+
+cd yolov5
+
+# Install the reqirments
+
+pip install -r requirements.txt
+
+# NOW DEPENDING ON WHEN YOU READ THIS YOU MAY GET ERRORS, THE FOLLOWING COMMANDS WILL PROBABLY HELP ALLIVIATE THIS.
+
+# Run the below command to update torch to a specific version that is compatable with the usual version of CUDA that is currently being used, if you have problems with this look up CUDA Torch compatablities
+
+pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
+
+# Update stuff to try and avoid certain wierdness
+
+apt-get update
+
+# The next thing to do is install ffmpeg, ffmpeg is a magical audio, video, image processing libary
+
+apt-get install ffmpeg libsm6 libxext6  -y
+
+
+# The next set of commands are for training
+# Some of these args are already there, if you need to understand args go to the github, there is a page on it.
+# So --data will point to your .yaml file, you can upload the .yaml file in the repo and edit if need be.
+# --weights yolov5m.pt, this is the model you are using, you should download this of the github, or alternativly there are commands on there for if you wanna start from scratch.
+# --device, this command is for the device that should be used for training, it starts from 0, if you only have 1 GPU the just change it to 0
+# --nproc_per_node, check this in relation to GPU number.
+
+python -m torch.distributed.launch --nproc_per_node 2 train.py --img 640 --batch 16 --epochs 200 --data yolopdf.yaml --weights yolov5m.pt --device 0,1
+
+# Run a test detection.
+# --source is where you put the image you want to run inference on, make sure to put something its never seen before (:
+
+python detect.py --weights best.pt --img 640 --conf 0.75 --source data/images/
+
+# Export, may have to play around abit, if you are having trouble try installing some of the requirments from the supperscraper environment
+
+python export.py --weights yolov5s.pt --include onnx --dynamic
+
+# The reason its exported as onnx is because the onnx with a certain libary runs somewhat faster and because the onnx export is seperated from the pipeline here, the final inference model should not
+# be using an externalized setup like torchub etc... to run inference, and the torch modles and stuff like that really like doing that.
+
+
+

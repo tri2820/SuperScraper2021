@@ -72,7 +72,16 @@ https://www.vanguard.com.au/adviser/products/en/detail/wholesale/8100/equity : h
 # NOTE: Natural Language Processing tool kit is a great rescource for looking for stuff like this: https://www.nltk.org/
 # NOTE: This should be a bit better than the basic sequence matcher
 
+# This is a function that takes in text, tokenizes into words' into numbers, then uses cosine similarity.
+# To understand and/or make improvments, go look up word tockenization and documetn vectorization.
 def cosine_similarity(string_1, string_2, ommit=[]):
+	"""
+	-- Input --
+	- string_1 (string) - fist compare string
+	- string_2 (string) - second compare string
+	-- Output --
+	- cosine (float) - An abeterey number representing cosine different (higher == more similar)
+	"""
 
 	remove_symbols_1 = re.sub('[^\w ]+|[_]+',' ',string_1 + '')
 	remove_symbols_2 = re.sub('[^\w ]+|[_]+',' ',string_2 + '')
@@ -156,6 +165,14 @@ class StringTest:
 
 
 	def test_for_string(self, test_string, regex_ = False, amount = None):
+		"""
+		-- Input --
+		- test_string (string) - String to test against
+		- regex_ (string(regex)) - if present run re.search on test_string (defualt == False)
+		- amount (int) - number of characters to search from top of page (defualt == all)
+		-- Output --
+		- found (bool) - did find the string
+		"""
 		found = False
 		text = self.text
 		if amount:
@@ -172,6 +189,11 @@ class StringTest:
 # NOTE: This numerics/symbols regex weight function will allow stuff like 23, %, /, ^3, @#421-3, +, - to be given increased or decreased wieghts
 
 def pattern_weights(in_string, regex_list):
+	"""
+	Applys weights to each string if found
+	-- Output --
+	- weight (float) - Total sum weight.
+	"""
 	weight = 0
 	for pattern in regex_list:
 		if re.search(pattern[0], in_string) != None:
@@ -184,7 +206,13 @@ def pattern_weights(in_string, regex_list):
 
 def find_most_similar(string_, compare_values_, use_cosine=True, use_weights=True):
 	"""
-	returns: ('string that was being tested', 'catagory string that matched highest', ratio of similarity)
+	-- Input --
+	- string_ (string) - String to compare against
+	- compare_values_ (string - map - list) - values to compare against string
+	- use_cosine (bool) - should use cosine
+	-- Output --
+	- Highest compare_values_ match
+	- returns: ('string that was being tested', 'catagory string that matched highest', ratio of similarity)
 	"""
 	#highest_match = ["","",0]
 	highest_match = {
@@ -234,7 +262,13 @@ def find_most_similar(string_, compare_values_, use_cosine=True, use_weights=Tru
 
 def find_similar(string_, cat_name, catagory, use_cosine=True, use_weights=True):
 	"""
-	returns: ('string that was being tested', 'catagory string that matched highest', ratio of similarity)
+	-- Input --
+	- string_ (string) - String to compare against
+	- compare_values_ (string - map - list) - values to compare against string
+	- use_cosine (bool) - should use cosine
+	-- Output --
+	- Highest compare_values_ match
+	- returns: ('string that was being tested', 'catagory string that matched highest', ratio of similarity)
 	"""
 	#highest_match = ["","",0]
 	highest_match = {
@@ -317,6 +351,10 @@ class DocumentExtraction:
 		self.detected_tables = page_table_detections
 
 	def extract_tables(self):
+		"""
+		This will detect_tables with nn, then it will create pages with tables in them and then run extraction processes.
+		"""
+
 		# Use nueral network to detect tables
 		self.detect_tables()
 		# Make sure to reset data to avoid repeats
@@ -364,37 +402,6 @@ class DocumentExtraction:
 class DocumentDataExtractor:
 	documents = []
 
-	'''
-	compare_values = {
-		#[['[+\\$\-\%]',0.75],['\d',0.9]]
-		"Management Fee": {
-			"fees cost expenses management": {
-				"weights": [['[+\\$\-\%]',0.75],['\d',0.9],['p.a',1.6]],
-				"bias": 0
-			},
-			"management fee": {
-				"weights": [['[+\\$\-\%]',0.75],['\d',0.9],['p.a',1.6]],
-				"bias": 0.2
-			},
-		},
-		"Buy/Sell spread": {
-			"buy sell spread": {
-				"weights": [['[+\\$\-\%]',0.75],['\d',0.9],['[\+\d.%]+ ?\/ ?\-[\d.%]+',2]],# '\+.+%.+\/.+\-.+%'
-				"bias": 0.2
-			},
-			"transaction costs allowance": {
-				"weights": [['[+\\$\-\%]',0.75],['\d',0.9],['[\+\d.%]+ ?\/ ?\-[\d.%]+',2]],# '\+.+%.+\/.+\-.+%'
-				"bias": 0
-			},
-		},
-		"Asset Allocation": {
-			"asset allocation range": {
-				"weights": [['[\-\%]',0.45],['\d',0.9], ['strategic', 0.1]],
-				"bias": 0
-			}
-		}
-	}
-	'''
 
 	extraction_params = {
 		"Management Fee": {
@@ -618,6 +625,10 @@ class DocumentDataExtractor:
 		return len(self.documents) - 1
 	
 	def extract_similar_rows(self, init_threshold, doc_idx=0):
+		"""
+		Main extraction process used by DocHandling.
+		Extracts data using the other processes in this file.
+		"""
 
 		#for compare_value in self.compare_string_list:
 		#	self.similarity_data[compare_value] = []
@@ -633,26 +644,6 @@ class DocumentDataExtractor:
 		for cat_name in self.extraction_params_tables:#compare_values
 			if not cat_name in document_data['sim_data']:
 				document_data['sim_data'][cat_name] = []
-		
-		'''
-				self.page_number = page_number
-
-				self.bbox = bbox
-
-				self.size = 0
-
-				self.page_ = page_
-
-				self.word_lines = {}
-				self.table_collections = []
-
-				self.ext_data = {
-					'text_top': '',
-					'text_bottom': '',
-				}
-
-				self.text = ''
-		'''
 
 		# Extract infomation from tables
 		document = document_data['doc']
@@ -724,91 +715,6 @@ class DocumentDataExtractor:
 						if sim_val > init_threshold:
 							document_data['sim_data'][catagory_name].append(item)
 				# --
-
-				'''
-				# Run matching for each catagory
-				for text_part in raw_texts:
-					for catagory_name in self.extraction_params_tables:
-						catagory = self.extraction_params_tables[catagory_name]
-						item = find_similar(text_part, catagory_name, catagory, True, True)
-
-						if not item['cat']:
-							continue
-
-						if "table" in self.extraction_params_tables[item['cat']]['args']:
-							item["table"] = table
-						
-						sim_val = item["ratio"]
-						if sim_val > init_threshold:
-							document_data['sim_data'][catagory_name].append(item)
-				# --
-				'''
-
-				'''
-				# Look for discard indicaters
-				discard_table = False
-				for indicator in self.discard_indicators:
-					if table.text.lower().find(indicator) != -1 or table_ext_data['text_top'].lower().find(indicator) != -1 or table_ext_data['text_bottom'].lower().find(indicator) != -1:
-						discard_table = True
-						break
-				
-				if discard_table:
-					continue
-
-				for text_part in raw_texts:
-					item = find_most_similar(text_part, self.extraction_params, True, True)
-
-					if not item['cat']:
-						continue
-
-					if "table" in self.extraction_params[item['cat']]['args']:
-						item["table"] = table
-					
-					sim_val = item["ratio"]
-					if sim_val > init_threshold:
-						document_data['sim_data'][item["cat"]].append(item)
-				
-				# --
-
-				text_above_table = table.ext_data['text_top']
-
-				#print(table.ext_data)
-
-				#print('\n\n text_above_table: ', text_above_table)
-
-				for cat_name in self.extraction_params_tables:
-					cat = self.extraction_params_tables[cat_name]
-					top_regex = cat["args"]["table"]["top_regex"]
-					for regex_ in top_regex:
-						search_ = re.search(regex_, text_above_table)
-						if search_ == None:
-							continue
-						item = {
-							"str": text_above_table,
-							"cat": cat_name,
-							"match": None,
-							"ratio": 2,
-							"table": table,
-						}
-						
-						sim_val = item["ratio"]
-						if sim_val > init_threshold:
-							document_data['sim_data'][item["cat"]].append(item)
-				'''
-				'''
-				for text_part in line_texts:
-					item = find_most_similar(text_part, self.extraction_params_tables, True, True)
-
-					if not item['cat']:
-						continue
-
-					if "table" in self.extraction_params_tables[item['cat']]['args']:
-						item["table"] = table
-					
-					sim_val = item["ratio"]
-					if sim_val > init_threshold:
-						document_data['sim_data'][item["cat"]].append(item)
-				'''
 		# --
 
 		# Get sub-tables
@@ -932,6 +838,16 @@ class DocumentDataExtractor:
 
 
 class DocPage:
+	"""
+	This represents a page
+	-- Properties --
+	- tables (list - Table(class)) - List of tables detected on this page
+	- page_number (int) - Page Number
+	- test (string) - Page test.
+	- local_dpi (int) - dpi of the pdf plumber extraction (pdf plumber insists (: ).
+	- global_dpi (int) - dpi that the page is scaled too.
+	- save_table_images (bool) - save tables to file, used for testing/demonstation.
+	"""
 
 	def __init__(self, page_, page_number, page_tables):
 
@@ -955,6 +871,10 @@ class DocPage:
 	
 	
 	def extract_data(self):
+		"""
+		Extract data from the page, this involves using the detection coords from the nn to crop sections of the page for tables.
+		Areas are cropped and tables objects created, for each table both the data in the table and data around the table is collected.
+		"""
 
 		self.text = self.page_.extract_text(x_tolerance=1, y_tolerance=1)
 
@@ -1042,6 +962,17 @@ class DocPage:
 
 
 class Table:
+	"""
+	This represents a table within a page.
+	-- Properties --
+	- page_number (int) - Page Number
+	- bbox (tuple of number) (4) - The coordinates of the bounding box for this table
+	- page_ (DocPage(class)) - The page that this table belongs too.
+	- word_lines (dict(int): dict(dict)) - A dict of complex dicts that describe data reperesenting lines of word objects within the table. The key (int) is the approximate
+	y-position of the line.
+	- table_collections (list(dicts)) - A list of dicts with data discribing tables.
+	- text (string) - Raw string text in the table (as opposed to the word character text).
+	"""
 
 	def __init__(self, page_, page_number, bbox = []):
 		"""
@@ -1170,6 +1101,14 @@ class Table:
 
 	def construct_subtables(self, line_leniency=2, min_lines=2):# TODO: Add args and have args for discard ect...
 
+		'''
+		-- Input --
+		- line_leniency (int) - The number of lines the search will allow to not find a match before capping the table off, if it finds a match then the count is reset.
+		- min_lines (int) - The minimum number of lines that a table may consist of.
+
+		This function will search within the table for lines of words that would indicate the structure of the table.
+		'''
+
 
 		line_indecies = list(self.word_lines.keys())
 		line_indecies = sorted(line_indecies, reverse=False)
@@ -1286,6 +1225,15 @@ class Table:
 
 
 	def format_subtables(self):
+		"""
+		After 'construct_subtables' the detected table lines will then be processed here.
+		This function will use the bounding boxes and position of:
+		- lines of words
+		- words within the lines of words
+		- character positioning mean and distribution within the line of words.
+		It will use these to try and find the rows and columns of a table.
+		To better understand this process, check the "new_table_testing.py" file, it will have a variety of infomation.
+		"""
 		for table_collection in self.table_collections:
 			#print('\n - New Table/collection - \n')
 
@@ -1462,6 +1410,9 @@ class Table:
 		return
 
 	def create_subtable_dataframes(self):
+		'''
+		Turn the data from tables into dataframes useing the rows and columns generated.
+		'''
 		df_list = []
 		for table_collection in self.table_collections:#columns
 			try:
