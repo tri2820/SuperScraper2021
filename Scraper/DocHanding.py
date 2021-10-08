@@ -14,6 +14,8 @@ import re
 
 import time
 
+import ssl
+
 
 MONGO_URI = "mongodb+srv://bot-test-user:bot-test-password@cluster0.tadma.mongodb.net/cluster0?retryWrites=true&w=majority"
 MONGO_DB = "SuperScrapper"
@@ -26,7 +28,7 @@ class DBHandler:
         self.mongo_db = mongo_db
 
     def open_connection(self):
-        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.client = pymongo.MongoClient(self.mongo_uri, ssl=True,ssl_cert_reqs=ssl.CERT_NONE)#, ssl=True,ssl_cert_reqs=ssl.CERT_NONE
         self.db = self.client[self.mongo_db]
 
 
@@ -79,6 +81,11 @@ class DocumentHandler:
     
 
     def filter_file_urls(self, traversal_id, file_filter_catagory = 'PDS', must_contain = ["HOW0027AU"]):
+        """
+        This is the main process for detecting if a file is reated to a fund using search, currently APIR code.
+        """
+        # TODO: The date extraction process needs to be rebuilt so that it actually finds proper dates, MORE DYNAMIC & handle more.
+        # TODO: Able to detect files with multipel APIR codes and cache with a varaible or something so that other process can know if document is mixed and if so to be carful when extracting data.
         
         #document = self.dbHandler.find_or_create_document(collection_name, insert_document, False)
 
@@ -194,6 +201,10 @@ class DocumentHandler:
 
 
 class Something:
+    """
+    I never came up with a proper name for this, so yeah.
+    This class is responsable for coordingation the extraction of stuff, it uses "pdf_extraction" and "DocumentHandler"
+    """
 
     extract_mutators = {
         'Buy/Sell spread': [
@@ -242,6 +253,9 @@ class Something:
 
 
     def find_item_file_urls(self, collection_id = 'fund_managers', custom_query=None):
+        """
+        Uses "DocumentHandler" to find and store the urls that match searches for stuff like APIR codes.
+        """
 
         test_handler = DBHandler(MONGO_URI, MONGO_DB)
         test_handler.open_connection()
@@ -328,6 +342,9 @@ class Something:
     
 
     def extract_data_from_documents(self, collection_id = 'fund_managers', custom_query=None):
+        """
+        Uses "pdf_extraction" to extract the data from pdfs.
+        """
 
         #self.docExtractor = DocumentDataExtractor()
 
@@ -528,314 +545,6 @@ class Something:
 
 
 
-
-
-
-
-'''
-        for file_cat in file_list_by_category:
-            file_list = file_list_by_category[file_cat]
-
-            doctest.open_connection()
-
-            doc_data_list = [doctest.extract_document_data(x['url']) for x in file_list]
-
-            doctest.close_connection()
-
-            # Extracted Data
-            print("-\nExtracted Data")
-            for matches_cats in doc_data_list:
-                for cat in matches_cats:
-                    matches = matches_cats[cat]
-                    print('-', cat
-                    , '\n -- ', matches[0]
-                    , '\n -- ', matches[1]
-                    , '\n -- ', matches[2]
-                    , '\n -- ', matches[3]
-                    , '\n -- ', matches[4])
-            # --
-
-
-            # Pull out
-            #test_handler.open_connection()
-            #fund = test_handler.find_or_create_document(collection_id, {'_id': item_id}, False)
-            
-            #fund['metadata']['pdf_url_list'] = file_list
-
-            fund_data = {}
-
-            for matches_cats in doc_data_list:
-                for cat in matches_cats:
-                    matches = matches_cats[cat]
-
-                    x = matches[0]['str']
-
-                    if cat in self.extract_mutators:
-                        
-                        for cond in self.extract_mutators[cat]:
-                            x = cond[0](x, matches[0])
-                            if len(cond) > 1:
-                                if not cond[1](x, matches[0]):
-                                    break
-                        # --
-
-                    fund_data[cat] = []
-                    first_match = {
-                        'str': matches[0]['str'],
-                        'ratio':  matches[0]['ratio'],
-                        'extracted_value': x,
-                    }
-                    fund_data[cat].append(first_match)
-            # --
-
-
-            fund['data'] = fund_data
-
-
-            #test_handler.find_or_create_document(collection_id, fund, True)
-
-            #test_handler.close_connection()
-        # --
-        test_handler.open_connection()
-
-        test_handler.find_or_create_document(collection_id, fund, True)
-
-        test_handler.close_connection()
-'''
-
-
-
-
-
-
-
-
-
-
-
-'''
-from Scraper.DocHanding import DocumentHandler
-
-def doc_handling_test():
-
-    doctest = DocumentHandler()
-
-    doctest.open_connection()
-
-    file_list = doctest.filter_file_urls('novaport_site_traversal', 'PDS', ["HOW0027AU"])
-
-    # Found pdfs
-    print("-\nFound pdfs")
-    [print(x) for x in file_list]
-
-
-
-    doc_data_list = [doctest.extract_document_data(x['url']) for x in file_list]
-
-    # Extracted Data
-    print("-\nExtracted Data")
-    for matches_cats in doc_data_list:
-        for cat in matches_cats:
-            matches = matches_cats[cat]
-            print('-', cat
-                , '\n -- ', matches[0]
-                , '\n -- ', matches[1]
-                , '\n -- ', matches[2]
-                , '\n -- ', matches[3]
-                , '\n -- ', matches[4])
-    # --
-
-
-    doctest.close_connection()
-
-
-    # Pull out
-
-    test_handler = DatabaseHandler(MONGO_URI, MONGO_DB)
-
-    test_handler.open_connection()
-    fund = test_handler.find_or_create_document('fund_managers', {'_id': "HOW0027AU"}, False)#HOW0027AU
-    
-
-    #fund['metadata']['pdf_url_list'] = [x['url'] for x in file_list]
-    fund['metadata']['pdf_url_list'] = file_list
-
-    fund_data = {}
-
-    # Extract & clean
-    extract_conditions = {
-        'Buy/Sell spread': [
-            [lambda x, obj: re.search('[\+\d.%]+ ?\/ ?\-[\d.%]+', x), lambda x, obj: x != None],
-            [lambda x, obj: x.group(0)],
-        ],
-        'Management Fee': [
-            [lambda x, obj: re.search('[\d.%]+.{0,5}p\.a', x), lambda x, obj: x != None],
-            [lambda x, obj: x.group(0)],
-            [lambda x, obj: re.search('[\d]+\.[\d]+', x), lambda x, obj: x != None],
-            [lambda x, obj: x.group(0)],
-        ],
-        'Asset Allocation': [
-            [lambda x, obj: re.findall('0|[\d]{2,3}', x), lambda x, obj: x != None],
-        ],
-    }
-
-    for matches_cats in doc_data_list:
-        for cat in matches_cats:
-            matches = matches_cats[cat]
-
-            x = matches[0]['str']
-
-            if cat in extract_conditions:
-                
-                for cond in extract_conditions[cat]:
-                    x = cond[0](x, matches[0])
-                    if len(cond) > 1:
-                        if not cond[1](x, matches[0]):
-                            break
-                # --
-
-            fund_data[cat] = []
-            first_match = {
-                'str': matches[0]['str'],
-                'ratio':  matches[0]['ratio'],
-                'extracted_value': x,
-            }
-            fund_data[cat].append(first_match)
-    # --
-
-
-    fund['data'] = fund_data
-
-
-    print(fund['data'])
-
-
-    test_handler.find_or_create_document('fund_managers', fund, True)
-
-    test_handler.close_connection()
-    return
-# -- # https://www.fidante.com/-/media/Shared/Fidante/NOVA/NMF_PDS.pdf?la=en
-
-def doc_handling_run():
-
-
-    test_handler = DatabaseHandler(MONGO_URI, MONGO_DB)
-
-    test_handler.open_connection()
-    fund_ids = test_handler.get_collection_ids('fund_managers')
-
-    #traversal_ids = test_handler.get_collection_ids('site_traverse_data')
-
-    fund_querys = [[x, test_handler.find_or_create_document('fund_managers', {'_id': x}, False)['metadata']['site_traversal_id']] for x in fund_ids]
-
-    test_handler.close_connection()
-
-
-    for fund_query in fund_querys:
-
-        fund_id = fund_query[0]
-
-        traversal_id = fund_query[1]
-
-        doctest = DocumentHandler()
-
-        doctest.open_connection()
-
-        file_list = doctest.filter_file_urls(traversal_id, 'PDS', [fund_id])
-
-        # Found pdfs
-        print("-\nFound pdfs")
-        [print(x) for x in file_list]
-
-
-
-        doc_data_list = [doctest.extract_document_data(x['url']) for x in file_list]
-
-        doctest.close_connection()
-
-        # Extracted Data
-        print("-\nExtracted Data")
-        for matches_cats in doc_data_list:
-            for cat in matches_cats:
-                matches = matches_cats[cat]
-                print('-', cat
-                , '\n -- ', matches[0]
-                , '\n -- ', matches[1]
-                , '\n -- ', matches[2]
-                , '\n -- ', matches[3]
-                , '\n -- ', matches[4])
-        # --
-
-
-        # Pull out
-        test_handler.open_connection()
-        fund = test_handler.find_or_create_document('fund_managers', {'_id': fund_id}, False)
-        
-
-        #fund['metadata']['pdf_url_list'] = [x['url'] for x in file_list]
-        fund['metadata']['pdf_url_list'] = file_list
-
-        fund_data = {}
-
-
-        # Extract & clean
-        extract_conditions = {
-            'Buy/Sell spread': [
-                [lambda x, obj: re.search('[\+\d.%]+ ?\/ ?\-[\d.%]+', x), lambda x, obj: x != None],
-                [lambda x, obj: x.group(0)],
-            ],
-            'Management Fee': [
-                [lambda x, obj: re.search('[\d.%]+.{0,5}p\.a', x), lambda x, obj: x != None],
-                [lambda x, obj: x.group(0)],
-                [lambda x, obj: re.search('[\d]+\.[\d]+', x), lambda x, obj: x != None],
-                [lambda x, obj: x.group(0)],
-            ],
-            'Asset Allocation': [
-                [lambda x, obj: re.findall('0|[\d]{2,3}', x), lambda x, obj: x != None],
-            ],
-        }
-
-        for matches_cats in doc_data_list:
-            for cat in matches_cats:
-                matches = matches_cats[cat]
-
-                x = matches[0]['str']
-
-                if cat in extract_conditions:
-                    
-                    for cond in extract_conditions[cat]:
-                        x = cond[0](x, matches[0])
-                        if len(cond) > 1:
-                            if not cond[1](x, matches[0]):
-                                break
-                    # --
-
-                fund_data[cat] = []
-                first_match = {
-                    'str': matches[0]['str'],
-                    'ratio':  matches[0]['ratio'],
-                    'extracted_value': x,
-                }
-                fund_data[cat].append(first_match)
-        # --
-
-
-        fund['data'] = fund_data
-
-
-        test_handler.find_or_create_document('fund_managers', fund, True)
-
-        test_handler.close_connection()
-    # --
-
-    return
-# --
-
-
-#doc_handling_run()
-
-#doc_handling_test()
-'''
 
 
 

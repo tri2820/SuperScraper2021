@@ -84,7 +84,7 @@ class DatabaseHandler:
 
 
     def open_connection(self):
-        self.client = pymongo.MongoClient(self.mongo_uri, ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
+        self.client = pymongo.MongoClient(self.mongo_uri, ssl=True,ssl_cert_reqs=ssl.CERT_NONE)#, ssl=True,ssl_cert_reqs=ssl.CERT_NONE
         self.db = self.client[self.mongo_db]
 
 
@@ -557,8 +557,8 @@ if __name__ == "__main__":
     parser.add_argument("--run_webtrav", type=bool, default=True, help="Should run website traversal")
     parser.add_argument("--run_funds_file_check", type=bool, default=True, help="Seach file urls for each fund")
     parser.add_argument("--run_funds_file_extract", type=bool, default=True, help="Extract data from pdfs")
-    parser.add_argument("--pop_funds", type=bool, default=True, help="Populate new funds")
-    parser.add_argument("--run_super", type=bool, default=True, help="Run old site data extraction")
+    parser.add_argument("--pop_funds", type=bool, default=False, help="Populate new funds")
+    parser.add_argument("--run_super", type=bool, default=False, help="Run old site data extraction")
     parser.add_argument("--showcase", type=bool, default=False, help="Showcase mode")
 
 

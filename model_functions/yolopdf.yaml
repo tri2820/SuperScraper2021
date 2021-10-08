@@ -1,0 +1,24 @@
+
+
+train: ../yolopdf/images/train/
+val: ../yolopdf/images/val/
+
+
+
+
+
+# number of classes
+nc: 1
+
+
+# class names
+names: ['table']
+
+
+
+
+
+
+
+
+
